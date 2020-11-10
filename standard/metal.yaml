@@ -1,0 +1,16 @@
+---
+- name: Controller
+  count: 1
+  instances:
+    - hostname: oc0-controller-0
+      name: oc0-controller-0
+- name: Compute
+  count: 1
+  instances:
+    - hostname: oc0-compute-0
+      name: oc0-compute-0
+- name: CephStorage
+  count: 1
+  instances:
+    - hostname: oc0-ceph-0
+      name: oc0-ceph-0

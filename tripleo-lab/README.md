@@ -36,3 +36,24 @@ The tasks referenced by the tags `-t domains -t baremetal -t vbmc`
 (which are inclusive in the above example) will provision the virtual
 baremetal servers. See [metalsmith](../metalsmith/).
 
+<!--
+## Workarounds
+
+I started getting the following when SSH'ing to a newly installed undercloud.
+```
+debug1: getpeername failed: Bad file descriptor
+...
+stdio forwarding failed
+```
+This started happening 10 Nov 2020 after updating TripleO lab from 9
+Oct 2020. It's possibly related to these
+https://github.com/cjeanner/tripleo-lab/commit/b874a9865158ad8afb39d4dba4d5b2bbc82c70b8
+https://github.com/cjeanner/tripleo-lab/commit/224b7d06e93c5cbc8ece339f81bafd64f806b74b
+I don't need that ssh config so I just remove out the undercloud section
+```
+grep -n '## BEGIN undercloud' .ssh/config
+grep -n '## END undercloud' .ssh/config
+sed -i -e '1,9d' .ssh/config
+```
+-->
+

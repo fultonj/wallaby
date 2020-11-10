@@ -1,0 +1,15 @@
+**/scratch
+**/dcn1
+tempest-deployer-input.conf
+ceph_keys.yaml
+ceph_keys_update.yaml
+dcn_ceph_keys.yaml.bak
+cirros-0.4.0-x86_64-disk*
+inventory.yml
+deploy-update.sh
+deployed*
+ceph-export-control-plane.yaml
+ceph-export-2-stacks.yaml
+control-plane-export.yaml
+control_plane_roles.yaml
+dcn_roles.yaml
