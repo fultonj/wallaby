@@ -11,10 +11,10 @@
 - name: Compute
   count: 2
   instances:
+    - hostname: oc0-compute-0
+      name: oc0-compute-0
     - hostname: oc0-compute-1
       name: oc0-compute-1
-    - hostname: oc0-compute-2
-      name: oc0-compute-2
 - name: CephStorage
   count: 3
   instances:

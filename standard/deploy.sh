@@ -30,6 +30,12 @@ if [[ $METAL -eq 1 ]]; then
 else
     echo "Assuming servers are provsioned"
 fi
+grep novacompute deployed-metal-big.yaml > /tmp/1903775
+grep cephstorage deployed-metal-big.yaml >> /tmp/1903775
+if [[ $(cat /tmp/1903775 | wc -l) -gt 0 ]]; then
+    echo "working around https://bugs.launchpad.net/tripleo/+bug/1903775"
+    sed -i -e s/novacompute/compute/g -e s/cephstorage/ceph/g deployed-metal-big.yaml
+fi
 # -------------------------------------------------------
 # `openstack overcloud -v` should be passed along as
 # `ansible-playbook -vv` for any usage of Ansible (the
@@ -126,7 +132,7 @@ if [[ $DOWN -eq 1 ]]; then
     time bash ansible-playbook-command.sh
 
     # Just re-run ceph
-    # time bash ansible-playbook-command.sh --tags external_deploy_steps --skip-tags step4,step5,post_deploy_steps
+    # time bash ansible-playbook-command.sh --tags external_deploy_steps --skip-tags step3,step4,step5,post_deploy_steps
 
     # Just re-run ceph prepration without running ceph
     # time bash ansible-playbook-command.sh --tags external_deploy_steps --skip-tags step4,step5,post_deploy_steps,ceph
