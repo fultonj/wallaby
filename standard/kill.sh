@@ -1,12 +1,8 @@
 #!/bin/bash
 
-CLEAN=0
+CLEAN=1
 if [[ $CLEAN -eq 1 ]]; then
-    cat /dev/null > /tmp/ironic_names_to_clean
-    openstack server list -f value -c Name -c ID | grep ceph | awk {'print $1'} > /tmp/nova_ids_to_clean
-    for S in $(cat /tmp/nova_ids_to_clean); do
-        openstack baremetal node list -f value -c Name -c "Instance UUID" | grep $S | awk {'print $1'} >> /tmp/ironic_names_to_clean
-    done
+    metalsmith -f value -c "Node Name" list | grep ceph > /tmp/ironic_names_to_clean
 fi
 
 openstack overcloud delete oc0 --yes
