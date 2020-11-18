@@ -4,6 +4,7 @@ parameter_defaults:
   SELinuxMode: permissive
   ConfigDebug: True
   NtpServer: pool.ntp.org
+  CephAnsibleClientDisable: false
   CephAnsibleRepo: tripleo-centos-ceph-nautilus
   CephAnsiblePlaybookVerbosity: 3
   CephPoolDefaultSize: 1
