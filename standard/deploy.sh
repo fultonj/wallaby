@@ -1,6 +1,6 @@
 #!/bin/bash
 
-METAL=0
+METAL=1
 HEAT=1
 DOWN=0
 CHECK=0
@@ -27,14 +27,16 @@ if [[ $METAL -eq 1 ]]; then
 
     sed -i s/\\/usr\\/share\\/openstack\\-tripleo\\-heat\\-/..\\/..\\//g \
         deployed-metal-big.yaml
+
+    grep novacompute deployed-metal-big.yaml > /tmp/1903775
+    grep cephstorage deployed-metal-big.yaml >> /tmp/1903775
+    if [[ $(cat /tmp/1903775 | wc -l) -gt 0 ]]; then
+        echo "working around https://bugs.launchpad.net/tripleo/+bug/1903775"
+        sed -i -e s/novacompute/compute/g -e s/cephstorage/ceph/g deployed-metal-big.yaml
+    fi
+
 else
     echo "Assuming servers are provsioned"
-fi
-grep novacompute deployed-metal-big.yaml > /tmp/1903775
-grep cephstorage deployed-metal-big.yaml >> /tmp/1903775
-if [[ $(cat /tmp/1903775 | wc -l) -gt 0 ]]; then
-    echo "working around https://bugs.launchpad.net/tripleo/+bug/1903775"
-    sed -i -e s/novacompute/compute/g -e s/cephstorage/ceph/g deployed-metal-big.yaml
 fi
 # -------------------------------------------------------
 # `openstack overcloud -v` should be passed along as
@@ -128,17 +130,13 @@ if [[ $DOWN -eq 1 ]]; then
 
     fi
     # -------------------------------------------------------
+
+    # -------------------------------------------------------
     # run it all
     time bash ansible-playbook-command.sh
 
-    # Just re-run ceph
-    # time bash ansible-playbook-command.sh --tags external_deploy_steps --skip-tags step3,step4,step5,post_deploy_steps
-
-    # Just re-run ceph prepration without running ceph
-    # time bash ansible-playbook-command.sh --tags external_deploy_steps --skip-tags step4,step5,post_deploy_steps,ceph
-    
-    # Pick up after good ceph install (need to test this)
-    # time bash ansible-playbook-command.sh --tags step2,step3,step4,step5,post_deploy_steps,external --skip-tags ceph
+    # Just re-run ceph (closer but still not working correctly)
+    #time bash ansible-playbook-command.sh --skip-tags step1,step3,step4,step5,run_ceph_ansible,run_uuid_ansible --tags facts,step2 -e gather_facts=true -e @global_vars.yaml
 
    popd
 fi
