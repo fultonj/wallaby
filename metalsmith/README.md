@@ -39,7 +39,8 @@ and run `metalsmith list` the way you used to run `openstack server list`.
 (undercloud) [CentOS-8.1 - stack@undercloud ~]$ 
 ```
 
-You can then `ssh heat-admin@192.168.24.19`.
+You can then `ssh heat-admin@192.168.24.19`. The above list of nodes
+will be based on the [metalsmith-0.yaml](metalsmith-0.yaml) topology.
 
 ## Overcloud Deployment
 
@@ -134,3 +135,9 @@ one shot. Now that they're tightly coupled my current approach is:
 
 Each of the example deployments (e.g. standard or dcn) in this
 repository has its own toplogy file.
+
+## Scripts
+
+The [provision.sh](provision.sh) and [unprovision.sh](unprovision.sh)
+scripts take the stack name as an input parameter and will deploy the
+nodes for the matching topology.
