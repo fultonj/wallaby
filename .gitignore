@@ -13,3 +13,5 @@ ceph-export-2-stacks.yaml
 control-plane-export.yaml
 control_plane_roles.yaml
 dcn_roles.yaml
+deployed-metal-ceph.yaml
+tripleo-ceph
