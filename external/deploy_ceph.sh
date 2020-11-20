@@ -4,6 +4,7 @@ METAL=1
 NET=1
 CEPH=1
 STACK=ceph
+EXPORT=1
 INV=tripleo-ceph/inventory.yaml
 
 if [[ $METAL -eq 1 ]]; then
@@ -52,4 +53,19 @@ if [[ $CEPH -eq 1 ]]; then
     pushd tripleo-ceph
     ansible-playbook-3 -i $(basename $INV) site.yaml -v
     popd
+fi
+
+if [[ $EXPORT -eq 1 ]]; then
+    if [[ -e ceph-external.yaml ]]; then
+        rm -f ceph-external.yaml
+    fi
+    for F in ceph.conf ceph.client.openstack.keyring; do
+        ansible mons[0] -i $INV -m fetch -a "flat=yes src=/etc/ceph/$F dest=$F"
+    done
+    # this sed line indicates a bug in tripleo-ceph ansible
+    sed s/exported/\#exported/g -i ceph.client.openstack.keyring
+    python3 export.py \
+            -t old -k ceph.client.openstack.keyring -c ceph.conf \
+            -o ceph-external.yaml
+    rm -f ceph.conf ceph.client.openstack.keyring
 fi
