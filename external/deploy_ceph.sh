@@ -1,7 +1,8 @@
 #!/bin/bash
 
 METAL=0
-ANSIBLE=0
+NET=0
+CEPH=1
 STACK=ceph
 INV=tripleo-ceph/inventory.yaml
 
@@ -32,7 +33,13 @@ if [[ ! -e $INV ]]; then
     ansible -i $INV -m ping all
 fi
 
-if [[ $ANSIBLE -eq 1 ]]; then
+if [[ $NET -eq 1 ]]; then
+    # connect ceph nodes to Internet with hack for now
+    ansible-playbook-3 -i $INV ceph_nethack.yaml
+    ansible -i $INV all -m shell -a "ping -c 1 redhat.com"
+fi
+
+if [[ $CEPH -eq 1 ]]; then
     pushd tripleo-ceph
     ansible-playbook-3 -i $INV site.yaml -v
     popd

@@ -1,0 +1,99 @@
+---
+# Workaround: 
+# - default ceph nodes cannot connect to Internet
+# - but tripleo-lab connects ceph node's ens4 to nat-vm trunk
+# - join vlan100 setup by tripleo-lab nat-vm and use it as default route
+# - also create /etc/hosts
+
+- hosts: allovercloud
+  become: true
+  gather_facts: false
+  vars:
+    gw: 192.168.100.1
+    vlan: 100
+    dev: ens4
+    old_third_octet: '24'
+    new_third_octet: '100'
+  tasks:
+    - name: identify current gateway ip
+      shell: "/sbin/ip route | awk '/default/ { print $3 }'"
+      register: old_route_cmd
+
+    - name: identify current gateway dev
+      shell: "/sbin/ip route | awk '/default/ { print $5 }'"
+      register: old_dev_cmd
+
+    - name: set current_gateway and ip facts
+      set_fact:
+        current_gateway: "{{ old_route_cmd.stdout_lines[0] }}"
+        old_dev: "{{ old_dev_cmd.stdout_lines[0] }}"
+        ip: "{{ ansible_host | regex_replace(old_third_octet, new_third_octet ) }} "
+
+    - when:
+        # don't set the gateway if we're already using it
+        - current_gateway != gw
+      block:
+        - name: switch bootproto of dev to none
+          lineinfile:
+            path: "/etc/sysconfig/network-scripts/ifcfg-{{ dev }}"
+            regexp: '^BOOTPROTO='
+            line: BOOTPROTO=none
+
+        - name: create vlan file for dev
+          copy:
+            dest: "/etc/sysconfig/network-scripts/ifcfg-vlan-{{ vlan }}"
+            content: |
+              VLAN=yes
+              TYPE=Vlan
+              PHYSDEV={{ dev }}
+              VLAN_ID={{ vlan }}
+              REORDER_HDR=yes
+              GVRP=no
+              MVRP=no
+              PROXY_METHOD=none
+              BROWSER_ONLY=no
+              BOOTPROTO=none
+              IPADDR={{ ip }}
+              PREFIX=24
+              DEFROUTE=yes
+              IPV4_FAILURE_FATAL=no
+              IPV6INIT=yes
+              IPV6_AUTOCONF=yes
+              IPV6_DEFROUTE=yes
+              IPV6_FAILURE_FATAL=no
+              IPV6_ADDR_GEN_MODE=stable-privacy
+              NAME=vlan-{{ vlan }}
+              DEVICE={{ dev }}.{{ vlan}}
+              ONBOOT=yes
+
+        - name: bring up vlan
+          shell: "ifdown {{ dev }}; ifup {{ dev }}; ifup vlan-{{ vlan }};"
+          register: ifcmds
+
+        - name: show vlan ifup results
+          debug:
+            msg: "{{ ifcmds.stdout }}"
+
+        - name: bring down old default route
+          shell: "route del default gw {{ current_gateway }} {{ old_dev }}"
+
+        - name: bring up new default route
+          shell: "route add default gw {{ gw }} {{ dev }}.{{ vlan }}"
+
+        - name: run ip r
+          shell: "ip r"
+          register: ipr
+
+        - name: show ip r
+          debug:
+            msg: "{{ ipr.stdout }}"
+
+- hosts: allovercloud
+  become: true
+  gather_facts: true
+  tasks:
+    - name: "Build hosts file"
+      lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" state=present
+      when: hostvars[item].ansible_default_ipv4.address is defined
+      with_items:
+        - "{{ groups.get('mons', {}) }}"
