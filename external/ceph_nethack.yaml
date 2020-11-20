@@ -7,7 +7,7 @@
 
 - hosts: allovercloud
   become: true
-  gather_facts: false
+  gather_facts: true
   vars:
     gw: 192.168.100.1
     vlan: 100
@@ -15,6 +15,15 @@
     old_third_octet: '24'
     new_third_octet: '100'
   tasks:
+    # use only IPv4 address (.24) to build /etc/hosts before adding another IP
+    - name: "Build hosts file"
+      lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_all_ipv4_addresses[0] }} {{item}}" state=present
+      when:
+        - hostvars[item].ansible_all_ipv4_addresses[0] is defined
+        - old_third_octet in hostvars[item].ansible_all_ipv4_addresses[0]
+      with_items:
+        - "{{ groups.get('mons', {}) }}"
+
     - name: identify current gateway ip
       shell: "/sbin/ip route | awk '/default/ { print $3 }'"
       register: old_route_cmd
@@ -88,12 +97,3 @@
           debug:
             msg: "{{ ipr.stdout }}"
 
-- hosts: allovercloud
-  become: true
-  gather_facts: true
-  tasks:
-    - name: "Build hosts file"
-      lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" state=present
-      when: hostvars[item].ansible_default_ipv4.address is defined
-      with_items:
-        - "{{ groups.get('mons', {}) }}"

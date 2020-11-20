@@ -90,7 +90,7 @@ if __name__ == "__main__":
                     'The DeployedServerPortMap is missing the first '
                     'fixed_ip in the data file: {ironic_data_file}'.format(
                         ironic_data_file=OPTS.deployed_metal_file))
-            hosts[host] = {'ansible_host': ip}
+            hosts[host.replace('-ctlplane','')] = {'ansible_host': ip}
 
         inv[role] = {'hosts': hosts,
                      'vars': get_vars(OPTS.ssh_user)}

@@ -1,8 +1,13 @@
 #!/bin/bash
 
-METAL=0
-CLEAN=0
+METAL=1
+CLEAN=1
 STACK=ceph
+INV=tripleo-ceph/inventory.yaml
+
+if [[ -e $INV ]]; then
+    rm -f $INV
+fi
 
 if [[ $METAL -eq 1 ]]; then
     pushd ../metalsmith
