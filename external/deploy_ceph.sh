@@ -59,13 +59,9 @@ if [[ $EXPORT -eq 1 ]]; then
     if [[ -e ceph-external.yaml ]]; then
         rm -f ceph-external.yaml
     fi
-    for F in ceph.conf ceph.client.openstack.keyring; do
-        ansible mons[0] -i $INV -m fetch -a "flat=yes src=/etc/ceph/$F dest=$F"
-    done
-    # this sed line indicates a bug in tripleo-ceph ansible
-    sed s/exported/\#exported/g -i ceph.client.openstack.keyring
     python3 export.py \
-            -t old -k ceph.client.openstack.keyring -c ceph.conf \
+            -t old \
+            -k tripleo-ceph/ceph.client.openstack.keyring \
+            -c tripleo-ceph/ceph.conf \
             -o ceph-external.yaml
-    rm -f ceph.conf ceph.client.openstack.keyring
 fi
