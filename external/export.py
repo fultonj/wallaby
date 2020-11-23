@@ -46,6 +46,19 @@ def get_cephx_key(keyring):
     config.read(keyring)
     return config['client.openstack']['key']
 
+def get_cephx_yaml(keyring):
+    config = configparser.ConfigParser()
+    config.read(keyring)
+    caps = {}
+    caps['mgr'] = config['client.openstack']['caps mgr'].replace('"',"")
+    caps['mon'] = config['client.openstack']['caps mon'].replace('"',"")
+    caps['osd'] = config['client.openstack']['caps osd'].replace('"',"")
+    ret = {}
+    ret['name'] = 'client.openstack'
+    ret['key'] = config['client.openstack']['key']
+    ret['caps'] = caps
+    return [ret]
+
 def get_fsid_mons(conf):
     config = configparser.ConfigParser()
     config.read(conf)
@@ -53,15 +66,16 @@ def get_fsid_mons(conf):
 
 if __name__ == "__main__":
     OPTS = parse_opts(sys.argv)
-    secret = get_cephx_key(OPTS.cephx_key_file)
     fsid, mons = get_fsid_mons(OPTS.ceph_conf_file)
     out = {}
     if OPTS.type == 'new':
-        print('not implemented')
+        out['fsid'] = fsid
+        out['external_cluster_mon_ips'] = mons
+        out['keys'] = get_cephx_yaml(OPTS.cephx_key_file)
     elif OPTS.type == 'old':
         three_params = {}
         three_params['CephClusterFSID'] = fsid
-        three_params['CephClientKey'] = secret 
         three_params['CephExternalMonHost'] = mons
+        three_params['CephClientKey'] = get_cephx_key(OPTS.cephx_key_file)
         out['paramteter_defaults'] = three_params
     write_to_file(out)

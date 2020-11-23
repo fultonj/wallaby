@@ -56,12 +56,9 @@ if [[ $CEPH -eq 1 ]]; then
 fi
 
 if [[ $EXPORT -eq 1 ]]; then
-    if [[ -e ceph-external.yaml ]]; then
-        rm -f ceph-external.yaml
-    fi
     python3 export.py \
-            -t old \
+            -t new \
             -k tripleo-ceph/ceph.client.openstack.keyring \
             -c tripleo-ceph/ceph.conf \
-            -o ceph-external.yaml
+            -o ~/ceph_client.yaml
 fi
