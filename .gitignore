@@ -17,3 +17,4 @@ deployed-metal-ceph.yaml
 deployed-metal-openstack-only.yaml
 tripleo-ceph
 ceph-external.yaml
+roles.yaml

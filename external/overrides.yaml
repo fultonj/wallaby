@@ -1,0 +1,13 @@
+---
+parameter_defaults:
+  ContainerCli: podman
+  SELinuxMode: permissive
+  ConfigDebug: True
+  NtpServer: pool.ntp.org
+  CephAnsibleRepo: tripleo-centos-ceph-nautilus
+  CephAnsibleClientDisable: true
+  CephConfigOverrides:
+    client:
+      rbd_cache: true
+      rbd_cache_writethrough_until_flush: true
+      rbd_concurrent_management_ops: 20
