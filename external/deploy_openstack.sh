@@ -1,6 +1,7 @@
 #!/bin/bash
 
 METAL=1
+PUPPET=1
 HEAT=1
 DOWN=0
 STACK=openstack-only
@@ -37,10 +38,19 @@ if [[ ! -e deployed-metal-$STACK.yaml ]]; then
 fi
 
 # -------------------------------------------------------
+if [[ $PUPPET -eq 1 ]]; then
+    bash puppet_tripleo.sh
+fi
+# -------------------------------------------------------
 if [[ $HEAT -eq 1 ]]; then
     # tripleo-client will use ansible to run heat and config-download
     if [[ ! -d ~/templates ]]; then
         ln -s /usr/share/openstack-tripleo-heat-templates ~/templates
+        ## Assuming for now that ~/templates should be built by cloning THT and then...
+        # git review -d 760915  # ceph_client
+        # cp deployment/ceph-ansible/ceph-base.yaml /tmp/ceph-base.yaml
+        # git review -d 763542  # etc_ceph_dep
+        # cp /tmp/ceph-base.yaml deployment/ceph-ansible/ceph-base.yaml
     fi
     if [[ ! -e roles.yaml ]]; then
         openstack overcloud roles generate Controller Compute -o roles.yaml

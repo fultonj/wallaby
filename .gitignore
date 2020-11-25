@@ -22,3 +22,5 @@ roles.yaml
 ceph.pub
 ceph.client.openstack.keyring
 ceph.conf
+inventory_openstack.yaml
+manifests.tar.gz
