@@ -77,5 +77,5 @@ if __name__ == "__main__":
         three_params['CephClusterFSID'] = fsid
         three_params['CephExternalMonHost'] = mons
         three_params['CephClientKey'] = get_cephx_key(OPTS.cephx_key_file)
-        out['paramteter_defaults'] = three_params
+        out['parameter_defaults'] = three_params
     write_to_file(out)
