@@ -6,6 +6,7 @@ ceph_keys_update.yaml
 dcn_ceph_keys.yaml.bak
 cirros-0.4.0-x86_64-disk*
 inventory.yml
+inventory.yaml
 deploy-update.sh
 deployed*
 ceph-export-control-plane.yaml
@@ -18,3 +19,6 @@ deployed-metal-openstack-only.yaml
 tripleo-ceph
 ceph-external.yaml
 roles.yaml
+ceph.pub
+ceph.client.openstack.keyring
+ceph.conf

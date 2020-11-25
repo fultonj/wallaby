@@ -1,8 +1,8 @@
 #!/bin/bash
 
-METAL=0
-HEAT=0
-DOWN=1
+METAL=1
+HEAT=1
+DOWN=0
 STACK=openstack-only
 DIR=~/config-download
 NODE_COUNT=8
@@ -70,9 +70,8 @@ if [[ $HEAT -eq 1 ]]; then
           -e ~/generated-container-prepare.yaml \
           -e ~/oc0-domain.yaml \
           -e deployed-metal-$STACK.yaml \
-          -e overrides.yaml
-
-    # -e ceph-external.yaml \
+          -e overrides.yaml \
+          -e ceph-external.yaml
 fi
 # -------------------------------------------------------
 if [[ $DOWN -eq 1 ]]; then

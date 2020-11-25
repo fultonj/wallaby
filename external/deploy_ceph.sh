@@ -2,10 +2,10 @@
 
 METAL=1
 NET=1
-CEPH=1
+CEPH=0
 STACK=ceph
-EXPORT=1
-INV=tripleo-ceph/inventory.yaml
+EXPORT=0
+INV=inventory.yaml
 
 if [[ $METAL -eq 1 ]]; then
     pushd ../metalsmith
@@ -19,19 +19,11 @@ if [[ ! -e deployed-metal-$STACK.yaml ]]; then
     exit 1
 fi
 
-if [[ ! -d tripleo-ceph ]]; then
-    git clone git@github.com:fultonj/tripleo-ceph.git
-    if [[ ! -d tripleo-ceph ]]; then
-        echo "ERROR: tripleo-ceph is missing"
-        exit 1
-    fi
-fi
-
 if [[ ! -e $INV ]]; then
     echo "Creating inventory"
     # https://review.opendev.org/#/c/723108/39/specs/wallaby/tripleo-ceph.rst@460
     python3 inventory.py -m deployed-metal-ceph.yaml -i $INV
-    sleep 3
+    sleep 20
     ansible -i $INV -m ping all
     if [[ $? -gt 0 ]]; then
         echo "ERROR: unable to ansible ping all hosts with ansible inventory"
@@ -50,15 +42,28 @@ if [[ $NET -eq 1 ]]; then
 fi
 
 if [[ $CEPH -eq 1 ]]; then
-    pushd tripleo-ceph
-    ansible-playbook-3 -i $(basename $INV) site.yaml -v
-    popd
+    echo "Use manual_ceph.md for now"
+    exit 0
 fi
 
 if [[ $EXPORT -eq 1 ]]; then
+    for F in ~/ceph_client.yaml ceph-external.yaml; do
+        if [[ -e $F ]]; then
+            rm -f $F
+        fi
+    done
+    for F in ceph.conf ceph.client.openstack.keyring; do
+        if [[ ! -e $F ]]; then
+            ansible mons[0] -i $INV -m fetch -a "flat=yes src=/etc/ceph/$F dest=$F"
+        fi
+        if [[ ! -e $F ]]; then
+            echo "Error: cannot find file $F"
+            exit 1
+        fi
+    done
     python3 export.py \
-            -t new \
-            -k tripleo-ceph/ceph.client.openstack.keyring \
-            -c tripleo-ceph/ceph.conf \
-            -o ~/ceph_client.yaml
+            -t old \
+            -k ceph.client.openstack.keyring \
+            -c ceph.conf \
+            -o ceph-external.yaml
 fi
