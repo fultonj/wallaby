@@ -32,7 +32,7 @@ if [[ $# -eq 0 ]]; then
 		      # 'openstack/tripleo-common'\
                       # 'openstack/tripleo-ansible' \
                       # 'openstack/tripleo-validations' \
-                      # 'openstack/python-tripleoclient' \	
+                      # 'openstack/python-tripleoclient' \
 		      # 'openstack/puppet-ceph'\
 		      #'openstack/heat'\
 		      # 'openstack-infra/tripleo-ci'\
@@ -57,23 +57,18 @@ git config --global gitreview.username $gerrit_user
 
 git review --version
 if [ $? -gt 0 ]; then
-    echo "installing git-review from upstream"
-    dir=/tmp/$(date | md5sum | awk {'print $1'})
-    mkdir $dir
-    pushd $dir
-    if [[ $(grep 7 /etc/redhat-release | wc -l) == 1 ]]; then
-        curl http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/g/git-review-1.24-5.el7.noarch.rpm > git-review-1.24-5.el7.noarch.rpm
-        sudo yum localinstall git-review-1.24-5.el7.noarch.rpm -y
-    fi
+    echo "installing git-review and tox from pip"
     if [[ $(grep 8 /etc/redhat-release | wc -l) == 1 ]]; then
         if [[ ! -e /usr/bin/python3 ]]; then
             sudo dnf install python3 -y
         fi
-        curl http://people.redhat.com/~iwienand/1564233/git-review-1.26.0-1.fc28.noarch.rpm > git-review-1.26.0-1.fc28.noarch.rpm
-        sudo dnf install -y git-review-1.26.0-1.fc28.noarch.rpm
     fi
-    popd 
-    rm -rf $dir
+    pip
+    if [ $? -gt 0 ]; then
+        curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+        python3 get-pip.py
+    fi
+    pip install git-review tox
 fi 
 pushd ~
 for repo in "${repos[@]}"; do
