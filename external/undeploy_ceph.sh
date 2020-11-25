@@ -21,3 +21,9 @@ if [[ $CLEAN -eq 1 ]]; then
         bash ../metalsmith/clean-disks.sh oc0-ceph-$I
     done
 fi
+
+for F in inventory.yaml ceph.pub ceph.conf ceph.client.openstack.keyring ceph-external.yaml; do
+    if [[ -e $F ]]; then
+        rm -f $F
+    fi
+done
