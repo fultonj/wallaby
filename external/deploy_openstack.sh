@@ -53,7 +53,7 @@ if [[ $HEAT -eq 1 ]]; then
         # cp /tmp/ceph-base.yaml deployment/ceph-ansible/ceph-base.yaml
     fi
     if [[ ! -e roles.yaml ]]; then
-        openstack overcloud roles generate Controller Compute -o roles.yaml
+        openstack overcloud roles generate Controller Compute -o roles.yaml --roles-path ~/templates/roles
     fi
     if [[ $NODE_COUNT -gt 0 ]]; then
         FOUND_COUNT=$(metalsmith -f value -c "Hostname" list | wc -l)
