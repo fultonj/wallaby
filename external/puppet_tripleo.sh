@@ -38,7 +38,7 @@ popd
 mv $SRC/$TAR .
 
 echo "Backing up $DST/manifests to $DST/manifests.old on all nodes"
-#ansible -i $INV allovercloud -b -m shell -a "mv $DST/manifests $DST/manifests.old"
+ansible -i $INV allovercloud -b -m shell -a "mv $DST/manifests $DST/manifests.old"
 
 echo "Pusing $TAR to $DST on all nodes"
 ansible -i $INV allovercloud -b -m copy -a "src=$TAR dest=$DST"
