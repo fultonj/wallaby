@@ -1,8 +1,13 @@
 #!/bin/bash
 
+# ansible 758039
+# tht 763542
+# puppet 763545
+
 declare -a REPOS=(
-        'tripleo-heat-templates' \
-        'tripleo-ansible' \
+         'tripleo-heat-templates' \
+         'tripleo-ansible' \
+         'puppet-tripleo' \
         );
 
 for REPO in "${REPOS[@]}"; do
