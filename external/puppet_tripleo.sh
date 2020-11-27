@@ -11,6 +11,9 @@ DST=/usr/share/openstack-puppet/modules/tripleo
 INV=inventory_openstack.yaml
 METAL=deployed-metal-openstack-only.yaml
 
+# undo changes made my this script
+UNDO=0
+
 if [[ ! -e $METAL ]]; then
     echo "Error: $METAL missing"
     exit 1
@@ -28,25 +31,39 @@ if [[ $? -gt 0 ]]; then
     exit 1
 fi
 
-echo "Creating fresh copy of $TAR"
-if [[ -e $TAR ]]; then
-    rm -f $TAR
+if [[ $UNDO -eq 0 ]]; then
+    echo "Creating fresh copy of $TAR"
+    if [[ -e $TAR ]]; then
+        rm -f $TAR
+    fi
+    pushd $SRC
+    tar cfz $TAR manifests
+    popd
+    mv $SRC/$TAR .
+
+    echo "Backing up $DST/manifests to $DST/manifests.old on all nodes"
+    ansible -i $INV allovercloud -b -m shell -a "mv $DST/manifests $DST/manifests.old"
+
+    echo "Pusing $TAR to $DST on all nodes"
+    ansible -i $INV allovercloud -b -m copy -a "src=$TAR dest=$DST"
+
+    echo "Untarring $TAR to $DST/manifests on all nodes"
+    ansible -i $INV allovercloud -b -m shell -a "pushd $DST; tar xf $TAR"
+
+    echo "Listing contents of $DST on all nodes"
+    ansible -i $INV allovercloud -b -m shell -a "ls -l $DST"
+
+    rm $TAR
+else
+    echo "Listing contents of $DST on all nodes"
+    ansible -i $INV allovercloud -b -m shell -a "ls -l $DST"
+
+    echo "Removing $DST/manifests (provided $DST/manifests.old exists) on all nodes"
+    ansible -i $INV allovercloud -b -m shell -a "if [[ -d $DST/manifests.old ]]; then rm -rf $DST/manifests; fi; rm -f $DST/$TAR"
+
+    echo "Restoring $DST/manifests.old to $DST/manifests (if it exsits) on all nodes"
+    ansible -i $INV allovercloud -b -m shell -a "if [[ -d $DST/manifests.old ]]; then mv $DST/manifests.old $DST/manifests; fi"
+
+    echo "Listing contents of $DST on all nodes"
+    ansible -i $INV allovercloud -b -m shell -a "ls -l $DST"
 fi
-pushd $SRC
-tar cfz $TAR manifests
-popd
-mv $SRC/$TAR .
-
-echo "Backing up $DST/manifests to $DST/manifests.old on all nodes"
-ansible -i $INV allovercloud -b -m shell -a "mv $DST/manifests $DST/manifests.old"
-
-echo "Pusing $TAR to $DST on all nodes"
-ansible -i $INV allovercloud -b -m copy -a "src=$TAR dest=$DST"
-
-echo "Untarring $TAR to $DST/manifests on all nodes"
-ansible -i $INV allovercloud -b -m shell -a "pushd $DST; tar xf $TAR"
-
-echo "Listing contents of $DST on all nodes"
-ansible -i $INV allovercloud -b -m shell -a "ls -l $DST"
-
-rm $TAR
