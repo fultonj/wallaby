@@ -13,3 +13,9 @@ if [[ $CLEAN -eq 1 ]]; then
         bash ../metalsmith/clean-disks.sh $S
     done
 fi
+
+for F in cirros-0.4.0-x86_64-disk.{raw,img} tempest-deployer-input.conf; do
+    if [[ -e $F ]]; then
+        rm -f $F
+    fi
+done
