@@ -5,7 +5,7 @@ CINDER=0
 GLANCE=0
 NOVA=0
 
-INV=tripleo-ceph/inventory.yaml
+INV=inventory.yaml
 STACK=openstack-only
 RC=/home/stack/${STACK}rc
 
