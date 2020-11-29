@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
 OVERALL=1
+KEYS=0
 CINDER=0
 GLANCE=0
 NOVA=0
+CLEAN=0
 
 INV=inventory.yaml
 STACK=openstack-only
@@ -24,6 +26,15 @@ if [ $OVERALL -eq 1 ]; then
     run_on_mon "ceph df"
     # echo " --------- ceph auth list --------- "
     # run_on_mon "ceph auth list"
+fi
+
+if [ $KEYS -eq 1 ]; then
+    DST=/var/lib/tripleo-config/ceph
+    OSP_INV=~/config-download/$STACK/tripleo-ansible-inventory.yaml
+    ansible -i $OSP_INV Controller,Compute -b -m shell -a "ls -l /etc/ceph"
+    ansible -i $OSP_INV Controller,Compute -b -m shell -a "ls -l $DST"
+    ansible -i $OSP_INV Controller,Compute -b -m shell -a "cat $DST/ceph.conf"
+    ansible -i $OSP_INV Controller,Compute -b -m shell -a "cat $DST/ceph.client.openstack.keyring"
 fi
 
 if [ $CINDER -eq 1 ]; then
@@ -79,8 +90,8 @@ if [ $NOVA -eq 1 ]; then
     netid=$(openstack network list | awk "/private_network/ { print \$2 }")
     openstack subnet create --network private_network --subnet-range ${DEMO_CIDR} private_subnet
     subid=$(openstack subnet list | awk "/private_subnet/ {print \$2}")
-    openstack router create router1
-    openstack router add subnet router1 $subid
+    #openstack router create router1
+    #openstack router add subnet router1 $subid
 
     openstack flavor create --ram 512 --disk 1 --ephemeral 0 --vcpus 1 --public m1.tiny
     openstack keypair create demokp > ~/demokp.pem 
@@ -93,4 +104,17 @@ if [ $NOVA -eq 1 ]; then
         sleep 60
         openstack server list
     fi
+fi
+
+if [ $CLEAN -eq 1 ]; then
+    echo "Removing servers, volumes, and images using external ceph"
+    for ID in $(openstack server list -c ID -f value); do
+        openstack server delete $ID
+    done
+    for ID in $(openstack volume list -c ID -f value); do
+        openstack volume delete $ID
+    done
+    for ID in $(openstack image list -c ID -f value); do
+        openstack image delete $ID
+    done
 fi
