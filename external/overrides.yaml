@@ -6,6 +6,7 @@ parameter_defaults:
   NtpServer: pool.ntp.org
   CephAnsibleRepo: tripleo-centos-ceph-nautilus
   CephAnsibleClientDisable: true
+  CephConfigPath: "/var/lib/tripleo-config/ceph"
   CephConfigOverrides:
     client:
       rbd_cache: true
