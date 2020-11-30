@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 OVERALL=1
+KEYS=0
 MDS=0
-CINDER=0
 GLANCE=0
+CINDER=0
 NOVA=0
 
 DIR=~/config-download
@@ -27,24 +28,19 @@ if [ $OVERALL -eq 1 ]; then
     # run_on_mon "ceph auth list"
 fi
 
+if [ $KEYS -eq 1 ]; then
+    DST=/var/lib/tripleo-config/ceph
+    OSP_INV=~/config-download/$STACK/tripleo-ansible-inventory.yaml
+    ansible -i $OSP_INV Controller,Compute -b -m shell -a "ls -l /etc/ceph"
+    ansible -i $OSP_INV Controller,Compute -b -m shell -a "ls -l $DST"
+    ansible -i $OSP_INV Controller,Compute -b -m shell -a "cat $DST/ceph.conf"
+    ansible -i $OSP_INV Controller,Compute -b -m shell -a "cat $DST/ceph.client.openstack.keyring"
+fi
+
 if [ $MDS -eq 1 ]; then
     echo " --------- Ceph MDS --------- "
     run_on_mon "ceph mds stat"
     run_on_mon "ceph fs dump"
-fi
-
-if [ $CINDER -eq 1 ]; then
-    echo " --------- Ceph cinder volumes pool --------- "
-    run_on_mon "rbd -p volumes ls -l"
-    openstack volume list
-
-    echo "Creating 1 GB Cinder volume"
-    openstack volume create --size 1 test-volume
-    sleep 10
-
-    echo "Listing Cinder Ceph Pool and Volume List"
-    openstack volume list
-    run_on_mon "rbd -p volumes ls -l"
 fi
 
 if [ $GLANCE -eq 1 ]; then
@@ -78,6 +74,20 @@ if [ $GLANCE -eq 1 ]; then
     echo "Listing Glance Ceph Pool and Image List"
     run_on_mon "rbd -p images ls -l"
     openstack image list
+fi
+
+if [ $CINDER -eq 1 ]; then
+    echo " --------- Ceph cinder volumes pool --------- "
+    run_on_mon "rbd -p volumes ls -l"
+    openstack volume list
+
+    echo "Creating 1 GB Cinder volume"
+    openstack volume create --size 1 test-volume
+    sleep 10
+
+    echo "Listing Cinder Ceph Pool and Volume List"
+    openstack volume list
+    run_on_mon "rbd -p volumes ls -l"
 fi
 
 if [ $NOVA -eq 1 ]; then

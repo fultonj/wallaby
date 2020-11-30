@@ -1,6 +1,7 @@
 #!/bin/bash
 
 METAL=1
+PUPPET=1
 HEAT=1
 DOWN=0
 CHECK=0
@@ -37,6 +38,29 @@ if [[ $METAL -eq 1 ]]; then
 
 else
     echo "Assuming servers are provsioned"
+fi
+# -------------------------------------------------------
+if [[ $PUPPET -eq 1 ]]; then
+    # hacks within hacks
+    cp deployed-metal-big.yaml ../external/deployed-metal-openstack-only.yaml
+    pushd ../external
+    rm inventory_openstack.yaml
+    bash puppet_tripleo.sh
+    popd
+fi
+# -------------------------------------------------------
+if [[ $LOG -eq 1 ]]; then
+    if [[ ! -d ~/log ]]; then
+        mkdir ~/log
+    fi
+    EXT=$(date +%F_%T)
+    echo "Rotate the logs"
+    for L in ~/ansible.log ~/config-download/config-download-latest/ceph-ansible/ceph_ansible_command.log; do
+        if [[ -e $L ]]; then
+            DST=$(basename $L)
+            mv $L ~/log/$DST.$EXT
+        fi
+    done
 fi
 # -------------------------------------------------------
 # `openstack overcloud -v` should be passed along as
@@ -88,20 +112,6 @@ if [[ $DOWN -eq 1 ]]; then
         exit 1
     fi
     pushd $DIR/$STACK
-
-    if [[ $LOG -eq 1 ]]; then
-        if [[ ! -d ~/log ]]; then
-            mkdir ~/log
-        fi
-        EXT=$(date +%F_%T)
-        echo "Rotate the logs"
-        for L in ~/ansible.log ~/config-download/config-download-latest/ceph-ansible/ceph_ansible_command.log; do
-            if [[ -e $L ]]; then
-                DST=$(basename $L)
-                mv $L ~/log/$DST.$EXT
-            fi
-        done
-    fi
 
     if [[ $CHECK -eq 1 ]]; then
         if [[ ! -e ~/.ssh/id_rsa_tripleo ]]; then

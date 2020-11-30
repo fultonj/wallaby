@@ -20,6 +20,8 @@ if [[ ! -e $METAL ]]; then
 fi
 if [[ ! -e $INV ]]; then
     python3 inventory.py -m $METAL -i $INV
+    echo "sleeping"
+    sleep 5
     if [[ ! -e $INV ]]; then
         echo "Error: $INV missing"
         exit 1
