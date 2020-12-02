@@ -95,9 +95,11 @@ if [[ $1 == 'tht' ]]; then
         TARGET=/home/stack/tripleo-ansible/tripleo_ansible/roles/
         # swap out tripleo-ansible/roles/tripleo_ceph_* roles
         pushd /usr/share/ansible/roles/
-        for D in tripleo_ceph_{common,run_ansible,uuid,work_dir}; do
-            sudo mv -v $D $D.dist
-            sudo ln -v -s $TARGET/$D $D
+        for D in tripleo_ceph_{common,run_ansible,uuid,work_dir,client}; do
+            if [[ -d $D ]]; then
+                sudo mv -v $D $D.dist
+                sudo ln -v -s $TARGET/$D $D
+            fi
         done
         popd
     fi
