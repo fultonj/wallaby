@@ -1,23 +1,22 @@
 #!/bin/bash
 
-# ansible 758039
 # tht 763542
+# ansible 758039
 # puppet 763545
 
-declare -a REPOS=(
-         'tripleo-heat-templates' \
-         'tripleo-ansible' \
-         'puppet-tripleo' \
+declare -A REPO_MAP=(
+         [763542]='tripleo-heat-templates' \
+         [758039]='tripleo-ansible' \
+         [763545]='puppet-tripleo' \
         );
 
-for REPO in "${REPOS[@]}"; do
-    pushd ~/$REPO
+for K in "${!REPO_MAP[@]}"; do
+    pushd ~/${REPO_MAP[$K]}
     BRANCH=$(git rev-parse --abbrev-ref HEAD)
-    NUMBER=$(basename $BRANCH)
     git reset --hard
     git checkout master
     git branch -D $BRANCH
-    git review -d $NUMBER
+    git review -d $K
     git branch
     popd
 done
