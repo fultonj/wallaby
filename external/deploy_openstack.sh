@@ -28,8 +28,8 @@ if [[ $METAL -eq 1 ]]; then
     bash provision.sh $STACK
     popd
     cp ../metalsmith/deployed-metal-$STACK.yaml .
-    echo "working around https://bugs.launchpad.net/tripleo/+bug/1903775"
-    sed -i -e s/novacompute/compute/g -e s/cephstorage/ceph/g deployed-metal-$STACK.yaml
+    #echo "working around https://bugs.launchpad.net/tripleo/+bug/1903775"
+    #sed -i -e s/novacompute/compute/g -e s/cephstorage/ceph/g deployed-metal-$STACK.yaml
 fi
 
 if [[ ! -e deployed-metal-$STACK.yaml ]]; then

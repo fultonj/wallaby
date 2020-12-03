@@ -29,13 +29,12 @@ if [[ $METAL -eq 1 ]]; then
     sed -i s/\\/usr\\/share\\/openstack\\-tripleo\\-heat\\-/..\\/..\\//g \
         deployed-metal-big.yaml
 
-    grep novacompute deployed-metal-big.yaml > /tmp/1903775
-    grep cephstorage deployed-metal-big.yaml >> /tmp/1903775
-    if [[ $(cat /tmp/1903775 | wc -l) -gt 0 ]]; then
-        echo "working around https://bugs.launchpad.net/tripleo/+bug/1903775"
-        sed -i -e s/novacompute/compute/g -e s/cephstorage/ceph/g deployed-metal-big.yaml
-    fi
-
+    # grep novacompute deployed-metal-big.yaml > /tmp/1903775
+    # grep cephstorage deployed-metal-big.yaml >> /tmp/1903775
+    # if [[ $(cat /tmp/1903775 | wc -l) -gt 0 ]]; then
+    #     echo "working around https://bugs.launchpad.net/tripleo/+bug/1903775"
+    #     sed -i -e s/novacompute/compute/g -e s/cephstorage/ceph/g deployed-metal-big.yaml
+    # fi
 else
     echo "Assuming servers are provsioned"
 fi
