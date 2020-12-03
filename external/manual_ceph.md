@@ -8,7 +8,7 @@ curl --silent --remote-name --location https://github.com/ceph/ceph/raw/octopus/
 chmod +x cephadm
 
 mkdir -p /etc/ceph
-cephadm bootstrap --mon-ip $IP
+./cephadm bootstrap --mon-ip $IP
 
 ./cephadm shell -- ceph -s
 ```
@@ -18,10 +18,9 @@ cephadm bootstrap --mon-ip $IP
 From undercloud:
 ```
 IP=192.168.24.19
-INV=tripleo-ceph/inventory.yaml
 scp heat-admin@$IP:/etc/ceph/ceph.pub .
-URL=$(cat ceph.pub | curl -F 'f:1=<-' ix.io)
-ansible -i $INV allovercloud -b -m authorized_key -a "user=root url=$URL"
+URL=$(cat ceph.pub | curl -F 'sprunge=<-' http://sprunge.us)
+ansible -i inventory.yaml allovercloud -b -m authorized_key -a "user=root key=$URL"
 ```
 
 ## Add other hosts
@@ -56,6 +55,7 @@ Create pools/key
 ```
 ./cephadm shell
 for P in vms volumes images; do ceph osd pool create $P; done
+for P in vms volumes images; do ceph osd pool application enable $P rbd; done
 
 ceph auth add client.openstack mgr 'allow *' mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=vms, allow rwx pool=volumes, allow rwx pool=images'
 ```
