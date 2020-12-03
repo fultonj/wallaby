@@ -39,6 +39,12 @@ if [[ $METAL -eq 1 ]]; then
 else
     echo "Assuming servers are provsioned"
 fi
+
+if [[ ! -e deployed-metal-big.yaml ]]; then
+    echo "ERROR: deployed-metal-big.yaml is missing"
+    exit 1
+fi
+
 # -------------------------------------------------------
 if [[ $PUPPET -eq 1 ]]; then
     # hacks within hacks
