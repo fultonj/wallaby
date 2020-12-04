@@ -1,0 +1,12 @@
+---
+parameter_defaults:
+  ContainerCli: podman
+  SELinuxMode: permissive
+  ConfigDebug: True
+  NtpServer: pool.ntp.org
+  CephAnsibleRepo: tripleo-centos-ceph-nautilus
+  CephClusterName: dcn0
+  CinderStorageAvailabilityZone: dcn0
+  CinderVolumeCluster: dcn0
+  NovaAZAttach: false
+  ManageNetworks: false

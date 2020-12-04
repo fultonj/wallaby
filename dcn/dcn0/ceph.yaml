@@ -1,0 +1,24 @@
+---
+parameter_defaults:
+  CephAnsiblePlaybookVerbosity: 1
+  CephPoolDefaultSize: 1
+  CephPoolDefaultPgNum: 32
+  # CephAnsibleEnvironmentVariables:
+  #   ANSIBLE_HOST_KEY_CHECKING: 'False'
+  CephConfigOverrides:
+    mon:
+      osd_recovery_op_priority: 3
+      osd_recovery_max_active: 3
+      osd_max_backfills: 1
+  CephAnsibleDisksConfig:
+    osd_scenario: lvm
+    osd_objectstore: bluestore
+    devices:
+      - /dev/sda
+      - /dev/sdb
+      - /dev/sdc
+      - /dev/sdd
+  CephAnsibleExtraConfig:
+    ceph_osd_docker_cpu_limit: 1
+  CephAnsibleClientDisable: true
+  CephConfigPath: "/var/lib/tripleo-config/ceph"

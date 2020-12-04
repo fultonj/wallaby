@@ -1,0 +1,112 @@
+- Check if glance is working
++--------------------------------------+--------+
+| ID                                   | Name   |
++--------------------------------------+--------+
+| c8fd6c94-4d63-43ca-a0c4-809d88280dc3 | cirros |
++--------------------------------------+--------+
+- Clean out old image
+- List available stores
++----------+----------------------------------------------------------------------------------+
+| Property | Value                                                                            |
++----------+----------------------------------------------------------------------------------+
+| stores   | [{"id": "default_backend", "description": "central rbd glance store", "default": |
+|          | "true"}, {"id": "http", "read-only": "true"}, {"id": "dcn0", "description":      |
+|          | "dcn0 rbd glance store"}, {"id": "dcn1", "description": "dcn1 rbd glance         |
+|          | store"}]                                                                         |
++----------+----------------------------------------------------------------------------------+
+- Create image in central and dcn0
++------------------+--------------------------------------+
+| Property         | Value                                |
++------------------+--------------------------------------+
+| checksum         | None                                 |
+| container_format | bare                                 |
+| created_at       | 2020-03-23T19:52:43Z                 |
+| disk_format      | qcow2                                |
+| id               | fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e |
+| locations        | []                                   |
+| min_disk         | 0                                    |
+| min_ram          | 0                                    |
+| name             | cirros                               |
+| os_hash_algo     | None                                 |
+| os_hash_value    | None                                 |
+| os_hidden        | False                                |
+| owner            | af5114b7d1b9437cb31ec5853e10d09b     |
+| protected        | False                                |
+| size             | None                                 |
+| status           | uploading                            |
+| stores           | default_backend,dcn0                 |
+| tags             | []                                   |
+| updated_at       | 2020-03-23T19:52:43Z                 |
+| virtual_size     | Not available                        |
+| visibility       | shared                               |
++------------------+--------------------------------------+
+- Confirm image was converted from qcow2 to raw
+| disk_format                   | raw                                                                              |
++--------------------------------------+--------+--------+
+| ID                                   | Name   | Status |
++--------------------------------------+--------+--------+
+| fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e | cirros | active |
++--------------------------------------+--------+--------+
+central
+NAME                                      SIZE   PARENT FMT PROT LOCK 
+fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e      44 MiB          2           
+fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e@snap 44 MiB          2 yes       
+
+dcn0
+NAME                                      SIZE   PARENT FMT PROT LOCK 
+fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e      44 MiB          2           
+fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e@snap 44 MiB          2 yes       
+
+dcn1
+
+Copy the image from the default store to the dcn1 store:
++-------------------------------+----------------------------------------------------------------------------------+
+| Property                      | Value                                                                            |
++-------------------------------+----------------------------------------------------------------------------------+
+| checksum                      | ba3cd24377dde5dfdd58728894004abb                                                 |
+| container_format              | bare                                                                             |
+| created_at                    | 2020-03-23T19:52:43Z                                                             |
+| direct_url                    | rbd://3161a3b4-e5ff-42a0-9f53-860403b29a33/images/fe0ee52a-d108-4a22-ad56-f3c9fc |
+|                               | 7ca18e/snap                                                                      |
+| disk_format                   | raw                                                                              |
+| id                            | fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e                                             |
+| locations                     | [{"url": "rbd://3161a3b4-e5ff-42a0-9f53-860403b29a33/images/fe0ee52a-d108-4a22-a |
+|                               | d56-f3c9fc7ca18e/snap", "metadata": {"store": "default_backend"}}, {"url": "rbd: |
+|                               | //539e2b96-316e-4c23-b7df-035a3037ddd1/images/fe0ee52a-d108-4a22-ad56-f3c9fc7ca1 |
+|                               | 8e/snap", "metadata": {"store": "dcn0"}}]                                        |
+| min_disk                      | 0                                                                                |
+| min_ram                       | 0                                                                                |
+| name                          | cirros                                                                           |
+| os_glance_failed_import       |                                                                                  |
+| os_glance_importing_to_stores |                                                                                  |
+| os_hash_algo                  | sha512                                                                           |
+| os_hash_value                 | b795f047a1b10ba0b7c95b43b2a481a59289dc4cf2e49845e60b194a911819d3ada03767bbba4143 |
+|                               | b44c93fd7f66c96c5a621e28dff51d1196dae64974ce240e                                 |
+| os_hidden                     | False                                                                            |
+| owner                         | af5114b7d1b9437cb31ec5853e10d09b                                                 |
+| protected                     | False                                                                            |
+| size                          | 46137344                                                                         |
+| status                        | active                                                                           |
+| stores                        | default_backend,dcn0                                                             |
+| tags                          | []                                                                               |
+| updated_at                    | 2020-03-23T19:52:47Z                                                             |
+| virtual_size                  | 46137344                                                                         |
+| visibility                    | shared                                                                           |
++-------------------------------+----------------------------------------------------------------------------------+
+central
+NAME                                      SIZE   PARENT FMT PROT LOCK 
+fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e      44 MiB          2           
+fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e@snap 44 MiB          2 yes       
+
+dcn0
+NAME                                      SIZE   PARENT FMT PROT LOCK 
+fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e      44 MiB          2           
+fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e@snap 44 MiB          2 yes       
+
+dcn1
+NAME                                      SIZE   PARENT FMT PROT LOCK 
+fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e      44 MiB          2           
+fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e@snap 44 MiB          2 yes       
+
+- Show properties of fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e to see the stores
+| properties       | direct_url='rbd://3161a3b4-e5ff-42a0-9f53-860403b29a33/images/fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e/snap', locations='[{'url': 'rbd://3161a3b4-e5ff-42a0-9f53-860403b29a33/images/fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e/snap', 'metadata': {'store': 'default_backend'}}, {'url': 'rbd://539e2b96-316e-4c23-b7df-035a3037ddd1/images/fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e/snap', 'metadata': {'store': 'dcn0'}}, {'url': 'rbd://7504a91e-5a0f-4408-bb55-33c3ee2c67e9/images/fe0ee52a-d108-4a22-ad56-f3c9fc7ca18e/snap', 'metadata': {'store': 'dcn1'}}]', os_glance_failed_import='', os_glance_importing_to_stores='', os_hash_algo='sha512', os_hash_value='b795f047a1b10ba0b7c95b43b2a481a59289dc4cf2e49845e60b194a911819d3ada03767bbba4143b44c93fd7f66c96c5a621e28dff51d1196dae64974ce240e', os_hidden='False', stores='default_backend,dcn0,dcn1' |

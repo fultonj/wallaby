@@ -1,0 +1,47 @@
+---
+- name: Lists contents of pool on cluster
+  gather_facts: false
+  vars:
+    pool: images
+    show_output: true
+    save_output: false
+  hosts:
+    - oc0-controller-0
+    - oc0-ceph-1
+    - oc0-ceph-3
+  tasks:
+    - name: Set cluster name for central
+      set_fact:
+        cluster: central
+      when: inventory_hostname == "oc0-controller-0"
+
+    - name: Set cluster name for dcn0
+      set_fact:
+        cluster: dcn0
+      when: inventory_hostname == "oc0-ceph-1"
+
+    - name: Set cluster name for dcn1
+      set_fact:
+        cluster: dcn1
+      when: inventory_hostname == "oc0-ceph-3"
+
+    - name: Set rbd command fact
+      set_fact:
+        rbd: "podman exec ceph-mon-{{ inventory_hostname }} rbd --cluster {{ cluster }}"
+
+    - name: get list pool output
+      become: true
+      shell: "{{ rbd }} ls -l {{ pool }}"
+      register: ls_output
+
+    - name: show pool output
+      debug:
+        msg: "{{ ls_output.stdout_lines }}"
+      when: show_output
+
+    - name: save pool output
+      copy:
+        content: "{{ inventory_hostname }}:{{ pool }}\n\n{{ ls_output.stdout }}\n"
+        dest: "{{ lookup('env', 'PWD') }}/ls_rbd_{{ inventory_hostname }}.txt"
+      delegate_to: localhost
+      when: save_output
