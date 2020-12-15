@@ -35,6 +35,6 @@ if [[ $CLEAN -eq 1 ]]; then
             sleep 5
             metalsmith show $S
         done
-        bash ../../metalsmith/clean-disks.sh $S
+        bash ../metalsmith/clean-disks.sh $S
     done
 fi
