@@ -19,6 +19,9 @@ else
     metalsmith list
 fi
 
+# let deployment finish and users get created so ansible can connect
+sleep 180
+
 cp metalsmith/$DEPLOYED_METAL external/deployed-metal-openstack-only.yaml
 
 pushd external

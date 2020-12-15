@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+WA=1
 CONTROL=1
 EXPORT=1
 DCN0=1
@@ -6,6 +7,15 @@ DCN1=1
 CONTROLUP=1
 
 source ~/stackrc
+# -------------------------------------------------------
+if [[ $WA -eq 1 ]]; then
+    pushd ..
+    for S in control-plane dcn0 dcn1; do
+        echo $S;
+        bash workarounds.sh $S;
+    done
+    popd
+fi
 # -------------------------------------------------------
 if [[ $CONTROL -eq 1 ]]; then
     echo "Standing up control-plane deployment"
