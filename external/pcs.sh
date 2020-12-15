@@ -3,7 +3,7 @@
 DNF=0
 RPM=1
 
-INV=inventory.yaml
+INV=inventory_openstack.yaml
 if [[ ! -e $INV ]]; then
     echo "Fail: No inventory"
     exit 1
