@@ -1,0 +1,42 @@
+---
+- hosts: allovercloud
+  become: true
+  gather_facts: false
+  tasks:
+    - name: create base repo file
+      copy:
+        dest: "/etc/yum.repos.d/CentOS-BaseOS.repo"
+        content: |
+          [Base]
+          name=baseos
+          baseurl=http://vault.centos.org/8.2.2004/BaseOS/$basearch/os/
+          gpgcheck=0
+          enabled=1
+    
+    - name: create appstream repo file
+      copy:
+        dest: "/etc/yum.repos.d/CentOS-AppStream.repo"
+        content: |
+          [AppStream]
+          name=app-stream
+          baseurl=http://vault.centos.org/8.2.2004/AppStream/$basearch/os/
+          gpgcheck=0
+          enabled=1
+    
+    - name: create tripleo-centos-highavailability repo file
+      copy:
+        dest: "/etc/yum.repos.d/tripleo-centos-highavailability.repo"
+        content: |
+          [tripleo-centos-highavailability]
+          name=tripleo-centos-highavailability
+          baseurl=http://vault.centos.org/8.2.2004/HighAvailability/$basearch/os/
+          gpgcheck=0
+          enabled=1
+
+    - name: run dnf downgrade pacemaker
+      shell: "dnf downgrade pacemaker"
+      register: reposync
+
+    - name: show downgrade pacemaker output
+      debug:
+        msg: "{{ reposync.stdout }}"

@@ -1,0 +1,25 @@
+---
+- hosts: allovercloud
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Ensure /tmp/rpms exists on all clients
+      file:
+        path: /tmp/rpms
+        state: "directory"
+    
+    - name: push rpms to nodes in inventory
+      copy:
+        src: "{{ item[0] }}"
+        dest: "/tmp/rpms/{{ item[0] | basename }}"
+      delegate_to: "{{ item[1] }}"
+      failed_when: false
+      loop: "{{ lookup('fileglob', '~/rpms/*', wantlist=True) | product(groups['allovercloud']) | list }}"
+
+    - name: dnf install uploaded RPMs
+      shell: "dnf install -y /tmp/rpms/* "
+      register: dnf_install
+
+    - name: show dnf install output
+      debug:
+        msg: "{{ dnf_install.stdout }}"
