@@ -28,7 +28,11 @@ if [[ ! -e $METAL ]]; then
 fi
 # -------------------------------------------------------
 if [[ ! -e dcn_roles.yaml ]]; then
-    openstack overcloud roles generate DistributedComputeHCI DistributedComputeHCIScaleOut -o dcn_roles.yaml
+    if [[ $STACK == "dcn1" ]]; then
+        openstack overcloud roles generate DistributedCompute CephAll -o dcn_roles.yaml --roles-path ~/templates/roles
+    else
+        openstack overcloud roles generate DistributedComputeHCI DistributedComputeHCIScaleOut -o dcn_roles.yaml --roles-path ~/templates/roles
+    fi
 fi
 # -------------------------------------------------------
 # `openstack overcloud -v` should be passed along as

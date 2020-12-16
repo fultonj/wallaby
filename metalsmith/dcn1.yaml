@@ -1,10 +1,10 @@
 ---
-- name: DistributedComputeHCI
+- name: DistributedCompute
   count: 1
   instances:
     - hostname: oc0-ceph-3
       name: oc0-ceph-3
-- name: DistributedComputeHCIScaleOut
+- name: CephAll
   count: 1
   instances:
     - hostname: oc0-ceph-4
