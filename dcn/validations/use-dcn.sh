@@ -183,6 +183,10 @@ if [[ $NOVA -eq 1 ]]; then
     done
 
     if [[ $CINDER -eq 1 ]]; then
+        echo "Showing status of cinder A/A cluster(s)"
+        cinder --os-volume-api-version 3.11 cluster-list --detail
+        cinder --os-volume-api-version 3.11 cluster-show $AZ@tripleo_ceph
+        
 	# Delete volumes after deleting servers to ensure no volumes are attached.
 	echo "Deleting previous Cinder volume(s)"
 	for ID in $(openstack volume list -f value -c ID); do
