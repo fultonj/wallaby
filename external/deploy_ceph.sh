@@ -2,6 +2,7 @@
 
 METAL=1
 NET=1
+PKG=1
 CEPH=0
 STACK=ceph
 EXPORT=0
@@ -23,7 +24,7 @@ if [[ ! -e $INV ]]; then
     echo "Creating inventory"
     # https://review.opendev.org/#/c/723108/39/specs/wallaby/tripleo-ceph.rst@460
     python3 inventory.py -m deployed-metal-ceph.yaml -i $INV
-    sleep 20
+    sleep 180
     ansible -i $INV -m ping all
     if [[ $? -gt 0 ]]; then
         echo "ERROR: unable to ansible ping all hosts with ansible inventory"
@@ -39,6 +40,10 @@ if [[ $NET -eq 1 ]]; then
         echo "ERROR: hosts unable to ping Internet"
         exit 1
     fi
+fi
+
+if [[ $PKG -eq 1 ]]; then
+    ansible-playbook-3 -i $INV packages.yaml -v
 fi
 
 if [[ $CEPH -eq 1 ]]; then

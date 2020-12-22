@@ -1,0 +1,47 @@
+---
+- hosts: allovercloud
+  become: true
+  gather_facts: false
+  vars:
+    pkgs:
+      - git
+      - emacs-nox
+      - vim
+      - cephadm
+    cephadm_url: https://github.com/ceph/ceph/raw/octopus/src/cephadm/cephadm
+    ceph_repo: https://1.chacra.ceph.com/r/ceph/octopus/2eacca1efb80d3af604f7e9be47cd3ad5d9bc63e/centos/8/flavors/default/x86_64/
+  tasks:
+    - name: create base repo file
+      copy:
+        dest: "/etc/yum.repos.d/CentOS-BaseOS.repo"
+        content: |
+          [Base]
+          name=baseos
+          baseurl=http://mirror.centos.org/$contentdir/$releasever/BaseOS/$basearch/os/
+          gpgcheck=0
+          enabled=1
+    
+    - name: create appstream repo file
+      copy:
+        dest: "/etc/yum.repos.d/CentOS-AppStream.repo"
+        content: |
+          [AppStream]
+          name=app-stream
+          baseurl=http://mirror.centos.org/$contentdir/$releasever/AppStream/$basearch/os/
+          gpgcheck=0
+          enabled=1
+
+    - name: create ceph shaman repo file
+      copy:
+        dest: "/etc/yum.repos.d/ceph-shaman.repo"
+        content: |
+          [ceph]
+          name=ceph
+          baseurl="{{ ceph_repo }}"
+          gpgcheck=0
+          enabled=1
+
+    - name: install packages
+      package:
+        name: "{{ pkgs }}"
+        state: latest
