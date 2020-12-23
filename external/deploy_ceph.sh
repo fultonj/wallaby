@@ -3,6 +3,7 @@
 METAL=1
 NET=1
 PKG=1
+USR=1
 CEPH=0
 STACK=ceph
 EXPORT=0
@@ -43,7 +44,14 @@ if [[ $NET -eq 1 ]]; then
 fi
 
 if [[ $PKG -eq 1 ]]; then
-    ansible-playbook-3 -i $INV packages.yaml -v
+    ansible-playbook-3 -i $INV -v packages.yaml
+fi
+
+if [[ $USR -eq 1 ]]; then
+    # requires https://review.opendev.org/c/openstack/tripleo-ansible/+/768365
+    ansible-playbook-3 -i $INV -v \
+      /home/stack/tripleo-ansible/tripleo_ansible/playbooks/cli-enable-ssh-admin.yaml \
+      -e @ceph-admin.yml
 fi
 
 if [[ $CEPH -eq 1 ]]; then
