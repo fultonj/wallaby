@@ -1,0 +1,56 @@
+---
+- name: Bootstrap one monitor with cephadm
+  hosts: mgrs[0]
+  vars:
+    bootstrap_host: "{{ groups['mgrs'][0] }}"
+    ceph_ssh_user: ceph-admin
+    cephadm_bin: /usr/sbin/cephadm
+  tasks:
+    - name: Set first monitor IP
+      set_fact:
+        first_mon_ip: "{{ ( hostvars[bootstrap_host]['storage_ip'] |
+                            default(hostvars[bootstrap_host]['ctlplane_ip']) )
+                            | default(ansible_host) }}"
+    - name: Ensure /etc/ceph exists
+      file:
+        path: /etc/ceph
+        state: directory
+      become: true
+
+    - name: Stat necessary files to bootstrap with cephadm
+      stat:
+        path: "{{ item }}"
+      register: stat_cephadm_bootstrap_files
+      become: true
+      loop:
+        - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa"
+        - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa.pub"
+        - "{{ cephadm_bin }}"
+    - name: Fail if necessary files are missing
+      fail:
+        msg: "{{ item.stat.path }} does not exist"
+      loop: "{{ stat_cephadm_bootstrap_files.results | list }}"
+      when: not item.stat.exists
+    
+    - name: List Ceph daemon instances on this host
+      shell: |
+        {{ cephadm_bin }} ls --no-detail
+      register: cephadm_ls
+      become: true
+    
+    - name: Bootstrap Ceph if there are no running Ceph Daemons
+      block:
+        - name: Bootstrap one-node Ceph cluster
+          shell: |
+            {{ cephadm_bin }} bootstrap \
+            --ssh-private-key /home/{{ ceph_ssh_user }}/.ssh/id_rsa \
+            --ssh-public-key /home/{{ ceph_ssh_user }}/.ssh/id_rsa.pub \
+            --ssh-user {{ ceph_ssh_user }} \
+            --mon-ip {{ first_mon_ip }}
+          register: cephadm_bootstrap
+          become: true
+        - name: Show results of bootstrap
+          debug:
+            msg: "{{ cephadm_bootstrap }}"
+      when:
+        - cephadm_ls.stdout == '[]'

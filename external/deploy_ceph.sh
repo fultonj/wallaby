@@ -1,10 +1,12 @@
 #!/bin/bash
 
-METAL=1
-NET=1
-PKG=1
-USR=1
-CEPH=0
+METAL=0
+PRE=0
+NET=1 # only runs if PRE=1
+PKG=1 # only runs if PRE=1
+USR=1 # only runs if PRE=1
+
+CEPH=1
 STACK=ceph
 EXPORT=0
 INV=inventory.yaml
@@ -33,30 +35,29 @@ if [[ ! -e $INV ]]; then
     fi
 fi
 
-if [[ $NET -eq 1 ]]; then
-    # connect ceph nodes to Internet with hack for now
-    ansible-playbook-3 -i $INV ceph_nethack.yaml
-    ansible -i $INV all -m shell -a "ping -c 1 redhat.com"
-    if [[ $? -gt 0 ]]; then
-        echo "ERROR: hosts unable to ping Internet"
-        exit 1
+if [[ $PRE -eq 1 ]]; then
+    if [[ $NET -eq 1 ]]; then
+        # connect ceph nodes to Internet with hack for now
+        ansible-playbook-3 -i $INV ceph_nethack.yaml
+        ansible -i $INV all -m shell -a "ping -c 1 redhat.com"
+        if [[ $? -gt 0 ]]; then
+            echo "ERROR: hosts unable to ping Internet"
+            exit 1
+        fi
+    fi
+    if [[ $PKG -eq 1 ]]; then
+        ansible-playbook-3 -i $INV -v packages.yaml
+    fi
+    if [[ $USR -eq 1 ]]; then
+        # requires https://review.opendev.org/c/openstack/tripleo-ansible/+/768365
+        ansible-playbook-3 -i $INV -v \
+          /home/stack/tripleo-ansible/tripleo_ansible/playbooks/cli-enable-ssh-admin.yaml \
+          -e @ceph-admin.yml
     fi
 fi
 
-if [[ $PKG -eq 1 ]]; then
-    ansible-playbook-3 -i $INV -v packages.yaml
-fi
-
-if [[ $USR -eq 1 ]]; then
-    # requires https://review.opendev.org/c/openstack/tripleo-ansible/+/768365
-    ansible-playbook-3 -i $INV -v \
-      /home/stack/tripleo-ansible/tripleo_ansible/playbooks/cli-enable-ssh-admin.yaml \
-      -e @ceph-admin.yml
-fi
-
 if [[ $CEPH -eq 1 ]]; then
-    echo "Use manual_ceph.md for now"
-    exit 0
+    ansible-playbook-3 -i $INV -v cephadm.yaml
 fi
 
 if [[ $EXPORT -eq 1 ]]; then
