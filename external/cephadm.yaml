@@ -28,7 +28,7 @@
         - "{{ cephadm_bin }}"
     - name: Fail if necessary files are missing
       fail:
-        msg: "{{ item.stat.path }} does not exist"
+        msg: "{{ item.invocation.module_args.path }} does not exist"
       loop: "{{ stat_cephadm_bootstrap_files.results | list }}"
       when: not item.stat.exists
     
@@ -54,3 +54,7 @@
             msg: "{{ cephadm_bootstrap }}"
       when:
         - cephadm_ls.stdout == '[]'
+
+# apply spec
+# create pools/keys
+# genereate ceph_data.yaml
