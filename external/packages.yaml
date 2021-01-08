@@ -9,7 +9,6 @@
       - vim
       - cephadm
     cephadm_url: https://github.com/ceph/ceph/raw/octopus/src/cephadm/cephadm
-    ceph_repo: https://1.chacra.ceph.com/r/ceph/octopus/2eacca1efb80d3af604f7e9be47cd3ad5d9bc63e/centos/8/flavors/default/x86_64/
   tasks:
     - name: create base repo file
       copy:
@@ -31,17 +30,17 @@
           gpgcheck=0
           enabled=1
 
-    - name: create ceph shaman repo file
+    - name: create ceph repo file
       copy:
-        dest: "/etc/yum.repos.d/ceph-shaman.repo"
+        dest: "/etc/yum.repos.d/ceph.repo"
         content: |
-          [ceph]
-          name=ceph
-          baseurl="{{ ceph_repo }}"
+          [Ceph]
+          name=Ceph $basearch
+          baseurl=https://download.ceph.com/rpm-octopus/el8/$basearch
           gpgcheck=0
           enabled=1
 
     - name: install packages
-      package:
+      dnf:
         name: "{{ pkgs }}"
         state: latest
