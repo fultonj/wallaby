@@ -1,7 +1,7 @@
 #!/bin/bash
 
-METAL=0
-PRE=0
+METAL=1
+PRE=1
 NET=1 # only runs if PRE=1
 PKG=1 # only runs if PRE=1
 USR=1 # only runs if PRE=1
@@ -47,6 +47,10 @@ if [[ $PRE -eq 1 ]]; then
     fi
     if [[ $PKG -eq 1 ]]; then
         ansible-playbook-3 -i $INV -v packages.yaml
+        if [[ $? -gt 0 ]]; then
+            echo "ERROR: problem with installing packages"
+            exit 1
+        fi
     fi
     if [[ $USR -eq 1 ]]; then
         # requires https://review.opendev.org/c/openstack/tripleo-ansible/+/768365
