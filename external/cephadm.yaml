@@ -5,12 +5,24 @@
     bootstrap_host: "{{ groups['mgrs'][0] }}"
     ceph_ssh_user: ceph-admin
     cephadm_bin: /usr/sbin/cephadm
+    cluster: ceph
   tasks:
     - name: Set first monitor IP
       set_fact:
         first_mon_ip: "{{ ( hostvars[bootstrap_host]['storage_ip'] |
                             default(hostvars[bootstrap_host]['ctlplane_ip']) )
                             | default(ansible_host) }}"
+
+    - name: Set FSID if one was not provided
+      set_fact:
+        fsid: "{{ 99999999 | random | to_uuid | lower }}"
+      when: fsid is not defined or (fsid is defined and fsid | length == 0)
+
+    - name: Set admin_keyring and ceph_conf facts
+      set_fact:
+        admin_keyring: "/etc/ceph/{{ cluster }}.client.admin.keyring"
+        ceph_conf: "/etc/ceph/{{ cluster }}.conf"
+
     - name: Ensure /etc/ceph exists
       file:
         path: /etc/ceph
@@ -46,6 +58,9 @@
             --ssh-private-key /home/{{ ceph_ssh_user }}/.ssh/id_rsa \
             --ssh-public-key /home/{{ ceph_ssh_user }}/.ssh/id_rsa.pub \
             --ssh-user {{ ceph_ssh_user }} \
+            --output-keyring {{ admin_keyring }} \
+            --output-config {{ ceph_conf }} \
+            --fsid {{ fsid }} \
             --mon-ip {{ first_mon_ip }}
           register: cephadm_bootstrap
           become: true
@@ -54,7 +69,3 @@
             msg: "{{ cephadm_bootstrap }}"
       when:
         - cephadm_ls.stdout == '[]'
-
-# apply spec
-# create pools/keys
-# genereate ceph_data.yaml
