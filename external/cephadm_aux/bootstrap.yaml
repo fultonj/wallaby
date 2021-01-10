@@ -23,13 +23,13 @@
 - name: Bootstrap Ceph if there are no running Ceph Daemons
   block:
       # items to add
-      #   --skip-firewalld
       #   --registry-json
       #   --config (optional)
       #   --apply-spec (optional)
-    - name: Bootstrap one-node Ceph cluster
+    - name: Run cephadm bootstrap
       shell: |
         {{ cephadm_bin }} bootstrap \
+        --skip-firewalld \
         --ssh-private-key /home/{{ ceph_ssh_user }}/.ssh/id_rsa \
         --ssh-public-key /home/{{ ceph_ssh_user }}/.ssh/id_rsa.pub \
         --ssh-user {{ ceph_ssh_user }} \
