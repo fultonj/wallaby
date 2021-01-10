@@ -1,13 +1,4 @@
 ---
-- name: push ceph_spec to first node
-  copy:
-    src: ceph_spec.yaml
-    dest: "{{ ceph_spec }}"
-    owner: "{{ ceph_ssh_user }}"
-    group: "{{ ceph_ssh_user }}"
-    mode: '0644'
-  become: true
-
 - name: Stat spec file
   stat:
     path: "{{ item }}"
@@ -15,6 +6,7 @@
   become: true
   loop:
     - "{{ ceph_spec }}"
+
 - name: Fail if spec file is missing
   fail:
     msg: "{{ item.invocation.module_args.path }} does not exist"
@@ -51,6 +43,8 @@
   command: "{{ ceph_cli }} orch apply --in-file /tmp/ceph_spec.yaml"
   register: ceph_spec_apply_output
   become: true
+
 - name: Show results of spec apply
   debug:
     msg: "{{ ceph_spec_apply_output }}"
+  when: "{{ verbose }}"

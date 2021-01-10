@@ -7,6 +7,8 @@
     cephadm_bin: /usr/sbin/cephadm
     cluster: ceph
     ceph_config_home: "/etc/ceph"
+    spec_on_bootstrap: false # not recommended
+    verbose: true
   tasks:
     - name: Set first monitor IP
       set_fact:
@@ -28,6 +30,15 @@
       set_fact:
         ceph_spec: "/home/{{ ceph_ssh_user }}/ceph_spec.yaml"
 
+    - name: push ceph_spec to first node
+      copy:
+        src: cephadm_aux/ceph_spec.yaml
+        dest: "{{ ceph_spec }}"
+        owner: "{{ ceph_ssh_user }}"
+        group: "{{ ceph_ssh_user }}"
+        mode: '0644'
+      become: true
+
     - name: Ensure /etc/ceph exists
       file:
         path: /etc/ceph
@@ -39,3 +50,4 @@
 
     - name: Apply spec
       include_tasks: cephadm_aux/apply_spec.yaml
+      when: not spec_on_bootstrap

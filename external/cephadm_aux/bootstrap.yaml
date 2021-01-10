@@ -1,13 +1,23 @@
 ---
+- name: Make list of necessary files
+  set_fact:
+    bootstrap_files:
+      - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa"
+      - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa.pub"
+      - "{{ cephadm_bin }}"
+
+- name: Add spec to necessary file list when using spec to bootstrap
+  set_fact:
+    bootstrap_files: "{{ bootstrap_files + [ ceph_spec ] }}"
+  when: spec_on_bootstrap
+
 - name: Stat necessary files to bootstrap with cephadm
   stat:
     path: "{{ item }}"
   register: stat_cephadm_bootstrap_files
   become: true
-  loop:
-    - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa"
-    - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa.pub"
-    - "{{ cephadm_bin }}"
+  loop: "{{ bootstrap_files }}"
+
 - name: Fail if necessary files are missing
   fail:
     msg: "{{ item.invocation.module_args.path }} does not exist"
@@ -25,7 +35,6 @@
       # items to add
       #   --registry-json
       #   --config (optional)
-      #   --apply-spec (optional)
     - name: Run cephadm bootstrap
       shell: |
         {{ cephadm_bin }} bootstrap \
@@ -36,11 +45,13 @@
         --output-keyring {{ admin_keyring }} \
         --output-config {{ ceph_conf }} \
         --fsid {{ fsid }} \
+        {% if spec_on_bootstrap %}--apply-spec {{ ceph_spec }} \{% endif %}
         --mon-ip {{ first_mon_ip }}
       register: cephadm_bootstrap
       become: true
     - name: Show results of bootstrap
       debug:
         msg: "{{ cephadm_bootstrap }}"
+      when: "{{ verbose }}"
   when:
     - cephadm_ls.stdout == '[]'
