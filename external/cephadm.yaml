@@ -10,40 +10,8 @@
     spec_on_bootstrap: false # not recommended
     verbose: true
   tasks:
-    - name: Set first monitor IP
-      set_fact:
-        first_mon_ip: "{{ ( hostvars[bootstrap_host]['storage_ip'] |
-                            default(hostvars[bootstrap_host]['ctlplane_ip']) )
-                            | default(ansible_host) }}"
-
-    - name: Set FSID if one was not provided
-      set_fact:
-        fsid: "{{ 99999999 | random | to_uuid | lower }}"
-      when: fsid is not defined or (fsid is defined and fsid | length == 0)
-
-    - name: Set admin_keyring and ceph_conf facts
-      set_fact:
-        admin_keyring: "{{ ceph_config_home }}/{{ cluster }}.client.admin.keyring"
-        ceph_conf: "{{ ceph_config_home }}/{{ cluster }}.conf"
-
-    - name: Set ceph_spec fact
-      set_fact:
-        ceph_spec: "/home/{{ ceph_ssh_user }}/ceph_spec.yaml"
-
-    - name: push ceph_spec to first node
-      copy:
-        src: cephadm_aux/ceph_spec.yaml
-        dest: "{{ ceph_spec }}"
-        owner: "{{ ceph_ssh_user }}"
-        group: "{{ ceph_ssh_user }}"
-        mode: '0644'
-      become: true
-
-    - name: Ensure /etc/ceph exists
-      file:
-        path: /etc/ceph
-        state: directory
-      become: true
+    - name: Satisfy prerequisites
+      include_tasks: cephadm_aux/pre.yaml
 
     - name: Bootstrap Ceph
       include_tasks: cephadm_aux/bootstrap.yaml

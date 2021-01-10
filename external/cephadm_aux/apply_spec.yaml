@@ -13,12 +13,16 @@
   loop: "{{ stat_ceph_spec_files.results | list }}"
   when: not item.stat.exists
 
+- name: set container_ceph_spec
+  set_fact:
+    container_ceph_spec: /home/ceph_spec.yaml
+
 - name: Set ceph CLI
   set_fact:
     ceph_cli: |
       {{ container_cli }} run --rm -it {{ container_options }}
       --volume {{ ceph_config_home}}:/etc/ceph:z
-      --volume {{ ceph_spec }}:/tmp/ceph_spec.yaml:z
+      --volume {{ ceph_spec }}:{{ container_ceph_spec }}:z
       {{ ceph_container_ns }}/{{ ceph_container_image }}:{{ ceph_container_tag }}
       ceph --fsid {{ fsid }} -c {{ ceph_conf }} -k {{ admin_keyring }}
   vars:
@@ -40,7 +44,7 @@
     - not (ceph_orch_status.stdout | from_json).available
 
 - name: Apply spec
-  command: "{{ ceph_cli }} orch apply --in-file /tmp/ceph_spec.yaml"
+  command: "{{ ceph_cli }} orch apply --in-file {{ container_ceph_spec }}"
   register: ceph_spec_apply_output
   become: true
 
