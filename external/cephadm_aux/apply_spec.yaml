@@ -1,0 +1,56 @@
+---
+- name: push ceph_spec to first node
+  copy:
+    src: ceph_spec.yaml
+    dest: "{{ ceph_spec }}"
+    owner: "{{ ceph_ssh_user }}"
+    group: "{{ ceph_ssh_user }}"
+    mode: '0644'
+  become: true
+
+- name: Stat spec file
+  stat:
+    path: "{{ item }}"
+  register: stat_ceph_spec_files
+  become: true
+  loop:
+    - "{{ ceph_spec }}"
+- name: Fail if spec file is missing
+  fail:
+    msg: "{{ item.invocation.module_args.path }} does not exist"
+  loop: "{{ stat_ceph_spec_files.results | list }}"
+  when: not item.stat.exists
+
+- name: Set ceph CLI
+  set_fact:
+    ceph_cli: |
+      {{ container_cli }} run --rm -it {{ container_options }}
+      --volume {{ ceph_config_home}}:/etc/ceph:z
+      --volume {{ ceph_spec }}:/tmp/ceph_spec.yaml:z
+      {{ ceph_container_ns }}/{{ ceph_container_image }}:{{ ceph_container_tag }}
+      ceph --fsid {{ fsid }} -c {{ ceph_conf }} -k {{ admin_keyring }}
+  vars:
+    ceph_container_ns: "docker.io/ceph"
+    ceph_container_image: "ceph"
+    ceph_container_tag: "v15"
+    container_cli: "podman"
+    container_options: "--net=host --ipc=host"
+
+- name: Get the ceph orchestrator status
+  command: "{{ ceph_cli }} orch status --format json"
+  register: ceph_orch_status
+  become: true
+
+- name: Fail if ceph orchestrator is not available
+  fail:
+    msg: "'ceph orch status' returned {{ ceph_orch_status.stdout | from_json }}"
+  when: 
+    - not (ceph_orch_status.stdout | from_json).available
+
+- name: Apply spec
+  command: "{{ ceph_cli }} orch apply --in-file /tmp/ceph_spec.yaml"
+  register: ceph_spec_apply_output
+  become: true
+- name: Show results of spec apply
+  debug:
+    msg: "{{ ceph_spec_apply_output }}"

@@ -1,11 +1,12 @@
 ---
-- name: Bootstrap one monitor with cephadm
+- name: Deploy Ceph with cephadm
   hosts: mgrs[0]
   vars:
     bootstrap_host: "{{ groups['mgrs'][0] }}"
     ceph_ssh_user: ceph-admin
     cephadm_bin: /usr/sbin/cephadm
     cluster: ceph
+    ceph_config_home: "/etc/ceph"
   tasks:
     - name: Set first monitor IP
       set_fact:
@@ -20,8 +21,12 @@
 
     - name: Set admin_keyring and ceph_conf facts
       set_fact:
-        admin_keyring: "/etc/ceph/{{ cluster }}.client.admin.keyring"
-        ceph_conf: "/etc/ceph/{{ cluster }}.conf"
+        admin_keyring: "{{ ceph_config_home }}/{{ cluster }}.client.admin.keyring"
+        ceph_conf: "{{ ceph_config_home }}/{{ cluster }}.conf"
+
+    - name: Set ceph_spec fact
+      set_fact:
+        ceph_spec: "/home/{{ ceph_ssh_user }}/ceph_spec.yaml"
 
     - name: Ensure /etc/ceph exists
       file:
@@ -29,43 +34,8 @@
         state: directory
       become: true
 
-    - name: Stat necessary files to bootstrap with cephadm
-      stat:
-        path: "{{ item }}"
-      register: stat_cephadm_bootstrap_files
-      become: true
-      loop:
-        - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa"
-        - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa.pub"
-        - "{{ cephadm_bin }}"
-    - name: Fail if necessary files are missing
-      fail:
-        msg: "{{ item.invocation.module_args.path }} does not exist"
-      loop: "{{ stat_cephadm_bootstrap_files.results | list }}"
-      when: not item.stat.exists
-    
-    - name: List Ceph daemon instances on this host
-      shell: |
-        {{ cephadm_bin }} ls --no-detail
-      register: cephadm_ls
-      become: true
-    
-    - name: Bootstrap Ceph if there are no running Ceph Daemons
-      block:
-        - name: Bootstrap one-node Ceph cluster
-          shell: |
-            {{ cephadm_bin }} bootstrap \
-            --ssh-private-key /home/{{ ceph_ssh_user }}/.ssh/id_rsa \
-            --ssh-public-key /home/{{ ceph_ssh_user }}/.ssh/id_rsa.pub \
-            --ssh-user {{ ceph_ssh_user }} \
-            --output-keyring {{ admin_keyring }} \
-            --output-config {{ ceph_conf }} \
-            --fsid {{ fsid }} \
-            --mon-ip {{ first_mon_ip }}
-          register: cephadm_bootstrap
-          become: true
-        - name: Show results of bootstrap
-          debug:
-            msg: "{{ cephadm_bootstrap }}"
-      when:
-        - cephadm_ls.stdout == '[]'
+    - name: Bootstrap Ceph
+      include_tasks: cephadm_aux/bootstrap.yaml
+
+    - name: Apply spec
+      include_tasks: cephadm_aux/apply_spec.yaml
