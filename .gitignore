@@ -23,3 +23,4 @@ ceph.client.openstack.keyring
 ceph.conf
 inventory_openstack.yaml
 manifests.tar.gz
+get-pip.py
