@@ -1,5 +1,5 @@
 ---
-- name: Stat spec file
+- name: Stat spec file on bootstrap node
   stat:
     path: "{{ item }}"
   register: stat_ceph_spec_files
@@ -51,4 +51,4 @@
 - name: Show results of spec apply
   debug:
     msg: "{{ ceph_spec_apply_output }}"
-  when: "{{ verbose }}"
+  when: verbose
