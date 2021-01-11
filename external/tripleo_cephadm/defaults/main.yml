@@ -1,0 +1,13 @@
+---
+# defaults file for tripleo_cephadm
+ceph_ssh_user: ceph-admin
+cephadm_bin: /usr/sbin/cephadm
+cluster: ceph
+ceph_config_home: /etc/ceph
+verbose: true
+ceph_container_ns: "docker.io/ceph"
+ceph_container_image: "ceph"
+ceph_container_tag: "v15"
+container_cli: "podman"
+container_options: "--net=host --ipc=host"
+spec_on_bootstrap: false # not recommended

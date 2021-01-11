@@ -66,7 +66,7 @@
 - name: Set ceph_spec facts
   set_fact:
     ceph_spec: "/home/{{ ceph_ssh_user }}/specs/ceph_spec.yaml"
-    ceph_spec_ansible_host: "cephadm_aux/ceph_spec.yaml"
+    ceph_spec_ansible_host: "{{ role_path }}/files/ceph_spec.yaml"
 
 - name: Stat spec file on ansible host
   stat:

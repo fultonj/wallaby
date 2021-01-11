@@ -25,12 +25,6 @@
       --volume {{ ceph_spec }}:{{ container_ceph_spec }}:z
       {{ ceph_container_ns }}/{{ ceph_container_image }}:{{ ceph_container_tag }}
       ceph --fsid {{ fsid }} -c {{ ceph_conf }} -k {{ admin_keyring }}
-  vars:
-    ceph_container_ns: "docker.io/ceph"
-    ceph_container_image: "ceph"
-    ceph_container_tag: "v15"
-    container_cli: "podman"
-    container_options: "--net=host --ipc=host"
 
 - name: Get the ceph orchestrator status
   command: "{{ ceph_cli }} orch status --format json"

@@ -3,19 +3,23 @@
   hosts: mgrs[0]
   vars:
     bootstrap_host: "{{ groups['mgrs'][0] }}"
-    ceph_ssh_user: ceph-admin
-    cephadm_bin: /usr/sbin/cephadm
-    cluster: ceph
-    ceph_config_home: "/etc/ceph"
-    spec_on_bootstrap: false # not recommended
-    verbose: true
+    spec_on_bootstrap: false
   tasks:
-    - name: Satisfy prerequisites
-      include_tasks: cephadm_aux/pre.yaml
+    # assumption:
+    #   cd /usr/share/ansible/roles/
+    #   ln -s /home/stack/wallaby/external/tripleo_cephadm
+    - name: Satisfy Ceph prerequisites
+      import_role:
+        role: tripleo_cephadm
+        tasks_from: pre
 
     - name: Bootstrap Ceph
-      include_tasks: cephadm_aux/bootstrap.yaml
+      import_role:
+        role: tripleo_cephadm
+        tasks_from: bootstrap
 
-    - name: Apply spec
-      include_tasks: cephadm_aux/apply_spec.yaml
+    - name: Apply Ceph spec
+      import_role:
+        role: tripleo_cephadm
+        tasks_from: apply_spec
       when: not spec_on_bootstrap
