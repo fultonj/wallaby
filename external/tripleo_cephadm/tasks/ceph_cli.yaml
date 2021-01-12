@@ -1,0 +1,10 @@
+---
+- name: Set ceph CLI
+  set_fact:
+    ceph_cli: >-
+      {{ container_cli }} run --rm {{ container_options }}
+      --volume {{ ceph_config_home}}:/etc/ceph:z
+      {% if mount_spec|default(false) %} --volume {{ ceph_spec }}:{{ container_ceph_spec }}:z {% endif %}
+      {{ ceph_container_ns }}/{{ ceph_container_image }}:{{ ceph_container_tag }}
+      {{ ceph_command | default('ceph') }}
+      --fsid {{ fsid }} -c {{ ceph_conf }} -k {{ admin_keyring }}

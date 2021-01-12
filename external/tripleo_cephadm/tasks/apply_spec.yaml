@@ -13,14 +13,10 @@
   loop: "{{ stat_ceph_spec_files.results | list }}"
   when: not item.stat.exists
 
-- name: Set ceph CLI
-  set_fact:
-    ceph_cli: |
-      {{ container_cli }} run --rm {{ container_options }}
-      --volume {{ ceph_config_home}}:/etc/ceph:z
-      --volume {{ ceph_spec }}:{{ container_ceph_spec }}:z
-      {{ ceph_container_ns }}/{{ ceph_container_image }}:{{ ceph_container_tag }}
-      ceph --fsid {{ fsid }} -c {{ ceph_conf }} -k {{ admin_keyring }}
+- name: Get ceph_cli
+  include_tasks: ceph_cli.yaml
+  vars:
+    mount_spec: true
 
 - name: Get the ceph orchestrator status
   command: "{{ ceph_cli }} orch status --format json"

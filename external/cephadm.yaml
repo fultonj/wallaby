@@ -4,10 +4,11 @@
   vars:
     bootstrap_host: "{{ groups['mgrs'][0] }}"
     spec_on_bootstrap: false
+    pools:
+      - vms
+      - volumes
+      - images
   tasks:
-    # assumption:
-    #   cd /usr/share/ansible/roles/
-    #   ln -s /home/stack/wallaby/external/tripleo_cephadm
     - name: Satisfy Ceph prerequisites
       import_role:
         role: tripleo_cephadm
@@ -23,3 +24,13 @@
         role: tripleo_cephadm
         tasks_from: apply_spec
       when: not spec_on_bootstrap
+
+    - name: Create Pools
+      import_role:
+        role: tripleo_cephadm
+        tasks_from: pools
+
+    - name: Create Keys
+      import_role:
+        role: tripleo_cephadm
+        tasks_from: keys
