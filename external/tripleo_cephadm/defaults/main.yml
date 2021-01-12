@@ -1,5 +1,6 @@
 ---
 # defaults file for tripleo_cephadm
+spec_on_bootstrap: false # not recommended
 ceph_ssh_user: ceph-admin
 cephadm_bin: /usr/sbin/cephadm
 cluster: ceph
@@ -10,4 +11,11 @@ ceph_container_image: "ceph"
 ceph_container_tag: "v15"
 container_cli: "podman"
 container_options: "--net=host --ipc=host"
-spec_on_bootstrap: false # not recommended
+admin_keyring: "{{ ceph_config_home }}/{{ cluster }}.client.admin.keyring"
+ceph_conf: "{{ ceph_config_home }}/{{ cluster }}.conf"
+ceph_spec: "/home/{{ ceph_ssh_user }}/specs/ceph_spec.yaml"
+container_ceph_spec: /home/ceph_spec.yaml
+ceph_spec_ansible_host: "{{ role_path }}/files/ceph_spec.yaml"
+bootstrap_files:
+  - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa"
+  - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa.pub"

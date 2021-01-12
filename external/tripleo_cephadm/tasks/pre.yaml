@@ -43,11 +43,6 @@
                         default(hostvars[bootstrap_host]['ctlplane_ip']) )
                         | default(ansible_host) }}"
 
-- name: Set admin_keyring and ceph_conf facts
-  set_fact:
-    admin_keyring: "{{ ceph_config_home }}/{{ cluster }}.client.admin.keyring"
-    ceph_conf: "{{ ceph_config_home }}/{{ cluster }}.conf"
-
 - name: Ensure /etc/ceph exists
   file:
     path: /etc/ceph
@@ -62,11 +57,6 @@
     mode: '0755'
     state: directory
   become: true
-
-- name: Set ceph_spec facts
-  set_fact:
-    ceph_spec: "/home/{{ ceph_ssh_user }}/specs/ceph_spec.yaml"
-    ceph_spec_ansible_host: "{{ role_path }}/files/ceph_spec.yaml"
 
 - name: Stat spec file on ansible host
   stat:

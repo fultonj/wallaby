@@ -1,10 +1,4 @@
 ---
-- name: Make list of necessary files
-  set_fact:
-    bootstrap_files:
-      - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa"
-      - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa.pub"
-
 - name: Add spec to necessary file list when using spec to bootstrap
   set_fact:
     bootstrap_files: "{{ bootstrap_files + [ ceph_spec ] }}"

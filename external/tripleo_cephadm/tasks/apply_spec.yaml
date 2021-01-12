@@ -13,10 +13,6 @@
   loop: "{{ stat_ceph_spec_files.results | list }}"
   when: not item.stat.exists
 
-- name: set container_ceph_spec
-  set_fact:
-    container_ceph_spec: /home/ceph_spec.yaml
-
 - name: Set ceph CLI
   set_fact:
     ceph_cli: |
