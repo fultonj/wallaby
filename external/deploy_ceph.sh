@@ -8,7 +8,7 @@ USR=1 # only runs if PRE=1
 
 CEPH=1
 STACK=ceph
-EXPORT=0
+EXPORT=1
 INV=inventory.yaml
 
 if [[ $METAL -eq 1 ]]; then
@@ -80,8 +80,9 @@ if [[ $EXPORT -eq 1 ]]; then
         fi
     done
     for F in ceph.conf ceph.client.openstack.keyring; do
+        rm -f $F
         if [[ ! -e $F ]]; then
-            ansible mons[0] -i $INV -m fetch -a "flat=yes src=/etc/ceph/$F dest=$F"
+            ansible -b mons[0] -i $INV -m fetch -a "flat=yes src=/etc/ceph/$F dest=$F"
         fi
         if [[ ! -e $F ]]; then
             echo "Error: cannot find file $F"
@@ -89,7 +90,7 @@ if [[ $EXPORT -eq 1 ]]; then
         fi
     done
     python3 export.py \
-            -t old \
+            -t new \
             -k ceph.client.openstack.keyring \
             -c ceph.conf \
             -o ceph-external.yaml

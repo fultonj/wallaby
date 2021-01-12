@@ -13,9 +13,10 @@ Stack 2:
 
 ## How to do it
 
-- Use [deploy_ceph.sh](deploy_ceph.sh) to deploy hardware to host Ceph (NET=METAL=1)
-- Use [manual_ceph.md](manual_ceph.md) to install ceph on top the hardware
-- Use [deploy_ceph.sh](deploy_ceph.sh) to create ceph-external.yaml Ceph (EXPORT=1)
+- Use [deploy_ceph.sh](deploy_ceph.sh) to:
+  - deploy hardware to host Ceph (NET=METAL=1)
+  - install ceph w/ tripleo_cephadm role (CEPH=1) (automates [manual_ceph.md](manual_ceph.md))
+  - create ceph-external.yaml Ceph (EXPORT=1)
 - Use [deploy_openstack.sh](deploy_openstack.sh) to have TripleO use
   ceph-external.yaml to deploy OpenStack and use the external ceph
   cluster.
