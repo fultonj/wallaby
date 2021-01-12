@@ -16,7 +16,7 @@
 - name: Set ceph CLI
   set_fact:
     ceph_cli: |
-      {{ container_cli }} run --rm -it {{ container_options }}
+      {{ container_cli }} run --rm {{ container_options }}
       --volume {{ ceph_config_home}}:/etc/ceph:z
       --volume {{ ceph_spec }}:{{ container_ceph_spec }}:z
       {{ ceph_container_ns }}/{{ ceph_container_image }}:{{ ceph_container_tag }}
