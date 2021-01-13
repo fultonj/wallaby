@@ -61,16 +61,7 @@ if [[ $PRE -eq 1 ]]; then
 fi
 
 if [[ $CEPH -eq 1 ]]; then
-    # assumption:
-    #   cd /usr/share/ansible/roles/
-    #   ln -s /home/stack/wallaby/external/tripleo_cephadm
-    if [[ ! /usr/share/ansible/library/ceph_key.py ]]; then
-        if [[ ! /usr/share/ceph-ansible/library/ceph_key.py ]]; then
-            sudo dnf install -y ceph-ansible
-        fi
-        sudo cp /usr/share/ceph-ansible/library/ceph_key.py /usr/share/ansible/library/
-    fi
-    ANSIBLE_LIBRARY=/usr/share/ansible/library/ ansible-playbook-3 -i $INV -v cephadm.yaml
+    ansible-playbook-3 -i $INV -v cephadm.yaml
 fi
 
 if [[ $EXPORT -eq 1 ]]; then

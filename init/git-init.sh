@@ -101,6 +101,13 @@ if [[ $1 == 'tht' ]]; then
                 sudo ln -v -s $TARGET/$D $D
             fi
         done
+        # this directory may not exist yet so link it either way
+        sudo ln -s $TARGET/tripleo_cephadm
+        popd
+
+        # link libraries
+        pushd /usr/share/ansible/plugins/modules
+        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_key.py
         popd
     fi
 fi
