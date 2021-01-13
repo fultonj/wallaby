@@ -8,7 +8,7 @@ USR=1 # only runs if PRE=1
 
 CEPH=1
 STACK=ceph
-EXPORT=1
+EXPORT=0
 INV=inventory.yaml
 
 if [[ $METAL -eq 1 ]]; then
@@ -74,6 +74,7 @@ if [[ $CEPH -eq 1 ]]; then
 fi
 
 if [[ $EXPORT -eq 1 ]]; then
+    # obsoleted by tripleo_cephadm/tasks/export.yaml
     for F in ~/ceph_client.yaml ceph-external.yaml; do
         if [[ -e $F ]]; then
             rm -f $F
@@ -90,7 +91,7 @@ if [[ $EXPORT -eq 1 ]]; then
         fi
     done
     python3 export.py \
-            -t new \
+            -t old \
             -k ceph.client.openstack.keyring \
             -c ceph.conf \
             -o ceph-external.yaml

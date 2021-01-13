@@ -20,3 +20,4 @@ bootstrap_files:
   - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa"
   - "/home/{{ ceph_ssh_user }}/.ssh/id_rsa.pub"
 ceph_uid: "{{ '64045' if ansible_os_family == 'Debian' else '167' }}"
+tripleo_ceph_client_vars: "/home/stack/ceph_client.yaml"
