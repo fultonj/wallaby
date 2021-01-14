@@ -1,0 +1,68 @@
+---
+- hosts: allovercloud
+  gather_facts: false
+  become: true
+  vars:
+    mirror_files:
+      - /etc/yum.repos.d/delorean.repo
+      - /home/stack/generated-container-prepare.yaml
+    pkgs:
+      - python3-tripleoclient
+  tasks:
+    - name: ensure stack group exists
+      group:
+        name: stack
+        state: present
+    - name: ensure stack user exists
+      user:
+        name: stack
+        comment: stack
+        group: stack
+        groups: wheel
+        generate_ssh_key: yes
+    - name: give stack user same authorized_keys as heat-admin
+      copy:
+        remote_src: true
+        src: /home/heat-admin/.ssh/authorized_keys
+        dest: /home/stack/.ssh/authorized_keys
+        owner: stack
+        group: stack
+        mode: '0644'
+    - name: enable passwordless sudo for wheel group
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+    - name: create /etc/hosts entry back to undercloud
+      lineinfile:
+        path: /etc/hosts
+        regexp: '^192\.168\.24\.1'
+        line: 192.168.24.1 undercloud.ctlplane.mydomain.tld undercloud
+        owner: root
+        group: root
+        mode: '0644'
+    - name: set standalone hostname
+      hostname:
+        name: standalone.localdomain
+    - name: ensure standalone hostname is transient
+      command: hostnamectl set-hostname standalone.localdomain --transient
+    - name: copy mirror files
+      copy:
+        src: "{{ item }}"
+        dest: "{{ item }}"
+      loop: "{{ mirror_files }}"
+    - name: install python3-tripleo-repos package
+      dnf:
+        name: python3-tripleo-repos
+        state: latest
+    - name: Run tripleo-repos
+      command: tripleo-repos current-tripleo-dev
+    - name: install pkgs
+      dnf:
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ pkgs }}"
+    # create standalone_parameters.yaml and deployment script
+    # and then copy them to the standalone node
