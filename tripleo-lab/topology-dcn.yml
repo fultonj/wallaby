@@ -65,8 +65,8 @@ vms:
       - mac: "24:42:53:21:52:82"
     autostart: no
   - name: ceph-5
-    cpu: 2
-    memory: 5120
+    cpu: 4
+    memory: 14336
     interfaces:
       - mac: "24:42:53:21:52:91"
       - mac: "24:42:53:21:52:92"
