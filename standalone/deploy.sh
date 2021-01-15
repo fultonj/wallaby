@@ -5,6 +5,7 @@ PRE=1
 NET=1 # only runs if PRE=1
 PKG=1 # only runs if PRE=1
 USR=1 # only runs if PRE=1
+PCS=1 # only runs if PRE=1
 STD=1
 
 STACK=standalone
@@ -51,8 +52,17 @@ if [[ $PRE -eq 1 ]]; then
             exit 1
         fi
     fi
+    if [[ $PCS -eq 1 ]]; then
+        # pacemaker workaround
+        cp $INV ../external/inventory_openstack.yaml
+        pushd ../external
+        bash pcs.sh
+        rm -f inventory_openstack.yaml
+        popd
+    fi
 fi
 
 if [[ $STD -eq 1 ]]; then
+    # prepare node for a standalone install
     ansible-playbook-3 -i $INV -v standalone.yaml
 fi

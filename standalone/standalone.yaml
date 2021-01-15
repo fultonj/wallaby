@@ -2,12 +2,18 @@
 - hosts: allovercloud
   gather_facts: false
   become: true
-  vars:
+  vars: # add IP on fake vlan to use for standalone (24.1 taken by undercloud)
+    ip: 192.168.23.1
+    vlan: 666
+    dev: ens4
+    pkgs:
+      - python3-tripleoclient
     mirror_files:
       - /etc/yum.repos.d/delorean.repo
       - /home/stack/generated-container-prepare.yaml
-    pkgs:
-      - python3-tripleoclient
+    standlone_files:
+      - standalone_parameters.yaml
+      - standalone.sh
   tasks:
     - name: ensure stack group exists
       group:
@@ -39,20 +45,30 @@
       lineinfile:
         path: /etc/hosts
         regexp: '^192\.168\.24\.1'
-        line: 192.168.24.1 undercloud.ctlplane.mydomain.tld undercloud
+        line: 192.168.24.1 undercloud.ctlplane.mydomain.tld undercloud.ctlplane undercloud
         owner: root
         group: root
         mode: '0644'
     - name: set standalone hostname
       hostname:
         name: standalone.localdomain
-    - name: ensure standalone hostname is transient
+    - name: ensure standalone hostname fits transient requirement
       command: hostnamectl set-hostname standalone.localdomain --transient
-    - name: copy mirror files
+    - name: copy mirror files (where src=dest)
       copy:
         src: "{{ item }}"
         dest: "{{ item }}"
+        owner:  "{% if '.yaml' in item %}stack{% else %}root{% endif %}"
+        group:  "{% if '.yaml' in item %}stack{% else %}root{% endif %}"
       loop: "{{ mirror_files }}"
+    - name: copy standalone files (where dest is in /home/stack)
+      copy:
+        src: "{{ item }}"
+        dest: "/home/stack/{{ item }}"
+        owner: stack
+        group: stack
+        mode: "{% if '.sh' in item %}0755{% else %}0644{% endif %}"
+      loop: "{{ standlone_files }}"
     - name: install python3-tripleo-repos package
       dnf:
         name: python3-tripleo-repos
@@ -64,5 +80,50 @@
         name: "{{ item }}"
         state: latest
       loop: "{{ pkgs }}"
-    # create standalone_parameters.yaml and deployment script
-    # and then copy them to the standalone node
+    - name: Unmanage dev
+      command: "nmcli dev set {{ dev }} managed no"
+    - name: switch bootproto of dev to none
+      lineinfile:
+        path: "/etc/sysconfig/network-scripts/ifcfg-{{ dev }}"
+        regexp: '^BOOTPROTO='
+        line: BOOTPROTO=none
+    - name: create vlan file for dev
+      copy:
+        dest: "/etc/sysconfig/network-scripts/ifcfg-vlan-{{ vlan }}"
+        content: |
+          VLAN=yes
+          TYPE=Vlan
+          PHYSDEV={{ dev }}
+          VLAN_ID={{ vlan }}
+          REORDER_HDR=yes
+          GVRP=no
+          MVRP=no
+          PROXY_METHOD=none
+          BROWSER_ONLY=no
+          BOOTPROTO=none
+          IPADDR={{ ip }}
+          PREFIX=24
+          DEFROUTE=yes
+          IPV4_FAILURE_FATAL=no
+          IPV6INIT=yes
+          IPV6_AUTOCONF=yes
+          IPV6_DEFROUTE=yes
+          IPV6_FAILURE_FATAL=no
+          IPV6_ADDR_GEN_MODE=stable-privacy
+          NAME=vlan-{{ vlan }}
+          DEVICE={{ dev }}.{{ vlan}}
+          ONBOOT=yes
+    - name: bring up vlan
+      shell: "ifdown {{ dev }}; ifup {{ dev }}; ifup vlan-{{ vlan }};"
+      register: ifcmds
+    - name: show vlan ifup results
+      debug:
+        msg: "{{ ifcmds.stdout }}"
+    # address side effect of adding other network
+    - name: bring down old default route
+      shell: "route del default gw 192.168.24.1 ens3"
+    - name: bring up new default route
+      shell: "route add default gw 192.168.100.1 {{ dev }}.100"
+    - name: state next step
+      debug:
+        msg: "ssh stack@{{ ansible_host }} # ./standalone.sh"

@@ -8,6 +8,7 @@
       - emacs-nox
       - vim
       - cephadm
+      - tmux
     cephadm_url: https://github.com/ceph/ceph/raw/octopus/src/cephadm/cephadm
   tasks:
     - name: create base repo file

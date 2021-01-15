@@ -1,0 +1,22 @@
+---
+parameter_defaults:
+  NeutronPublicInterface: ens4.666
+  CloudName: 192.168.23.1
+  CertmongerCA: local
+  ControlPlaneStaticRoutes: []
+  Debug: true
+  DeploymentUser: stack
+  DnsServers: 192.168.122.1
+  NtpServer: pool.ntp.org
+  # needed for vip & pacemaker
+  KernelIpNonLocalBind: 1
+  # domain name used by the host
+  NeutronDnsDomain: localdomain
+  # re-use ctlplane bridge for public net
+  NeutronBridgeMappings: datacentre:br-ctlplane
+  NeutronPhysicalBridge: br-ctlplane
+  # enable to force metadata for public net
+  #NeutronEnableForceMetadata: true
+  StandaloneEnableRoutedNetworks: false
+  StandaloneHomeDir: /home/stack
+  StandaloneLocalMtu: 1400
