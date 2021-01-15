@@ -122,6 +122,7 @@
     # address side effect of adding other network
     - name: bring down old default route
       shell: "route del default gw 192.168.24.1 ens3"
+      ignore_erros: true
     - name: bring up new default route
       shell: "route add default gw 192.168.100.1 {{ dev }}.100"
     - name: state next step
