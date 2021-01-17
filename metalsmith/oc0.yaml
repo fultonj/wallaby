@@ -8,13 +8,6 @@
       name: oc0-controller-1
     - hostname: oc0-controller-2
       name: oc0-controller-2
-- name: Compute
-  count: 2
-  instances:
-    - hostname: oc0-compute-0
-      name: oc0-compute-0
-    - hostname: oc0-compute-1
-      name: oc0-compute-1
 - name: CephStorage
   count: 3
   instances:
@@ -24,3 +17,10 @@
       name: oc0-ceph-1
     - hostname: oc0-ceph-2
       name: oc0-ceph-2
+- name: Compute
+  count: 2
+  instances:
+    - hostname: oc0-compute-0
+      name: oc0-ceph-3
+    - hostname: oc0-compute-1
+      name: oc0-ceph-4

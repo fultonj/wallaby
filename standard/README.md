@@ -12,7 +12,7 @@ An overcloud deployed with network isolation containing:
 
 Set flags in [deploy.sh](deploy.sh) to: 
 
-- provision the baremetal ([metal.yaml](metal.yaml) or [metal-big.yaml](metal-big.yaml))
+- provision the baremetal ([../metalsmith/oc0.yaml](../metalsmith/oc0.yaml))
 - create a heat stack
 - download the configuration as ansible playbooks
 - use ansible to configure the overcloud

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 METAL=1
-PUPPET=1
 HEAT=1
 DOWN=0
 CHECK=0
@@ -20,38 +19,18 @@ if [[ $(($HEAT + $DOWN)) -gt 1 ]]; then
     exit 1
 fi
 # -------------------------------------------------------
-if [[ $METAL -eq 1 ]]; then
-    openstack overcloud node provision \
-              --stack $STACK \
-              --output deployed-metal-big.yaml \
-              metal-big.yaml
-
-    sed -i s/\\/usr\\/share\\/openstack\\-tripleo\\-heat\\-/..\\/..\\//g \
-        deployed-metal-big.yaml
-
-    # grep novacompute deployed-metal-big.yaml > /tmp/1903775
-    # grep cephstorage deployed-metal-big.yaml >> /tmp/1903775
-    # if [[ $(cat /tmp/1903775 | wc -l) -gt 0 ]]; then
-    #     echo "working around https://bugs.launchpad.net/tripleo/+bug/1903775"
-    #     sed -i -e s/novacompute/compute/g -e s/cephstorage/ceph/g deployed-metal-big.yaml
-    # fi
-else
-    echo "Assuming servers are provsioned"
-fi
-
-if [[ ! -e deployed-metal-big.yaml ]]; then
-    echo "ERROR: deployed-metal-big.yaml is missing"
-    exit 1
-fi
-
-# -------------------------------------------------------
-if [[ $PUPPET -eq 1 ]]; then
-    # hacks within hacks
-    cp deployed-metal-big.yaml ../external/deployed-metal-openstack-only.yaml
-    pushd ../external
-    rm inventory_openstack.yaml
-    bash puppet_tripleo.sh
+METAL="../metalsmith/deployed-metal-${STACK}.yaml"
+if [[ ! -e $METAL ]]; then
+    echo "$METAL is missing. Deploying nodes with metalsmith"
+    pushd ../metalsmith
+    bash provision.sh $STACK
     popd
+fi
+if [[ ! -e $METAL ]]; then
+    echo "$METAL is still missing. Aborting."
+    exit 1
+else
+    cp $METAL .
 fi
 # -------------------------------------------------------
 if [[ $LOG -eq 1 ]]; then
@@ -106,7 +85,7 @@ if [[ $HEAT -eq 1 ]]; then
           -e ~/containers-prepare-parameter.yaml \
           -e ~/generated-container-prepare.yaml \
           -e ~/oc0-domain.yaml \
-          -e deployed-metal-big.yaml \
+          -e deployed-metal-$STACK.yaml \
           -e overrides.yaml
 fi
 # -------------------------------------------------------
@@ -144,8 +123,6 @@ if [[ $DOWN -eq 1 ]]; then
         # fi
 
     fi
-    # -------------------------------------------------------
-
     # -------------------------------------------------------
     # run it all
     time bash ansible-playbook-command.sh
