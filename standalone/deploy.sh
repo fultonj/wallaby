@@ -5,7 +5,7 @@ PRE=1
 NET=1 # only runs if PRE=1
 PKG=1 # only runs if PRE=1
 USR=1 # only runs if PRE=1
-PCS=1 # only runs if PRE=1
+PCS=0 # only runs if PRE=1
 STD=1
 
 STACK=standalone
