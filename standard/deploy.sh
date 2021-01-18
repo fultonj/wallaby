@@ -79,14 +79,15 @@ if [[ $HEAT -eq 1 ]]; then
           -e ~/templates/environments/disable-telemetry.yaml \
           -e ~/templates/environments/low-memory-usage.yaml \
           -e ~/templates/environments/enable-swap.yaml \
-          -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
           -e ~/templates/environments/docker-ha.yaml \
           -e ~/templates/environments/podman.yaml \
+          -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
           -e ~/containers-prepare-parameter.yaml \
           -e ~/generated-container-prepare.yaml \
           -e ~/oc0-domain.yaml \
           -e deployed-metal-$STACK.yaml \
-          -e overrides.yaml
+          -e overrides.yaml \
+          -e ceph-ansible-overrides.yaml
 fi
 # -------------------------------------------------------
 if [[ $DOWN -eq 1 ]]; then
