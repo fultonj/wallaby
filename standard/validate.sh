@@ -44,6 +44,14 @@ if [ $MDS -eq 1 ]; then
 fi
 
 if [ $GLANCE -eq 1 ]; then
+    # make sure the glance HTTP service is available
+    glance_endpoint=$(openstack endpoint list -f value -c "Service Name" -c "Interface" -c "URL" | grep glance | grep public | awk {'print $3'})
+    if [[ $(curl -s $glance_endpoint | grep Unavailable | wc -l) -gt 0 ]]; then
+        echo "curl $glance_endpoint returns unavailable (glance broken?)"
+        curl -s $glance_endpoint
+        exit 1
+    fi
+
     img=cirros-0.4.0-x86_64-disk.img
     raw=$(echo $img | sed s/img/raw/g)
     url=http://download.cirros-cloud.net/0.4.0/$img
