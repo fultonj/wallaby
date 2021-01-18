@@ -1,0 +1,4 @@
+---
+parameter_defaults:
+  CephSpecPath: "/home/stack/wallaby/standard/ceph_spec.yml"
+  CephDynamicSpec: false
