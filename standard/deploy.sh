@@ -1,6 +1,7 @@
 #!/bin/bash
 
 METAL=1
+SPEC=1
 HEAT=1
 DOWN=0
 CHECK=0
@@ -31,6 +32,10 @@ if [[ ! -e $METAL ]]; then
     exit 1
 else
     cp $METAL .
+fi
+# -------------------------------------------------------
+if [[ $SPEC -eq 1 ]]; then
+    python3 mkspec.py -m $METAL > ceph_spec.yml
 fi
 # -------------------------------------------------------
 if [[ $LOG -eq 1 ]]; then
