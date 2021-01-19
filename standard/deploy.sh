@@ -83,7 +83,6 @@ if [[ $HEAT -eq 1 ]]; then
           -e ~/templates/environments/network-environment.yaml \
           -e ~/templates/environments/disable-telemetry.yaml \
           -e ~/templates/environments/low-memory-usage.yaml \
-          -e ~/templates/environments/enable-swap.yaml \
           -e ~/templates/environments/docker-ha.yaml \
           -e ~/templates/environments/podman.yaml \
           -e ~/containers-prepare-parameter.yaml \
@@ -99,6 +98,9 @@ if [[ $HEAT -eq 1 ]]; then
     # Thus, I'm parking these paramters here
     # -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
     # -e ceph-ansible-overrides.yaml
+
+    # parking this here for now
+    # -e ~/templates/environments/enable-swap.yaml \
 fi
 # -------------------------------------------------------
 if [[ $DOWN -eq 1 ]]; then
