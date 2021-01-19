@@ -2,5 +2,5 @@
 parameter_defaults:
   CephSpecPath: "/home/stack/wallaby/standard/ceph_spec.yml"
   CephDynamicSpec: false
-  #ContainerCephDaemonImage: quay.ceph.io/ceph-ci/daemon:v5.0.6-stable-5.0-octopus-centos-8-x86_64
-  ContainerCephDaemonImage: docker.io/ceph/ceph:v15
+  ContainerCephDaemonImage: quay.ceph.io/ceph-ci/daemon:v5.0.6-stable-5.0-octopus-centos-8-x86_64
+  #ContainerCephDaemonImage: docker.io/ceph/ceph:v15
