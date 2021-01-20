@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# frequently used short cuts for the lazy
+
+STACK=oc0
+if [[ ! -e deployed-metal-$STACK.yaml ]]; then
+    echo "ERROR: deployed-metal-$STACK.yaml is missing"
+    exit 1
+fi
+
+IP=$(grep oc0-controller-0-ctlplane deployed-metal-oc0.yaml -A 3 | grep 192 | awk {'print $3'})
+
+if [[ $# -gt 0 ]]; then
+    if [[ $1 == 'ls' ]]; then
+        echo "ceph orch host ls"
+        ssh ceph-admin@$IP "sudo cephadm shell -- ceph orch host ls"
+    elif [[ $1 == '-h' ]]; then
+        echo "USAGE $0 <args>"
+        echo "if <args> is missing it will SSH you into the first mon"
+        echo "if <args> is 'ls' run 'ceph orch host ls'"
+        echo "if <args> is \$FOO run 'ceph \$FOO' (e.g. try '$0 -s')"
+        echo "if <args> is '-h' show this message"
+    else
+        ssh ceph-admin@$IP "sudo cephadm shell -- ceph $@"
+    fi
+else
+    ssh ceph-admin@$IP
+fi
