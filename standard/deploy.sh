@@ -1,5 +1,6 @@
 #!/bin/bash
 
+CON=1
 METAL=1
 SPEC=1
 HEAT=1
@@ -18,6 +19,19 @@ if [[ $(($HEAT + $DOWN)) -gt 1 ]]; then
     echo "HEAT will run config-download the first time."
     echo "Only use DOWN for subsequent config-download runs."
     exit 1
+fi
+# -------------------------------------------------------
+if [[ $CON -eq 1 ]]; then
+    if [[ ! -e containers-prepare-parameter.yaml ]]; then
+        echo "containers-prepare-parameter.yaml is missing. Fail."
+        exit 1
+    fi
+    if [[ ! -e ~/re-generated-container-prepare.yaml ]]; then
+        echo "~/re-generated-container-prepare.yaml already exists"
+        echo "Delete this file if you want the container script to be re-run"
+    else
+        bash get_ceph_container.sh
+    fi
 fi
 # -------------------------------------------------------
 METAL="../metalsmith/deployed-metal-${STACK}.yaml"
@@ -93,7 +107,7 @@ if [[ $HEAT -eq 1 ]]; then
           -e ~/templates/environments/docker-ha.yaml \
           -e ~/templates/environments/podman.yaml \
           -e ~/containers-prepare-parameter.yaml \
-          -e ~/generated-container-prepare.yaml \
+          -e ~/re-generated-container-prepare.yaml \
           -e ~/templates/environments/cephadm/cephadm.yaml \
           -e ~/oc0-domain.yaml \
           -e deployed-metal-$STACK.yaml \
