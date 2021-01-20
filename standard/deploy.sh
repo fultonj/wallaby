@@ -22,14 +22,21 @@ fi
 # -------------------------------------------------------
 METAL="../metalsmith/deployed-metal-${STACK}.yaml"
 if [[ ! -e $METAL ]]; then
-    echo "$METAL is missing. Deploying nodes with metalsmith"
+    echo "$METAL is missing. Deploying nodes with metalsmith."
     pushd ../metalsmith
     bash provision.sh $STACK
     popd
 fi
 if [[ ! -e $METAL ]]; then
-    echo "$METAL is still missing. Aborting."
-    exit 1
+    echo "$METAL is missing after deployment attempt. Going to retry once."
+    pushd ../metalsmith
+    bash undeploy_failures.sh
+    bash provision.sh $STACK
+    popd
+    if [[ ! -e $METAL ]]; then
+        echo "$METAL is still missing. Aborting."
+        exit 1
+    fi
 else
     cp $METAL .
 fi
@@ -139,9 +146,15 @@ if [[ $DOWN -eq 1 ]]; then
     fi
     # -------------------------------------------------------
     # run it all
+    #time bash ansible-playbook-command.sh
+
+    # just run ceph
     time bash ansible-playbook-command.sh
 
-    # Just re-run ceph (closer but still not working correctly)
+    # re-run just cephadm v1
+    #time bash ansible-playbook-command.sh --tags step2,external_deploy_steps --skip-tags step1,deploy_steps,overcloud
+
+    # Just re-run ceph v2
     #time bash ansible-playbook-command.sh --skip-tags step1,step3,step4,step5,run_ceph_ansible,run_uuid_ansible --tags facts,step2 -e gather_facts=true -e @global_vars.yaml
 
    popd
