@@ -1,13 +1,8 @@
 #!/bin/bash
 
-# tht 763542
-# ansible 758039
-# puppet 763545
-
 declare -A REPO_MAP=(
-         [763542]='tripleo-heat-templates' \
-         [758039]='tripleo-ansible' \
-         [763545]='puppet-tripleo' \
+         [767294]='tripleo-heat-templates' \
+         [771034]='tripleo-ansible' \
         );
 
 for K in "${!REPO_MAP[@]}"; do
