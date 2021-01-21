@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-OVERALL=1
-KEYS=0
+OVERALL=0
+KEYS=1
 MDS=0
 GLANCE=0
 CINDER=0
