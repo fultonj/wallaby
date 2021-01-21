@@ -10,7 +10,7 @@ LOG=1
 
 STACK=oc0
 DIR=~/config-download
-NODE_COUNT=8
+NODE_COUNT=7
 
 source ~/stackrc
 # -------------------------------------------------------
