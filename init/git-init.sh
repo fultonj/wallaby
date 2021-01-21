@@ -103,6 +103,7 @@ if [[ $1 == 'tht' ]]; then
         done
         # this directory may not exist yet so link it either way
         sudo ln -s $TARGET/tripleo_cephadm
+        sudo ln -s $TARGET/tripleo_run_cephadm
         popd
 
         # link libraries
