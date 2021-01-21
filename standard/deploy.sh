@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CON=1
-METAL=1
+IRONIC=0
 SPEC=1
 HEAT=1
 DOWN=0
@@ -35,28 +35,31 @@ if [[ $CON -eq 1 ]]; then
 fi
 # -------------------------------------------------------
 METAL="../metalsmith/deployed-metal-${STACK}.yaml"
-if [[ ! -e $METAL ]]; then
-    echo "$METAL is missing. Deploying nodes with metalsmith."
-    pushd ../metalsmith
-    bash provision.sh $STACK
-    popd
-fi
-if [[ ! -e $METAL ]]; then
-    echo "$METAL is missing after deployment attempt. Going to retry once."
-    pushd ../metalsmith
-    bash undeploy_failures.sh
-    bash provision.sh $STACK
-    popd
+if [[ $IRONIC -eq 1 ]]; then
     if [[ ! -e $METAL ]]; then
-        echo "$METAL is still missing. Aborting."
-        exit 1
+        echo "$METAL is missing. Deploying nodes with metalsmith."
+        pushd ../metalsmith
+        bash provision.sh $STACK
+        popd
     fi
-else
-    cp $METAL .
+    if [[ ! -e $METAL ]]; then
+        echo "$METAL is missing after deployment attempt. Going to retry once."
+        pushd ../metalsmith
+        bash undeploy_failures.sh
+        bash provision.sh $STACK
+        popd
+        if [[ ! -e $METAL ]]; then
+            echo "$METAL is still missing. Aborting."
+            exit 1
+        fi
+    fi
+fi
+if [[ ! -e deployed-metal-$STACK.yaml ]]; then
+    cp $METAL deployed-metal-$STACK.yaml
 fi
 # -------------------------------------------------------
 if [[ $SPEC -eq 1 ]]; then
-    python3 mkspec.py -m $METAL > ceph_spec.yml
+    python3 mkspec.py -m deployed-metal-$STACK.yaml > ceph_spec.yml
 fi
 # -------------------------------------------------------
 if [[ $LOG -eq 1 ]]; then
