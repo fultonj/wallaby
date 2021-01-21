@@ -10,7 +10,7 @@ bash unprovision.sh $STACK
 rm -f deployed-metal-$STACK.yaml
 popd
 
-for F in deployed-metal-oc0.yaml cirros-0.4.0-x86_64-disk.{raw,img} tempest-deployer-input.conf; do
+for F in ~/ceph_client.yml ceph_spec.yml deployed-metal-$STACK.yaml cirros-0.4.0-x86_64-disk.{raw,img} tempest-deployer-input.conf; do
     if [[ -e $F ]]; then
         rm -f $F
     fi
