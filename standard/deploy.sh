@@ -160,9 +160,6 @@ if [[ $DOWN -eq 1 ]]; then
     fi
     # -------------------------------------------------------
     # run it all
-    #time bash ansible-playbook-command.sh
-
-    # just run ceph
     time bash ansible-playbook-command.sh
 
     # re-run just cephadm v1
