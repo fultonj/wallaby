@@ -26,7 +26,7 @@ if [[ $OVERWRITE -eq 1 ]]; then
     if [[ -e ~/re-generated-container-prepare.yaml ]]; then
         rm -v ~/re-generated-container-prepare.yaml
     fi
-else
+fi
 
 openstack tripleo container image prepare \
    --environment-file containers-prepare-parameter.yaml \
