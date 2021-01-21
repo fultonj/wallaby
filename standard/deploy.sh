@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CON=1
-IRONIC=0
+IRONIC=1
 SPEC=1
 HEAT=1
 DOWN=0
