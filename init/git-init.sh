@@ -109,7 +109,9 @@ if [[ $1 == 'tht' ]]; then
         # link libraries
         pushd /usr/share/ansible/plugins/modules
         sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_key.py
+        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_pool.py
         popd
+
         pushd /usr/share/ansible/tripleo-playbooks/
         sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks/cephadm.yml
         popd
