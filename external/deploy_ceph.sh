@@ -61,7 +61,9 @@ if [[ $PRE -eq 1 ]]; then
 fi
 
 if [[ $CEPH -eq 1 ]]; then
-    ansible-playbook-3 -i $INV -v cephadm.yaml
+    ansible-playbook-3 -i $INV -v cephadm.yaml \
+                       -e @cephadm-extra-vars-heat.yml \
+                       -e @cephadm-extra-vars-ansible.yml
 fi
 
 if [[ $EXPORT -eq 1 ]]; then

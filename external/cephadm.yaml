@@ -1,13 +1,8 @@
 ---
 - name: Deploy Ceph with cephadm
-  hosts: mgrs[0]
+  hosts: mons[0]
   vars:
-    bootstrap_host: "{{ groups['mgrs'][0] }}"
-    spec_on_bootstrap: false
-    pools:
-      - vms
-      - volumes
-      - images
+    bootstrap_host: "{{ groups['mons'][0] }}"
   tasks:
     - name: Satisfy Ceph prerequisites
       import_role:
@@ -39,6 +34,3 @@
       import_role:
         role: tripleo_cephadm
         tasks_from: export
-      vars:
-        cephx_keys:
-          - client.openstack
