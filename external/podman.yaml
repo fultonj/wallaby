@@ -1,0 +1,17 @@
+---
+- hosts: allovercloud
+  become: true
+  gather_facts: false
+  tasks:
+    - name: add registry to /etc/hosts
+      lineinfile:
+        dest: /etc/hosts
+        line: "192.168.24.1 undercloud.ctlplane.mydomain.tld"
+        state: present
+
+    - name: add registry to /etc/containers/registries.conf
+      ini_file:
+        path: /etc/containers/registries.conf
+        section: registries.insecure
+        option: registries
+        value: "['undercloud.ctlplane.mydomain.tld']"

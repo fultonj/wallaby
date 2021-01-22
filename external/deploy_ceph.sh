@@ -4,6 +4,7 @@ METAL=1
 PRE=1
 NET=1 # only runs if PRE=1
 PKG=1 # only runs if PRE=1
+POD=1 # only runs if PRE=1
 USR=1 # only runs if PRE=1
 
 CEPH=1
@@ -49,6 +50,13 @@ if [[ $PRE -eq 1 ]]; then
         ansible-playbook-3 -i $INV -v packages.yaml
         if [[ $? -gt 0 ]]; then
             echo "ERROR: problem with installing packages"
+            exit 1
+        fi
+    fi
+    if [[ $POD -eq 1 ]]; then
+        ansible-playbook-3 -i $INV -v podman.yaml
+        if [[ $? -gt 0 ]]; then
+            echo "ERROR: problem with configuring podman"
             exit 1
         fi
     fi
