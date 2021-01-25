@@ -1,18 +1,27 @@
 #!/usr/bin/env bash
 
 OVERALL=0
-KEYS=1
+KEYS=0
 MDS=0
 GLANCE=0
-CINDER=0
+CINDER=1
 NOVA=0
 
 DIR=~/config-download
 STACK=oc0
 RC=/home/stack/${STACK}rc
+CEPHADM=1
 
 function run_on_mon {
-    ansible --private-key /home/stack/.ssh/id_rsa_tripleo -i $DIR/$STACK/tripleo-ansible-inventory.yaml mons[0] -b -m shell -a "podman exec ceph-mon-\$HOSTNAME $1"
+    if [ $CEPHADM -eq 1 ]; then
+        # even this won't work as the container doesn't have the keyring
+        # FSID=$(grep fsid /etc/ceph/ceph.conf | awk {'print $3'})
+        # podman exec -ti ceph-$FSID-mon.$(hostname) /bin/bash
+        CMD="cephadm shell -- $1"
+    else
+        CMD="podman exec ceph-mon-\$HOSTNAME $1"
+    fi
+    ansible --private-key /home/stack/.ssh/id_rsa_tripleo -i $DIR/$STACK/tripleo-ansible-inventory.yaml mons[0] -b -m shell -a "$CMD"
 }
 
 source $RC
