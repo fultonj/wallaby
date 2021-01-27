@@ -1,88 +1,21 @@
 public_network: 192.168.24.0/24
 cluster_network: 192.168.24.0/24
-#public_network: 172.16.11.0/24
 #cluster_network: 172.16.12.0/24
+#public_network: 172.16.11.0/24
 tripleo_ceph_client_vars: /home/stack/wallaby/external/ceph_client.yml
 ceph_spec_ansible_host: /home/stack/wallaby/external/ceph_spec.yml
-pg_autoscaler: true
-cluster: ceph
-container_cli: podman
 dynamic_spec: false
-fsid: 469a37ba-f4a1-4951-a20e-aeb49c30450e
 ceph_conf_overrides:
     global:
-        osd_pool_default_pg_num: 32
-        osd_pool_default_pgp_num: 32
-        osd_pool_default_size: 1
-ceph_config_overrides: {}
+        osd_pool_default_pg_num: 16
+        osd_pool_default_pgp_num: 16
+        osd_pool_default_size: 3
 ceph_container_image: ceph-ci/daemon
 ceph_container_ns: undercloud.ctlplane.mydomain.tld:8787
 ceph_container_registry_auth: false
 ceph_container_registry_password: ''
 ceph_container_registry_username: ''
-ceph_container_tag: v5.0.6-stable-5.0-octopus-centos-8-x86_64
-ceph_default_overrides:
-    global:
-        osd_pool_default_pg_num: 16
-        osd_pool_default_pgp_num: 16
-        osd_pool_default_size: 1
-ceph_keys:
-    extra_keys: []
-    manila:
-        key: AQA69glgAAAAABAAKwA3iJrHOcCIlt66FVpjEQ==
-        name: manila
-    openstack_client:
-        key: AQA69glgAAAAABAAZhl+r623L8a6SuP//RQv/g==
-        name: openstack
-    radosgw:
-        key: AQA69glgAAAAABAAO6cgA90Rpc2KJCfGdMPJ2A==
-        name: radosgw
-ceph_pools:
-    cinder_backup_pool:
-        enabled: true
-        name: backups
-    cinder_pool:
-        cinder_extra_pools: []
-        enabled: true
-        name: volumes
-    extra_pools: []
-    glance_pool:
-        enabled: true
-        name: images
-    gnocchi_pool:
-        enabled: false
-        name: ''
-    nova_pool:
-        enabled: true
-        name: vms
-    pg_num: 16
-manila_pools:
-    data: manila_data
-    data_pg_num: 16
-    metadata: manila_metadata
-    metadata_pg_num: 16
-openstack_pools:
--   application: rbd
-    name: vms
-    pg_num: '32'
-    rule_name: replicated_rule
--   application: rbd
-    name: volumes
-    pg_num: '32'
-    rule_name: replicated_rule
--   application: rbd
-    name: images
-    pg_num: '32'
-    rule_name: replicated_rule
--   application: rbd
-    name: pool2
-    pg_num: '32'
-    rule_name: replicated_rule
--   application: rbd
-    name: pool3
-    pg_num: '32'
-    rule_name: replicated_rule
--   application: rbd
-    name: altrbd
-    pg_num: 1
-    rule_name: replicated_rule
+ceph_container_tag: v5.0.7-stable-5.0-octopus-centos-8-x86_64
+cluster: ceph
+container_cli: podman
+fsid: ca9bf37b-ed0f-4e5a-bb21-e5b5f9b75135

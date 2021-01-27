@@ -1,5 +1,6 @@
 # bootstrap_host: oc0-controller-0
-# first_mon_ip: 172.16.11.98
+# first_mon_ip: 172.16.11.241
 spec_on_bootstrap: false
-pools: "[{'name': 'vms', 'pg_num': '32', 'rule_name': 'replicated_rule', 'application': 'rbd'}, {'name': 'volumes', 'pg_num': '32', 'rule_name': 'replicated_rule', 'application': 'rbd'}, {'name': 'images', 'pg_num': '32', 'rule_name': 'replicated_rule', 'application': 'rbd'}, {'name': 'pool2', 'pg_num': '32', 'rule_name': 'replicated_rule', 'application': 'rbd'}, {'name': 'pool3', 'pg_num': '32', 'rule_name': 'replicated_rule', 'application': 'rbd'}, {'application': 'rbd', 'name': 'altrbd', 'pg_num': 1, 'rule_name': 'replicated_rule'}]"
-keys: "[{'name': 'client.openstack', 'key': 'AQC+vYNXgDAgAhAAc8UoYt+OTz5uhV7ItLdwUw==', 'mode': '0600', 'caps': {'mgr': 'allow *', 'mon': 'profile rbd', 'osd': 'profile rbd pool=vms, profile rbd pool=volumes, profile rbd pool=images, profile rbd pool=pool2, profile rbd pool=pool3, profile rbd pool=altrbd'}}, {'caps': {'mgr': 'allow *', 'mon': 'profile rbd', 'osd': 'profile rbd pool=images'}, 'key': 'AQBRgQ9eAAAAABAAv84zEilJYZPNuJ0Iwn9Ndg==', 'mode': '0600', 'name': 'client.glance'}]"
+pools: [{'name': 'vms', 'pg_num': '16', 'rule_name': 'replicated_rule', 'application': 'rbd'}, {'name': 'volumes', 'pg_num': '16', 'rule_name': 'replicated_rule', 'application': 'rbd'}, {'name': 'images', 'pg_num': '16', 'rule_name': 'replicated_rule', 'application': 'rbd'}]
+keys: [{'name': 'client.openstack', 'key': 'AQATZBBgAAAAABAAUl/GZvcldk6G74AoZ2v2rg==', 'mode': '0600', 'caps': {'mgr': 'allow *', 'mon': 'profile rbd', 'osd': 'profile rbd pool=vms, profile rbd pool=volumes, profile rbd pool=images'}}]
+lvm_volumes: []
