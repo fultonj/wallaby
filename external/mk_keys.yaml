@@ -1,0 +1,41 @@
+---
+- name: Test cephx keys
+  hosts: undercloud
+  gather_facts: false
+  vars:
+    - pools:
+        - vms
+        - volumes
+        - images
+  tasks:
+    - name: create keys data structure (from pools) if none was provided
+      block:
+        - name: Make secret key
+          command: |
+            python3 -c 'import os,struct,time,base64; key = os.urandom(16);
+            header = struct.pack("<hiih", 1, int(time.time()), 0, len(key));
+            print(base64.b64encode(header + key).decode())'
+          register: python_key_command
+        - name: Define keys data structure
+          set_fact:
+            keys:
+              - name: "{{ client_name }}"
+                caps:
+                  mgr: "allow *"
+                  mon: "allow r"
+                  osd: "allow class-read object_prefix rbd_children, {{ allow_pool }}"
+                key: "{{ secret_key }}"
+                mode: "0600"
+          vars:
+            client_name: "client.openstack"
+            secret_key: "{{ python_key_command.stdout }}"
+            allow_pool: >-
+              {% for pool in pools -%}
+              allow rwx pool={{ pool }}{% if not loop.last %}, {% endif %}
+              {%- endfor %}
+      when:
+        - keys is not defined
+
+    - name: show keys
+      debug:
+        msg: "{{ keys }}"
