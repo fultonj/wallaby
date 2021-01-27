@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-OVERALL=0
+OVERALL=1
 KEYS=0
 MDS=0
 GLANCE=0
-CINDER=1
+CINDER=0
 NOVA=0
 
 DIR=~/config-download

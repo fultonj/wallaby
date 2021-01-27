@@ -165,11 +165,8 @@ if [[ $DOWN -eq 1 ]]; then
     # run it all
     time bash ansible-playbook-command.sh
 
-    # re-run just cephadm v1
-    #time bash ansible-playbook-command.sh --tags step2,external_deploy_steps --skip-tags step1,deploy_steps,overcloud
-
-    # Just re-run ceph v2
-    #time bash ansible-playbook-command.sh --skip-tags step1,step3,step4,step5,run_ceph_ansible,run_uuid_ansible --tags facts,step2 -e gather_facts=true -e @global_vars.yaml
+    # re-run just cephadm
+    # time bash ansible-playbook-command.sh --tags step1,step2,external_deploy_steps --skip-tags deploy_steps,overcloud -e @global_vars.yaml -e gather_facts=true
 
    popd
 fi
