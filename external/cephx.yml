@@ -1,0 +1,32 @@
+---
+- name: Test cephx keys
+  hosts: undercloud
+  gather_facts: false
+  vars:
+    - tripleo_enabled_services: []
+    - ceph_keys:
+          extra_keys: []
+          openstack_client:
+              key: AQD4Gw9gAAAAABAA+ULUQHIG/HZd6mMpMxUeRA==
+              name: openstack
+    - openstack_pools:
+        openstack_pools:
+          -   application: rbd
+              name: vms
+              pg_num: '32'
+              rule_name: replicated_rule
+          -   application: rbd
+              name: volumes
+              pg_num: '32'
+              rule_name: replicated_rule
+          -   application: rbd
+              name: images
+              pg_num: '32'
+              rule_name: replicated_rule
+  tasks:
+    - include_role:
+        name: tripleo_ceph_work_dir
+        tasks_from: build_keys.yml
+    - name: show openstack key
+      debug:
+        msg: "{{ openstack_keys }}"
