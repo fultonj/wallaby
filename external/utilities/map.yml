@@ -1,0 +1,77 @@
+---
+- name: map vs jq
+  hosts: mons[0]
+  gather_facts: false
+  tasks:
+    - include_vars: /home/stack/tripleo-ansible/roles/tripleo_cephadm/defaults/main.yml
+    - name: List Ceph daemon instances on this host
+      shell: "{{ cephadm_bin }} ls --no-detail"
+      register: cephadm_ls
+      become: true
+
+    - name: Set list of found FSIDs 
+      set_fact: # ok it works here
+        #fsids: "{{ cephadm_ls.stdout | from_json | json_query('[].fsid') | sort|unique }}"
+        fsids: "{{ cephadm_ls.stdout | from_json | map(attribute='fsid') | sort | unique }}"
+
+    - name: Fail if >1 FSID was discovered
+      fail:
+        msg: |
+          Multiple FSIDs were found. This Ansible role does not
+          support management of multiple Ceph clusters on one host.
+      when: fsids | length > 1
+
+    - name: Set FSID to the discovered value
+      set_fact:
+        fsid: "{{ fsids[0] }}"
+      when: fsids | length == 1
+
+    - name: Set random fsid if no running ceph containers were found
+      set_fact:
+        fsid: "{{ 99999999 | random | to_uuid | lower }}"
+      when: fsids | length == 0
+
+    - name: show fsid
+      debug:
+        msg: "{{ fsid }}"
+    
+    - name: Set ceph CLI
+      set_fact:
+        ceph_cli: >-
+          {{ container_cli }} run --rm {{ container_options }}
+          --volume {{ ceph_config_home}}:/etc/ceph:z
+          {% if mount_spec|default(false) %} --volume {{ ceph_spec }}:{{ container_ceph_spec }}:z {% endif %}
+          {% if ceph_command|default('ceph') == 'ceph-volume' %}
+          --net=host --privileged=true --pid=host --ipc=host -v /dev:/dev -v /etc/localtime:/etc/localtime:ro
+          -v /var/lib/ceph:/var/lib/ceph:z
+          {% endif %}
+          --entrypoint {{ ceph_command | default('ceph') }}
+          {{ ceph_container_ns }}/{{ ceph_container_image }}:{{ ceph_container_tag }}
+          {% if ceph_command|default('ceph') == 'ceph' %}
+          --fsid {{ fsid }} -c {{ ceph_conf }} -k {{ admin_keyring }}
+          {% endif %}
+
+    - name: Run ceph mon dump to get all monitors
+      command: "{{ ceph_cli }} mon dump --format json"
+      register: ceph_mon_dump
+      become: true
+
+    - name: Extract mons_json1
+      set_fact:
+        mons_json1: "{{ ceph_mon_dump.stdout | from_json | json_query(jq) }}"
+      vars:
+        jq: 'mons[].public_addrs[][].addrvec'
+
+    - debug:
+        msg: "{{ mons_json1 }}"
+
+    - name: Extract mons_json2
+      set_fact:
+        mons_json2: "{{ (ceph_mon_dump.stdout | from_json).mons | map(attribute='public_addrs') | map(attribute='addrvec') | list }}"
+
+    - debug:
+        msg: "{{ mons_json2 }}"
+
+    - debug:
+        msg: "same"
+      when: mons_json1 == mons_json2
