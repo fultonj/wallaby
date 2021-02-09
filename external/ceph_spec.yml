@@ -1,25 +1,25 @@
 ---
 service_type: host
-addr: oc0-ceph-1
-hostname: oc0-ceph-1
+addr: oc0-ceph-3
+hostname: oc0-ceph-3
 ---
 service_type: host
-addr: oc0-ceph-2
-hostname: oc0-ceph-2
+addr: oc0-ceph-4
+hostname: oc0-ceph-4
 ---
 service_type: mon
 placement:
   hosts:
-    - oc0-ceph-0
-    - oc0-ceph-1
     - oc0-ceph-2
+    - oc0-ceph-3
+    - oc0-ceph-4
 ---
 service_type: osd
 service_id: default_drive_group
 placement:
   hosts:
-    - oc0-ceph-0
-    - oc0-ceph-1
     - oc0-ceph-2
+    - oc0-ceph-3
+    - oc0-ceph-4
 data_devices:
   all: true

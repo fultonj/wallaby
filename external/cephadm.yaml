@@ -18,7 +18,7 @@
       import_role:
         role: tripleo_cephadm
         tasks_from: apply_spec
-      when: not spec_on_bootstrap
+      when: not tripleo_cephadm_spec_on_bootstrap
 
     - name: Create Pools
       import_role:

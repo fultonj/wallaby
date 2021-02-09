@@ -3,19 +3,17 @@ cluster_network: 192.168.24.0/24
 #cluster_network: 172.16.12.0/24
 #public_network: 172.16.11.0/24
 tripleo_ceph_client_vars: /home/stack/wallaby/external/ceph_client.yml
-ceph_spec_ansible_host: /home/stack/wallaby/external/ceph_spec.yml
-dynamic_spec: false
+tripleo_cephadm_spec_ansible_host: /home/stack/wallaby/external/ceph_spec.yml
+tripleo_cephadm_dynamic_spec: false
 ceph_conf_overrides:
     global:
         osd_pool_default_pg_num: 16
         osd_pool_default_pgp_num: 16
         osd_pool_default_size: 3
-ceph_container_image: ceph-ci/daemon
-ceph_container_ns: undercloud.ctlplane.mydomain.tld:8787
-ceph_container_registry_auth: false
-ceph_container_registry_password: ''
-ceph_container_registry_username: ''
-ceph_container_tag: v5.0.7-stable-5.0-octopus-centos-8-x86_64
-cluster: ceph
-container_cli: podman
-fsid: ca9bf37b-ed0f-4e5a-bb21-e5b5f9b75135
+tripleo_cephadm_fsid: ca9bf37b-ed0f-4e5a-bb21-e5b5f9b75135
+tripleo_cephadm_cluster: ceph
+tripleo_cephadm_container_cli: podman
+tripleo_cephadm_container_image: ceph-ci/daemon
+tripleo_cephadm_container_ns: undercloud.ctlplane.mydomain.tld:8787
+tripleo_cephadm_container_tag: v5.0.7-stable-5.0-octopus-centos-8-x86_64
+tripleo_cephadm_dashboard_enabled: false
