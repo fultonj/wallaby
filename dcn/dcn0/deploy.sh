@@ -54,13 +54,12 @@ if [[ $HEAT -eq 1 ]]; then
          -e ~/templates/environments/deployed-server-environment.yaml \
          -e ~/templates/environments/disable-telemetry.yaml \
          -e ~/templates/environments/low-memory-usage.yaml \
-         -e ~/templates/environments/enable-swap.yaml \
          -e ~/templates/environments/docker-ha.yaml \
          -e ~/templates/environments/podman.yaml \
          -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
-         -e ~/templates/environments/dcn-hci.yaml \
+         -e ~/templates/environments/dcn-storage.yaml \
          -e ~/containers-prepare-parameter.yaml \
-         -e ~/generated-container-prepare.yaml \
+         -e ~/re-generated-container-prepare.yaml \
          -e ~/oc0-domain.yaml \
          -e $METAL \
          -e ../control-plane-export.yaml \
@@ -75,6 +74,8 @@ if [[ $HEAT -eq 1 ]]; then
          # -e ~/templates/environments/deployed-server-environment.yaml \
          # -e ~/templates/environments/network-isolation.yaml \
          # -e ~/templates/environments/network-environment.yaml \
+    # no swap
+         # -e ~/templates/environments/enable-swap.yaml \
 fi
 # -------------------------------------------------------
 if [[ $DOWN -eq 1 ]]; then
