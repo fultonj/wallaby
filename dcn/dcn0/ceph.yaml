@@ -20,5 +20,7 @@ parameter_defaults:
       - /dev/sdd
   CephAnsibleExtraConfig:
     ceph_osd_docker_cpu_limit: 1
-  CephAnsibleClientDisable: true
-  CephConfigPath: "/var/lib/tripleo-config/ceph"
+  #CephAnsibleClientDisable: true
+  #CephConfigPath: "/var/lib/tripleo-config/ceph"
+  CephConfigPath: "/etc/ceph"
+  CephAnsibleSkipClient: false
