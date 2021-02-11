@@ -1,0 +1,6 @@
+---
+- name: DistributedCompute
+  count: 1
+  instances:
+    - hostname: oc0-ceph-1
+      name: oc0-ceph-1
