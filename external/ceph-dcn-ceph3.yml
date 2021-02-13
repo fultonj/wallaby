@@ -1,0 +1,5 @@
+---
+tripleo_cephadm_cluster: ceph
+tripleo_cephadm_fsid: a0ed2f44-1f14-4f4b-9e10-15cd6d937edd
+tripleo_ceph_client_vars: /home/stack/wallaby/external/ceph_client_ceph3.yml
+tripleo_cephadm_keys: [{'name': 'client.openstack', 'key': 'AQCWQyhgAAAAABAAHxOLttkGrIFa4M1bgdPTLw==', 'mode': '0600', 'caps': {'mgr': 'allow *', 'mon': 'profile rbd', 'osd': 'profile rbd pool=vms, profile rbd pool=volumes, profile rbd pool=images'}}]

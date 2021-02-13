@@ -6,11 +6,18 @@ NET=1 # only runs if PRE=1
 PKG=1 # only runs if PRE=1
 POD=1 # only runs if PRE=1
 USR=1 # only runs if PRE=1
-
 CEPH=1
-STACK=ceph
-EXPORT=0
+EXPORT=1
+
+if [[ $# -eq 1 ]]; then
+    STACK=$1
+else
+    STACK=ceph
+fi
+echo "stack=$STACK"
+
 INV=inventory.yaml
+INVS=deployed-metal-${STACK}.yaml
 
 if [[ $METAL -eq 1 ]]; then
     pushd ../metalsmith
@@ -27,7 +34,7 @@ fi
 if [[ ! -e $INV ]]; then
     echo "Creating inventory"
     # https://review.opendev.org/#/c/723108/39/specs/wallaby/tripleo-ceph.rst@460
-    python3 inventory.py -m deployed-metal-ceph.yaml -i $INV
+    python3 inventory.py -m $INVS -i $INV
     sleep 180
     ansible -i $INV -m ping all
     if [[ $? -gt 0 ]]; then
@@ -69,9 +76,15 @@ if [[ $PRE -eq 1 ]]; then
 fi
 
 if [[ $CEPH -eq 1 ]]; then
-    ansible-playbook-3 -i $INV -v cephadm.yaml \
-                       -e @cephadm-extra-vars-heat.yml \
-                       -e @cephadm-extra-vars-ansible.yml
+    if [[ $STACK == "ceph" ]]; then
+        ansible-playbook-3 -i $INV -v cephadm.yaml \
+                           -e @cephadm-extra-vars-heat.yml \
+                           -e @cephadm-extra-vars-ansible.yml
+    else
+        ansible-playbook-3 -i $INV -v cephadm.yaml \
+                           -e @ceph-dcn.yml \
+                           -e @ceph-dcn-$STACK.yml
+    fi
 fi
 
 if [[ $EXPORT -eq 1 ]]; then
