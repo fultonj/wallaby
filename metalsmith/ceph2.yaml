@@ -1,0 +1,6 @@
+---
+- name: CephStorage
+  count: 1
+  instances:
+    - hostname: oc0-ceph-2
+      name: oc0-ceph-2

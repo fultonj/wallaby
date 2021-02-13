@@ -14,19 +14,19 @@ roles.
 
 ```
 +------------------+
-| ceph-central     |    CephClusterName: central
+| ceph2            |
 +------------------+
 | oc0-ceph-2       |    Ceph Mon/Mgr/OSD
 +------------------+
 
 +------------------+
-| ceph-dcn0        |    CephClusterName: dcn0
+| ceph3            |
 +------------------+
 | oc0-ceph-3       |    Ceph Mon/Mgr/OSD
 +------------------+
 
 +------------------+
-| control-plane    |    CephClusterName: central
+| control-plane-e  |    CephClusterName: central
 +------------------+
 | oc0-controller-0 |    Controller (Glance + Cinder)
 | oc0-controller-1 |    Controller (Glance + Cinder)
@@ -35,7 +35,7 @@ roles.
 +------------------+
 
 +------------------+
-| dcn0             |    CephClusterName: dcn0
+| dcn0e            |    CephClusterName: dcn0
 +------------------+
 | oc0-ceph-1       |    DistributedCompute (Glance + Nova + Cinder)
 +------------------+
@@ -43,7 +43,7 @@ roles.
 
 ## How to deploy it with TripleO
 
-- Deploy ceph-central and ceph-dcn0
+- Deploy ceph2 for central and ceph3 for dcn0 with [ceph.sh](ceph.sh)
 
 <!--
 - Deploy control-plane with [control-plane/deploy.sh](control-plane/deploy.sh)
