@@ -9,7 +9,7 @@ ceph_conf_overrides:
     global:
         osd_pool_default_pg_num: 16
         osd_pool_default_pgp_num: 16
-        osd_pool_default_size: 3
+        osd_pool_default_size: 1
 tripleo_cephadm_container_cli: podman
 tripleo_cephadm_container_image: ceph-ci/daemon
 tripleo_cephadm_container_ns: undercloud.ctlplane.mydomain.tld:8787
