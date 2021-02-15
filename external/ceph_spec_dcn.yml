@@ -3,3 +3,5 @@ service_type: osd
 service_id: default_drive_group
 data_devices:
   all: true
+placement:
+  host_pattern: '*'
