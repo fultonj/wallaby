@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-CEPH=0
+CEPH=1
 CONTROL=1
-EXPORT=0
+EXPORT=1
 DCN0=0
 CONTROLUP=0
 
@@ -52,17 +52,17 @@ fi
 if [[ $EXPORT -eq 1 ]]; then
     openstack overcloud export -f --stack control-plane-e
 
-    echo "Need to export ceph-2 cluster in CephExternalMultiConfig format"
-    exit 1
-
-    # if [[ ! -e control-plane-e-export.yaml ]]; then
-    #     echo "Unable to create control-plane-export.yaml. Aborting."
-    #     exit 1
-    # fi
-    # if [[ ! -e ceph-export-control-plane.yaml ]]; then
-    #     echo "Failure: openstack overcloud export ceph --stack control-plane"
-    #     exit 1
-    # fi
+    python3 export_ceph.py --stack ceph2
+    mv export_ceph2.yaml ceph-export-control-plane.yaml
+    
+    if [[ ! -e control-plane-e-export.yaml ]]; then
+        echo "Unable to create control-plane-export.yaml. Aborting."
+        exit 1
+    fi
+    if [[ ! -e ceph-export-control-plane.yaml ]]; then
+        echo "Failure: ceph-export-control-plane.yaml is missing. Aborting."
+        exit 1
+    fi
 fi
 # -------------------------------------------------------
 echo "DCN portion not yet implemented"
@@ -87,12 +87,9 @@ if [[ $DCN0 -eq 1 ]]; then
 fi
 # -------------------------------------------------------
 if [[ $CONTROLUP -eq 1 ]]; then
-    echo "Create control-plane/ceph_keys_update.yaml with ceph_keys.sh 3"
-    openstack overcloud export ceph -f --stack dcn0e
-    if [[ ! -e ceph-export-2-stacks.yaml ]]; then
-        echo "Failure: openstack overcloud export ceph --stack dcn0"
-        exit 1
-    fi
+
+    #python3 export_ceph.py --stack ceph3
+    #mv export_ceph3.yaml ceph-export-2-stacks.yaml
 
     pushd control-plane-e
     if [[ -e deploy-update.sh ]]; then
