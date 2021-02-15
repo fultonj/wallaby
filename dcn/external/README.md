@@ -43,11 +43,12 @@ roles.
 
 ## How to deploy it with TripleO
 
-- Deploy ceph2 for central and ceph3 for dcn0 with [ceph.sh](ceph.sh)
+- Use [master.sh](master.sh) to:
+  - Deploy ceph2 for control-plane-e and ceph3 for dcn0e
+  - Deploy control-plane with [control-plane/deploy.sh](control-plane/deploy.sh)
+  - Create `control-plane-export.yaml` (`openstack overcloud export -f --stack control-plane`)
 
 <!--
-- Deploy control-plane with [control-plane/deploy.sh](control-plane/deploy.sh)
-- Create `control-plane-export.yaml` (`openstack overcloud export -f --stack control-plane`)
 - Create `ceph-export-control-plane.yaml` (`openstack overcloud export ceph -f --stack control-plane`)
 - Deploy dcn0 with [dcn0/deploy.sh](dcn0/deploy.sh)
 - Create `ceph-export-2-stacks.yaml` (`openstack overcloud export ceph -f --stack dcn0`)
@@ -56,9 +57,9 @@ roles.
 - Re-run control-plane/deploy.sh
 -->
 
-Each deploy script will use [metalsmith](../metalsmith)
-to [provision](provision.sh) the nodes for each stack
-and the [kill](kill.sh) script will unprovision the nodes.
+Each deploy script will use [metalsmith](../../metalsmith)
+to [provision](../../provision.sh) the nodes for each stack
+and the [kill](../../kill.sh) script will unprovision the nodes.
 
 ## Validations
 
