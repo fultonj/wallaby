@@ -71,7 +71,7 @@ if [[ $HEAT -eq 1 ]]; then
 
     # For stack updates when central dcn will use dcn{0,1} ceph clusters
     # -e glance_update.yaml \
-    # -e ../ceph-export-2-stacks.yaml \
+    # -e ../ceph-export-dcn0e.yaml \
 
     # For network isolation
     # -n ../../network-data.yaml \

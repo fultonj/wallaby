@@ -24,3 +24,11 @@ ceph.conf
 inventory_openstack.yaml
 manifests.tar.gz
 get-pip.py
+**/control-plane-e/overrides.yaml
+**/dcn0e/glance.yaml
+**/dcn0e/overrides.yaml
+control-plane-e-export.yaml
+ceph-external-ceph2.yaml
+ceph-external-ceph3.yaml
+control_plane_roles.yaml
+ceph-export-dcn0.yaml

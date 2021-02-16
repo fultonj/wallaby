@@ -45,17 +45,14 @@ roles.
 
 - Use [master.sh](master.sh) to:
   - Deploy ceph2 for control-plane-e and ceph3 for dcn0e
-  - Deploy control-plane with [control-plane/deploy.sh](control-plane/deploy.sh)
+  - Deploy control-plane-e with [control-plane-e/deploy.sh](control-plane-e/deploy.sh)
   - Create `control-plane-export.yaml` (`openstack overcloud export -f --stack control-plane`)
-
-<!--
-- Create `ceph-export-control-plane.yaml` (`openstack overcloud export ceph -f --stack control-plane`)
-- Deploy dcn0 with [dcn0/deploy.sh](dcn0/deploy.sh)
-- Create `ceph-export-2-stacks.yaml` (`openstack overcloud export ceph -f --stack dcn0`)
-- Update control-plane/deploy.sh to use `ceph-export-2-stacks.yaml`
-- Update control-plane/deploy.sh to use [control-plane/glance_update.yaml](control-plane/glance_update.yaml)
-- Re-run control-plane/deploy.sh
--->
+  - Create `ceph-export-control-plane.yaml` with [export_ceph.py](export_ceph.py).
+  - Deploy dcn0e with [dcn0e/deploy.sh](dcn0e/deploy.sh)
+  - Create `ceph-export-dcn0.yaml` with [export_ceph.py --stack ceph3](export_ceph.py).
+  - Update control-plane-e/deploy.sh to use `ceph-export-dcn0e.yaml`
+  - Update control-plane-e/deploy.sh to use [control-plane-e/glance_update.yaml](control-plane-e/glance_update.yaml)
+  - Re-run control-plane-e/deploy.sh
 
 Each deploy script will use [metalsmith](../../metalsmith)
 to [provision](../../provision.sh) the nodes for each stack

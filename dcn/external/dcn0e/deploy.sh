@@ -15,10 +15,10 @@ if [[ $(($HEAT + $DOWN)) -gt 1 ]]; then
     exit 1
 fi
 # -------------------------------------------------------
-METAL="../../metalsmith/deployed-metal-${STACK}.yaml"
+METAL="../../../metalsmith/deployed-metal-${STACK}.yaml"
 if [[ ! -e $METAL ]]; then
     echo "$METAL is missing. Deploying nodes with metalsmith"
-    pushd ../../metalsmith
+    pushd ../../../metalsmith
     bash provision.sh $STACK
     popd
 fi
@@ -33,6 +33,11 @@ fi
 if [[ ! -e overrides.yaml ]]; then
     cp ../../dcn0/overrides.yaml .
     sed -i '/CephClusterName/d' overrides.yaml
+    sed -i 's/dcn0/dcn0e/g' overrides.yaml
+fi
+if [[ ! -e glance.yaml ]]; then
+    cp ../../dcn0/glance.yaml .
+    sed -i 's/dcn0/dcn0e/g' glance.yaml
 fi
 # -------------------------------------------------------
 # `openstack overcloud -v` should be passed along as
@@ -62,7 +67,7 @@ if [[ $HEAT -eq 1 ]]; then
          -e ~/re-generated-container-prepare.yaml \
          -e ~/oc0-domain.yaml \
          -e $METAL \
-         -e ../control-plane-export.yaml \
+         -e ../control-plane-e-export.yaml \
          -e ../ceph-export-control-plane.yaml \
          -e glance.yaml \
          -e overrides.yaml \

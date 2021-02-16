@@ -3,7 +3,7 @@
 CEPH=1
 CONTROL=1
 EXPORT=1
-DCN0=0
+DCN0=1
 CONTROLUP=0
 
 source ~/stackrc
@@ -19,7 +19,7 @@ if [[ $CEPH -eq 1 ]]; then
             exit 1
         fi
         popd
-        cp ../../external/ceph-external.yaml ceph-external-$STACK.yaml
+        mv ../../external/ceph-external.yaml ceph-external-$STACK.yaml
     done
     mv ceph-external-ceph2.yaml control-plane-e/
     mv ceph-external-ceph3.yaml dcn0e/
@@ -51,9 +51,7 @@ fi
 # -------------------------------------------------------
 if [[ $EXPORT -eq 1 ]]; then
     openstack overcloud export -f --stack control-plane-e
-
     python3 export_ceph.py --stack ceph2
-    mv export_ceph2.yaml ceph-export-control-plane.yaml
     
     if [[ ! -e control-plane-e-export.yaml ]]; then
         echo "Unable to create control-plane-export.yaml. Aborting."
@@ -64,9 +62,6 @@ if [[ $EXPORT -eq 1 ]]; then
         exit 1
     fi
 fi
-# -------------------------------------------------------
-echo "DCN portion not yet implemented"
-exit 1
 # -------------------------------------------------------
 if [[ $DCN0 -eq 1 ]]; then
     echo "Standing up dcn0 deployment"
@@ -88,8 +83,7 @@ fi
 # -------------------------------------------------------
 if [[ $CONTROLUP -eq 1 ]]; then
 
-    #python3 export_ceph.py --stack ceph3
-    #mv export_ceph3.yaml ceph-export-2-stacks.yaml
+    python3 export_ceph.py --stack ceph3
 
     pushd control-plane-e
     if [[ -e deploy-update.sh ]]; then
@@ -98,7 +92,7 @@ if [[ $CONTROLUP -eq 1 ]]; then
     cp deploy.sh deploy-update.sh
     sed -i s/qemu/qemu\ \\\\/g deploy-update.sh
     sed -i s/#\ ONE/\\-e\ glance_update.yaml\ \\\\/g deploy-update.sh
-    sed -i s/#\ TWO/\\-e\ \\.\\.\\/ceph-export-2-stacks.yaml/g deploy-update.sh
+    sed -i s/#\ TWO/\\-e\ \\.\\.\\/ceph-export-dcn0e.yaml/g deploy-update.sh
     bash deploy-update.sh
     popd
     echo "You may now test the deployment with ../validations/use-multistore-glance.sh"
