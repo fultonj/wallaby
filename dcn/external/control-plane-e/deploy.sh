@@ -32,7 +32,6 @@ if [[ ! -e control_plane_roles.yaml ]]; then
 fi
 if [[ ! -e overrides.yaml ]]; then
     cp ../../control-plane/overrides.yaml .
-    sed -i '/CephClusterName/d' overrides.yaml
 fi
 # -------------------------------------------------------
 # `openstack overcloud -v` should be passed along as
@@ -64,7 +63,6 @@ if [[ $HEAT -eq 1 ]]; then
          -e $METAL \
          -e ceph-external-ceph2.yaml \
          -e overrides.yaml \
-         -e ceph-overrides.yaml \
          --libvirt-type qemu
          # ONE
          # TWO

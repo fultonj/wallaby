@@ -32,7 +32,6 @@ if [[ ! -e dcn_roles.yaml ]]; then
 fi
 if [[ ! -e overrides.yaml ]]; then
     cp ../../dcn0/overrides.yaml .
-    sed -i '/CephClusterName/d' overrides.yaml
     sed -i 's/dcn0/dcn0e/g' overrides.yaml
 fi
 if [[ ! -e glance.yaml ]]; then
@@ -71,7 +70,6 @@ if [[ $HEAT -eq 1 ]]; then
          -e ../ceph-export-control-plane.yaml \
          -e glance.yaml \
          -e overrides.yaml \
-         -e ceph-overrides.yaml \
          --libvirt-type qemu
 
     # network isol

@@ -1,4 +1,0 @@
----
-parameter_defaults:
-  CephAnsibleExtraVars:
-    cluster: "central"
