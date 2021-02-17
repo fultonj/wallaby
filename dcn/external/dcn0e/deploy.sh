@@ -66,6 +66,7 @@ if [[ $HEAT -eq 1 ]]; then
          -e ~/re-generated-container-prepare.yaml \
          -e ~/oc0-domain.yaml \
          -e $METAL \
+         -e ceph-external-ceph3.yaml \
          -e ../control-plane-e-export.yaml \
          -e ../ceph-export-control-plane.yaml \
          -e glance.yaml \
