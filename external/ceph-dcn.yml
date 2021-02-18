@@ -2,7 +2,7 @@
 public_network: 192.168.24.0/24
 cluster_network: 192.168.24.0/24
 tripleo_cephadm_spec_ansible_host: /home/stack/wallaby/external/ceph_spec_dcn.yml
-tripleo_cephadm_pools: [{'name': 'vms', 'pg_num': '16', 'rule_name': 'replicated_rule', 'application': 'rbd'}, {'name': 'volumes', 'pg_num': '16', 'rule_name': 'replicated_rule', 'application': 'rbd'}, {'name': 'images', 'pg_num': '16', 'rule_name': 'replicated_rule', 'application': 'rbd'}]
+tripleo_cephadm_pools: [{'name': 'vms', 'size': '1', 'pg_num': '16', 'rule_name': 'replicated_rule', 'application': 'rbd'}, {'name': 'volumes', 'size': '1', 'pg_num': '16', 'rule_name': 'replicated_rule', 'application': 'rbd'}, {'name': 'images', 'size': '1', 'pg_num': '16', 'rule_name': 'replicated_rule', 'application': 'rbd'}]
 tripleo_cephadm_dynamic_spec: false
 ceph_conf_overrides:
     global:

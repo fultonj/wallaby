@@ -61,3 +61,18 @@ and the [kill](../../kill.sh) script will unprovision the nodes.
 ## Validations
 
 Use the same validations as seen [Non-external DCN](../README.md).
+
+I confirmed that the following work provided you updated the AZs and RC
+
+```
+-AZ="dcn0"
++AZ="dcn0e"
+-RC=~/control-planerc
++RC=~/control-plane-erc
+```
+
+- [use-multistore-glance.sh](../validations/use-multistore-glance.sh)
+- [use-central.sh](../validations/use-central.sh)
+- [use-dcn.sh](../validations/use-dcn.sh)
+- [dcn-pet.sh ](../validations/dcn-pet.sh )
+- [snapshots.sh ](../validations/snapshots.sh )

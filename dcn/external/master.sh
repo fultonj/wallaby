@@ -4,7 +4,7 @@ CEPH=1
 CONTROL=1
 EXPORT=1
 DCN0=1
-CONTROLUP=0
+CONTROLUP=1
 
 source ~/stackrc
 # -------------------------------------------------------
