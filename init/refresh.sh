@@ -2,8 +2,8 @@
 
 declare -A REPO_MAP=(
                      [767294]='tripleo-heat-templates' \
-                     [770674]='tripleo-ansible' \
-                     [771034]='tripleo-ansible' \
+                     [777586]='tripleo-ansible' \
+                     [773364]='tripleo-ansible' \
                     );
 
 for K in "${!REPO_MAP[@]}"; do
@@ -14,5 +14,9 @@ for K in "${!REPO_MAP[@]}"; do
     #git branch -D $BRANCH
     git review -d $K
     git branch
+    if [[ $K == "777586" ]]; then
+        OLDBRANCH=$(git branch --show-current)
+        git branch -M $OLDBRANCH mkspec
+    fi
     popd
 done
