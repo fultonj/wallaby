@@ -110,6 +110,12 @@ if [[ $1 == 'tht' ]]; then
         pushd /usr/share/ansible/plugins/modules
         sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_key.py
         sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_pool.py
+        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_spec_bootstrap.py
+        popd
+
+        pushd /usr/share/ansible/plugins/module_utils
+        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/module_utils/ceph_spec.py
+        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/module_utils/ca_common.py
         popd
 
         pushd /usr/share/ansible/tripleo-playbooks/
