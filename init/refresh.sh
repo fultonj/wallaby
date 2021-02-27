@@ -3,7 +3,7 @@
 declare -A REPO_MAP=(
                      [767294]='tripleo-heat-templates' \
                      [777586]='tripleo-ansible' \
-                     [773364]='tripleo-ansible' \
+                     [777767]='tripleo-ansible' \
                     );
 
 for K in "${!REPO_MAP[@]}"; do
