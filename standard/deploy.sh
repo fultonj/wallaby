@@ -55,14 +55,15 @@ if [[ $IRONIC -eq 1 ]]; then
         fi
     fi
 fi
-if [[ ! -e deployed-metal-$STACK.yaml ]]; then
+if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
     cp $METAL deployed-metal-$STACK.yaml
 fi
 # -------------------------------------------------------
 if [[ $NEW_SPEC -eq 1 ]]; then
-    ansible-playbook-3 ../dynamic_spec/mkspec.yml \
-                       -e deployed_metalsmith=deployed-metal-$STACK.yaml \
-                       -e ceph_spec=ceph_spec.yml -vvv
+    PUSHED=0; TGT=/home/stack/wallaby/standard/
+    if [[ $PWD != $TGT ]]; then pushd $TGT; PUSHED=1; fi
+    ansible-playbook-3 ../dynamic_spec/mkspec.yml -vvv
+    if [[ $PUSHED == 1 ]]; then popd; fi
 fi
 # -------------------------------------------------------
 if [[ $OLD_SPEC -eq 1 ]]; then
