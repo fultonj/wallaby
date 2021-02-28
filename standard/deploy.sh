@@ -1,12 +1,13 @@
 #!/bin/bash
 
-CON=1
-IRONIC=1
-SPEC=1
-HEAT=1
+CON=0
+IRONIC=0
+NEW_SPEC=1
+OLD_SPEC=0
+HEAT=0
 DOWN=0
 CHECK=0
-LOG=1
+LOG=0
 
 STACK=oc0
 DIR=~/config-download
@@ -58,7 +59,13 @@ if [[ ! -e deployed-metal-$STACK.yaml ]]; then
     cp $METAL deployed-metal-$STACK.yaml
 fi
 # -------------------------------------------------------
-if [[ $SPEC -eq 1 ]]; then
+if [[ $NEW_SPEC -eq 1 ]]; then
+    ansible-playbook-3 ../dynamic_spec/mkspec.yml \
+                       -e deployed_metalsmith=deployed-metal-$STACK.yaml \
+                       -e ceph_spec=ceph_spec.yml -vvv
+fi
+# -------------------------------------------------------
+if [[ $OLD_SPEC -eq 1 ]]; then
     python3 mkspec.py -m deployed-metal-$STACK.yaml > ceph_spec.yml
 fi
 # -------------------------------------------------------

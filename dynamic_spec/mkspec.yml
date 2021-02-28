@@ -1,0 +1,10 @@
+---
+- name: Genereate Ceph Spec file
+  hosts: localhost
+  vars:
+    metal: "../standard/deployed-metal-oc0.yaml"
+  tasks:
+    - name: Call ceph_spec_boostrap module
+      ceph_spec_bootstrap:
+        deployed_metalsmith: "{{ metal }}"
+        ceph_spec: "ceph_spec.yaml"
