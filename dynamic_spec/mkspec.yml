@@ -3,16 +3,26 @@
   hosts: localhost
   vars:
     metal: "/home/stack/wallaby/standard/deployed-metal-oc0.yaml"
-    spec: "/home/stack/wallaby/standard/ceph_spec.yaml"
+    new_spec: "/home/stack/wallaby/standard/ceph_spec.yaml"
     roles: "/home/stack/templates/roles_data.yaml"
     types:
       - mon
       - mgr
       - osd
+    # osd_spec:
+    #   data_devices:
+    #     all: true
+    osd_spec:
+      data_devices:
+        paths:
+          - /dev/ceph_vg/ceph_lv_data
+    hosts:
+      standalone.localdomain: 127.0.0.1
   tasks:
     - name: Call ceph_spec_boostrap module
       ceph_spec_bootstrap:
         deployed_metalsmith: "{{ metal }}"
-        #tripleo_roles: "{{ roles }}"
-        #ceph_spec: "{{ spec }}"
-        #ceph_service_types: "{{ types }}"
+        tripleo_roles: "{{ roles }}"
+        ceph_service_types: "{{ types }}"
+        new_ceph_spec: "{{ new_spec }}"
+        osd_spec: "{{ osd_spec }}"
