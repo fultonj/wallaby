@@ -1,0 +1,512 @@
+Undercloud:
+  hosts:
+    undercloud: {}
+  vars:
+    ansible_connection: local
+    ansible_host: localhost
+    ansible_python_interpreter: /usr/libexec/platform-python
+    ansible_remote_tmp: /tmp/ansible-${USER}
+    auth_url: https://192.168.24.2:13000
+    cacert: /etc/pki/ca-trust/source/anchors/cm-local-ca.pem
+    overcloud_admin_password: sNFcf0ZjmloIIc1t2khnx1yxr
+    overcloud_horizon_url: http://192.168.100.86:80/dashboard
+    overcloud_keystone_url: http://192.168.100.86:5000
+    plan: oc0
+    project_name: admin
+    undercloud_service_list:
+    - tripleo_nova_compute
+    - tripleo_heat_engine
+    - tripleo_ironic_conductor
+    - tripleo_swift_container_server
+    - tripleo_swift_object_server
+    - tripleo_mistral_engine
+    username: admin
+Compute:
+  hosts:
+    oc0-compute-0:
+      ansible_host: 192.168.24.21
+      canonical_hostname: oc0-compute-0.mydomain.tld
+      ctlplane_hostname: oc0-compute-0.ctlplane.mydomain.tld
+      ctlplane_ip: 192.168.24.21
+      deploy_server_id: 53d3b08a-b6b7-45a0-9f0b-49f60d470844
+      internal_api_cloud_0_hostname: oc0-compute-0.internalapi.mydomain.tld
+      internal_api_cloud_0_ip: 172.16.13.113
+      storage_cloud_0_hostname: oc0-compute-0.storage.mydomain.tld
+      storage_cloud_0_ip: 172.16.11.90
+      tenant_cloud_0_hostname: oc0-compute-0.tenant.mydomain.tld
+      tenant_cloud_0_ip: 172.16.14.34
+  vars:
+    ansible_ssh_user: tripleo-admin
+    bootstrap_server_id: bc0df74f-5116-4d07-8a05-146b9392dce6
+    serial: 1
+    tripleo_role_name: Compute
+    tripleo_role_networks:
+    - ctlplane
+    - internal_api_cloud_0
+    - storage_cloud_0
+    - tenant_cloud_0
+Controller:
+  hosts:
+    oc0-controller-0:
+      ansible_host: 192.168.24.23
+      canonical_hostname: oc0-controller-0.mydomain.tld
+      ctlplane_hostname: oc0-controller-0.ctlplane.mydomain.tld
+      ctlplane_ip: 192.168.24.23
+      deploy_server_id: bc0df74f-5116-4d07-8a05-146b9392dce6
+      external_cloud_0_hostname: oc0-controller-0.external.mydomain.tld
+      external_cloud_0_ip: 192.168.100.20
+      internal_api_cloud_0_hostname: oc0-controller-0.internalapi.mydomain.tld
+      internal_api_cloud_0_ip: 172.16.13.237
+      storage_cloud_0_hostname: oc0-controller-0.storage.mydomain.tld
+      storage_cloud_0_ip: 172.16.11.205
+      storage_mgmt_cloud_0_hostname: oc0-controller-0.storagemgmt.mydomain.tld
+      storage_mgmt_cloud_0_ip: 172.16.12.239
+      tenant_cloud_0_hostname: oc0-controller-0.tenant.mydomain.tld
+      tenant_cloud_0_ip: 172.16.14.35
+    oc0-controller-1:
+      ansible_host: 192.168.24.15
+      canonical_hostname: oc0-controller-1.mydomain.tld
+      ctlplane_hostname: oc0-controller-1.ctlplane.mydomain.tld
+      ctlplane_ip: 192.168.24.15
+      deploy_server_id: 17f422a6-bd53-4ab8-834c-e3a6a8040fe8
+      external_cloud_0_hostname: oc0-controller-1.external.mydomain.tld
+      external_cloud_0_ip: 192.168.100.51
+      internal_api_cloud_0_hostname: oc0-controller-1.internalapi.mydomain.tld
+      internal_api_cloud_0_ip: 172.16.13.59
+      storage_cloud_0_hostname: oc0-controller-1.storage.mydomain.tld
+      storage_cloud_0_ip: 172.16.11.172
+      storage_mgmt_cloud_0_hostname: oc0-controller-1.storagemgmt.mydomain.tld
+      storage_mgmt_cloud_0_ip: 172.16.12.199
+      tenant_cloud_0_hostname: oc0-controller-1.tenant.mydomain.tld
+      tenant_cloud_0_ip: 172.16.14.177
+    oc0-controller-2:
+      ansible_host: 192.168.24.7
+      canonical_hostname: oc0-controller-2.mydomain.tld
+      ctlplane_hostname: oc0-controller-2.ctlplane.mydomain.tld
+      ctlplane_ip: 192.168.24.7
+      deploy_server_id: f4f00055-bb2a-4887-aa93-515730a5c10b
+      external_cloud_0_hostname: oc0-controller-2.external.mydomain.tld
+      external_cloud_0_ip: 192.168.100.30
+      internal_api_cloud_0_hostname: oc0-controller-2.internalapi.mydomain.tld
+      internal_api_cloud_0_ip: 172.16.13.4
+      storage_cloud_0_hostname: oc0-controller-2.storage.mydomain.tld
+      storage_cloud_0_ip: 172.16.11.66
+      storage_mgmt_cloud_0_hostname: oc0-controller-2.storagemgmt.mydomain.tld
+      storage_mgmt_cloud_0_ip: 172.16.12.117
+      tenant_cloud_0_hostname: oc0-controller-2.tenant.mydomain.tld
+      tenant_cloud_0_ip: 172.16.14.4
+  vars:
+    ansible_ssh_user: tripleo-admin
+    bootstrap_server_id: bc0df74f-5116-4d07-8a05-146b9392dce6
+    serial: 1
+    tripleo_role_name: Controller
+    tripleo_role_networks:
+    - ctlplane
+    - external_cloud_0
+    - internal_api_cloud_0
+    - storage_cloud_0
+    - storage_mgmt_cloud_0
+    - tenant_cloud_0
+CephStorage:
+  hosts:
+    oc0-ceph-0:
+      ansible_host: 192.168.24.13
+      canonical_hostname: oc0-ceph-0.mydomain.tld
+      ctlplane_hostname: oc0-ceph-0.ctlplane.mydomain.tld
+      ctlplane_ip: 192.168.24.13
+      deploy_server_id: 75713ada-2569-4310-b063-5a8519501335
+      storage_cloud_0_hostname: oc0-ceph-0.storage.mydomain.tld
+      storage_cloud_0_ip: 172.16.11.236
+      storage_mgmt_cloud_0_hostname: oc0-ceph-0.storagemgmt.mydomain.tld
+      storage_mgmt_cloud_0_ip: 172.16.12.218
+    oc0-ceph-1:
+      ansible_host: 192.168.24.11
+      canonical_hostname: oc0-ceph-1.mydomain.tld
+      ctlplane_hostname: oc0-ceph-1.ctlplane.mydomain.tld
+      ctlplane_ip: 192.168.24.11
+      deploy_server_id: 10aad576-322d-480d-b78e-1756619c91da
+      storage_cloud_0_hostname: oc0-ceph-1.storage.mydomain.tld
+      storage_cloud_0_ip: 172.16.11.64
+      storage_mgmt_cloud_0_hostname: oc0-ceph-1.storagemgmt.mydomain.tld
+      storage_mgmt_cloud_0_ip: 172.16.12.37
+    oc0-ceph-2:
+      ansible_host: 192.168.24.14
+      canonical_hostname: oc0-ceph-2.mydomain.tld
+      ctlplane_hostname: oc0-ceph-2.ctlplane.mydomain.tld
+      ctlplane_ip: 192.168.24.14
+      deploy_server_id: eea3a04f-863a-42dc-98a7-441f6923b0ac
+      storage_cloud_0_hostname: oc0-ceph-2.storage.mydomain.tld
+      storage_cloud_0_ip: 172.16.11.125
+      storage_mgmt_cloud_0_hostname: oc0-ceph-2.storagemgmt.mydomain.tld
+      storage_mgmt_cloud_0_ip: 172.16.12.222
+  vars:
+    ansible_ssh_user: tripleo-admin
+    bootstrap_server_id: bc0df74f-5116-4d07-8a05-146b9392dce6
+    serial: 1
+    tripleo_role_name: CephStorage
+    tripleo_role_networks:
+    - ctlplane
+    - storage_cloud_0
+    - storage_mgmt_cloud_0
+allovercloud:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    container_cli: podman
+    ctlplane_vip: 192.168.24.12
+    external_cloud_0_vip: 192.168.100.86
+    internal_api_cloud_0_vip: 172.16.13.40
+    redis_vip: 172.16.13.125
+    storage_cloud_0_vip: 172.16.11.250
+    storage_mgmt_cloud_0_vip: 172.16.12.200
+oc0:
+  children:
+    allovercloud: {}
+overcloud:
+  children:
+    allovercloud: {}
+  deprecated: Deprecated by allovercloud group in Ussuri
+ovn_metadata:
+  children:
+    Compute: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+glance_api:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+pacemaker:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+keystone_public_api:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+heat_api:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+oslo_messaging_rpc:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+boot_params_service:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+nova_compute:
+  children:
+    Compute: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+timezone:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+container_image_prepare:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+iscsid:
+  children:
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+placement:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+nova_metadata:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+cinder_volume:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+ceph_mgr:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+mysql:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+heat_api_cloudwatch_disabled:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+heat_api_cfn:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+heat_engine:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+kernel:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+sshd:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+memcached:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+oslo_messaging_notify:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+keystone:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+nova_conductor:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+ovn_controller:
+  children:
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+redis:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+mysql_client:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+snmp:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+cinder_scheduler:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+tripleo_firewall:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+certmonger_user:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+neutron_api:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+nova_libvirt:
+  children:
+    Compute: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+nova_vnc_proxy:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+chrony:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+swift_ringbuilder:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+nova_migration_target:
+  children:
+    Compute: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+cinder_api:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+nova_scheduler:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+podman:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+ceph_client:
+  children:
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+tripleo_packages:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+clustercheck:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+haproxy:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+ovn_dbs:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+swift_proxy:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+keystone_admin_api:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+logrotate_crond:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+ceph_osd:
+  children:
+    CephStorage: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+neutron_plugin_ml2_ovn:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+nova_libvirt_guests:
+  children:
+    Compute: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+horizon:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+tuned:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+ca_certs:
+  children:
+    CephStorage: {}
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+swift_storage:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+ceph_mon:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+nova_api:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+mgrs:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+clients:
+  children:
+    Compute: {}
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+osds:
+  children:
+    CephStorage: {}
+  vars:
+    ansible_ssh_user: tripleo-admin
+mons:
+  children:
+    Controller: {}
+  vars:
+    ansible_ssh_user: tripleo-admin

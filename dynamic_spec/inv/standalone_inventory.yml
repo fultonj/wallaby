@@ -1,0 +1,428 @@
+Undercloud:
+  hosts:
+    undercloud: {}
+  vars:
+    ansible_connection: local
+    ansible_host: localhost
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_remote_tmp: /tmp/ansible-${USER}
+    auth_url: null
+    overcloud_admin_password: yCoyKCeZVKhyMQ7vOUM3NcVtK
+    overcloud_horizon_url: http://192.168.24.3:80/dashboard
+    overcloud_keystone_url: http://192.168.24.3:5000
+    plan: standalone
+    project_name: null
+    undercloud_service_list:
+    - tripleo_nova_compute
+    - tripleo_heat_engine
+    - tripleo_ironic_conductor
+    - tripleo_swift_container_server
+    - tripleo_swift_object_server
+    - tripleo_mistral_engine
+    username: null
+Standalone:
+  hosts:
+    standalone:
+      ansible_host: 192.168.24.1
+      canonical_hostname: standalone.localdomain
+      ctlplane_hostname: standalone.ctlplane.localdomain
+      ctlplane_ip: 192.168.24.1
+      deploy_server_id: 2d43fa81-e561-4385-bdbd-0f6ef05d287b
+  vars:
+    ansible_connection: local
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_ssh_user: root
+    bootstrap_server_id: 2d43fa81-e561-4385-bdbd-0f6ef05d287b
+    serial: 1
+    tripleo_role_name: Standalone
+    tripleo_role_networks:
+    - ctlplane
+allovercloud:
+  children:
+    Standalone: {}
+  vars:
+    container_cli: podman
+    ctlplane_vip: 192.168.24.3
+    redis_vip: 192.168.24.3
+standalone:
+  children:
+    allovercloud: {}
+overcloud:
+  children:
+    allovercloud: {}
+  deprecated: Deprecated by allovercloud group in Ussuri
+clustercheck:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+ovn_metadata:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+metrics_qdr:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+cinder_api:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+nova_compute:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+rsyslog_baremetal_ansible:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+timezone:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+keystone_public_api:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+keystone_admin_api:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+gnocchi_api:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+ceph_osd:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+sshd:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+oslo_messaging_notify:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+tripleo_firewall:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+gnocchi_statsd:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+tripleo_packages:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+cinder_volume:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+memcached:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+ceilometer_agent_central:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+haproxy:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+kernel:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+oslo_messaging_rpc:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+ceph_mon:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+podman:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+ceph_mgr:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+nova_conductor:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+rear:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+multipathd:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+gnocchi_metricd:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+heat_api_cloudwatch_disabled:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+nova_api:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+nova_metadata:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+pacemaker:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+tuned:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+ceilometer_agent_notification:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+aodh_listener:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+heat_engine:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+ca_certs:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+cinder_scheduler:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+heat_api_cfn:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+mysql_client:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+ovn_dbs:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+openstack_clients:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+iscsid:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+nova_vnc_proxy:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+aodh_api:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+docker_registry:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+ceph_client:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+mysql:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+nova_migration_target:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+aodh_evaluator:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+neutron_api:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+chrony:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+nova_scheduler:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+logrotate_tmpwatch:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+ceilometer_agent_compute:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+nova_libvirt:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+redis:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+container_image_prepare:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+collectd:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+snmp:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+neutron_plugin_ml2_ovn:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+logrotate_crond:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+glance_api:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+certmonger_user:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+placement:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+cinder_backup:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+aodh_notifier:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+heat_api:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+keystone:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+ovn_controller:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+osds:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+mons:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+mgrs:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
+clients:
+  children:
+    Standalone: {}
+  vars:
+    ansible_ssh_user: root
