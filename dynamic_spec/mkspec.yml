@@ -2,27 +2,20 @@
 - name: Genereate Ceph Spec file
   hosts: localhost
   vars:
-    metal: "/home/stack/wallaby/standard/deployed-metal-oc0.yaml"
     new_spec: "/home/stack/wallaby/standard/ceph_spec.yaml"
+    metal: "/home/stack/wallaby/standard/deployed-metal-oc0.yaml"
+    inv: "/home/stack/config-download/oc0/tripleo-ansible-inventory.yaml"
     roles: "/home/stack/templates/roles_data.yaml"
-    types:
-      - mon
-      - mgr
-      - osd
+    #inv: "/home/stack/wallaby/dynamic_spec/inv/standalone_inventory.yml"
     # osd_spec:
     #   data_devices:
-    #     all: true
-    osd_spec:
-      data_devices:
-        paths:
-          - /dev/ceph_vg/ceph_lv_data
-    hosts:
-      standalone.localdomain: 127.0.0.1
+    #     paths:
+    #       - /dev/ceph_vg/ceph_lv_data
   tasks:
     - name: Call ceph_spec_boostrap module
       ceph_spec_bootstrap:
-        deployed_metalsmith: "{{ metal }}"
-        tripleo_roles: "{{ roles }}"
-        ceph_service_types: "{{ types }}"
         new_ceph_spec: "{{ new_spec }}"
-        osd_spec: "{{ osd_spec }}"
+        tripleo_ansible_inventory: "{{ inv }}"
+        #deployed_metalsmith: "{{ metal }}"
+        #tripleo_roles: "{{ roles }}"
+        #osd_spec: "{{ osd_spec }}"
