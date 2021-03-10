@@ -16,6 +16,7 @@
       ceph_spec_bootstrap:
         new_ceph_spec: "{{ new_spec }}"
         tripleo_ansible_inventory: "{{ inv }}"
+        fqdn: false
         #deployed_metalsmith: "{{ metal }}"
         #tripleo_roles: "{{ roles }}"
         #osd_spec: "{{ osd_spec }}"
