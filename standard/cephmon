@@ -9,15 +9,15 @@ if [[ ! -e deployed-metal-$STACK.yaml ]]; then
 fi
 
 IP=$(grep oc0-controller-0-ctlplane deployed-metal-oc0.yaml -A 3 | grep 192 | awk {'print $3'})
-
+SSH="ssh -i ~/.ssh/ceph-admin-id_rsa"
 if [[ $# -gt 0 ]]; then
     if [[ $1 == 'ls' ]]; then
         echo "ceph orch host ls"
-        ssh ceph-admin@$IP "sudo cephadm shell -- ceph orch host ls"
+        $SSH ceph-admin@$IP "sudo cephadm shell -- ceph orch host ls"
     elif [[ $1 == 'net' ]]; then
         # the public_network will get set by default but cluster_network
         echo "ceph config get mon cluster_network"
-        ssh ceph-admin@$IP "sudo cephadm shell -- ceph config get mon cluster_network"
+        $SSH ceph-admin@$IP "sudo cephadm shell -- ceph config get mon cluster_network"
     elif [[ $1 == '-h' ]]; then
         echo "USAGE $0 <args>"
         echo "if <args> is missing it will SSH you into the first mon"
@@ -25,8 +25,8 @@ if [[ $# -gt 0 ]]; then
         echo "if <args> is \$FOO run 'ceph \$FOO' (e.g. try '$0 -s')"
         echo "if <args> is '-h' show this message"
     else
-        ssh ceph-admin@$IP "sudo cephadm shell -- ceph $@"
+        $SSH ceph-admin@$IP "sudo cephadm shell -- ceph $@"
     fi
 else
-    ssh ceph-admin@$IP
+    $SSH ceph-admin@$IP
 fi
