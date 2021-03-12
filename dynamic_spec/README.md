@@ -1,5 +1,14 @@
 # Dynamic Spec
 
+## Obsolete
+
+This was where a POC was started but it's since been replaced with the
+real thing at:
+
+ https://review.opendev.org/c/openstack/tripleo-ansible/+/777767
+
+## About
+
 We need to be able to dynamically build
 [Ceph spec files](https://docs.ceph.com/en/latest/mgr/orchestrator/#host-specification)
 within TripleO via two Ansible modules

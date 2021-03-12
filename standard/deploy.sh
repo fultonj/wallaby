@@ -2,8 +2,6 @@
 
 CON=0
 IRONIC=1
-NEW_SPEC=0
-OLD_SPEC=0
 HEAT=1
 DOWN=0
 CHECK=0
@@ -57,17 +55,6 @@ if [[ $IRONIC -eq 1 ]]; then
 fi
 if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
     cp $METAL deployed-metal-$STACK.yaml
-fi
-# -------------------------------------------------------
-if [[ $NEW_SPEC -eq 1 ]]; then
-    PUSHED=0; TGT=/home/stack/wallaby/standard/
-    if [[ $PWD != $TGT ]]; then pushd $TGT; PUSHED=1; fi
-    ansible-playbook-3 ../dynamic_spec/mkspec.yml -vvv
-    if [[ $PUSHED == 1 ]]; then popd; fi
-fi
-# -------------------------------------------------------
-if [[ $OLD_SPEC -eq 1 ]]; then
-    python3 mkspec.py -m deployed-metal-$STACK.yaml > ceph_spec.yml
 fi
 # -------------------------------------------------------
 if [[ $LOG -eq 1 ]]; then
