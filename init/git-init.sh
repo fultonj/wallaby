@@ -125,6 +125,10 @@ if [[ $1 == 'link' ]]; then
         pushd /usr/share/ansible/tripleo-playbooks/
         sudo mv cephadm.yml cephadm.yml.dist
         sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks/cephadm.yml
+        if [[ -e ceph-admin-user-playbook.yml ]]; then
+            mv ceph-admin-user-playbook.yml ceph-admin-user-playbook.yml.dist
+        fi
+        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks/ceph-admin-user-playbook.yml
         popd
     fi
 fi
