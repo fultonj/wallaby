@@ -9,6 +9,13 @@ if [[ ! -e deployed-metal-$STACK.yaml ]]; then
 fi
 
 IP=$(grep oc0-controller-0-ctlplane deployed-metal-oc0.yaml -A 3 | grep 192 | awk {'print $3'})
+
+for F in $(ls /home/stack/.ssh/ceph-admin-id_rsa*); do
+    if [[ $(ls -l $F | awk {'print $3'}) != "stack" ]]; then
+        sudo chown stack:stack $F
+    fi
+done
+
 SSH="ssh -i ~/.ssh/ceph-admin-id_rsa"
 if [[ $# -gt 0 ]]; then
     if [[ $1 == 'ls' ]]; then
