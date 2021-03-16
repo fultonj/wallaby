@@ -87,7 +87,7 @@ for repo in "${repos[@]}"; do
 done
 popd
 # -------------------------------------------------------
-if [[ $1 == 'tht' ]]; then
+if [[ $1 == 'link' ]]; then
     if [[ ! -e ~/templates ]]; then
         ln -v -s ~/tripleo-heat-templates ~/templates
     fi
@@ -101,16 +101,20 @@ if [[ $1 == 'tht' ]]; then
                 sudo ln -v -s $TARGET/$D $D
             fi
         done
-        # this directory may not exist yet so link it either way
-        sudo ln -s $TARGET/tripleo_cephadm
-        sudo ln -s $TARGET/tripleo_run_cephadm
+        for D in tripleo_{run_cephadm,cephadm}; do
+            if [[ -d $D ]]; then
+                sudo mv -v $D $D.dist
+                sudo ln -v -s $TARGET/$D $D
+            fi
+        done
         popd
 
         # link libraries
         pushd /usr/share/ansible/plugins/modules
-        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_key.py
-        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_pool.py
         sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_spec_bootstrap.py
+        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_fs.py
+        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_dashboard_user.py
+        sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/ceph_mkspec.py
         popd
 
         pushd /usr/share/ansible/plugins/module_utils
@@ -119,6 +123,7 @@ if [[ $1 == 'tht' ]]; then
         popd
 
         pushd /usr/share/ansible/tripleo-playbooks/
+        sudo mv cephadm.yml cephadm.yml.dist
         sudo ln -s /home/stack/tripleo-ansible/tripleo_ansible/playbooks/cephadm.yml
         popd
     fi
