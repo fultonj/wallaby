@@ -1,0 +1,8 @@
+---
+parameter_defaults:
+  CephPoolDefaultSize: 3
+  CephPoolDefaultPgNum: 16
+  CephConfigOverrides:
+    osd_recovery_op_priority: 3
+    osd_recovery_max_active: 3
+    osd_max_backfills: 1

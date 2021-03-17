@@ -2,6 +2,7 @@
 
 CON=0
 IRONIC=1
+WA=1
 HEAT=1
 DOWN=0
 CHECK=0
@@ -55,6 +56,13 @@ if [[ $IRONIC -eq 1 ]]; then
 fi
 if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
     cp $METAL deployed-metal-$STACK.yaml
+fi
+# -------------------------------------------------------
+if [[ $WA -eq 1 ]]; then
+    # workaround https://tracker.ceph.com/issues/49870
+    IP=$(grep oc0-controller-0-ctlplane deployed-metal-$STACK.yaml -A 3 | grep 192 | awk {'print $3'})
+    scp ../ceph/cephadm heat-admin@$IP:/tmp/cephadm
+    ssh heat-admin@$IP "sudo mv /tmp/cephadm /usr/sbin/cephadm"
 fi
 # -------------------------------------------------------
 if [[ $LOG -eq 1 ]]; then
