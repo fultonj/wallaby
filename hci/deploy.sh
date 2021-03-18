@@ -1,6 +1,7 @@
 #!/bin/bash
 
 IRONIC=1
+RMCEPH=0
 WA=1
 HEAT=1
 DOWN=0
@@ -45,16 +46,24 @@ fi
 # -------------------------------------------------------
 if [[ $WA -eq 1 ]]; then
     # workaround https://tracker.ceph.com/issues/49870
+    CHK1=$(md5sum ../ceph/cephadm | awk {'print $1'})
     IP=$(grep oc0-controller-0-ctlplane deployed-metal-$STACK.yaml -A 3 | grep 192 | awk {'print $3'})
     scp ../ceph/cephadm heat-admin@$IP:/tmp/cephadm
     ssh heat-admin@$IP "sudo mv /tmp/cephadm /usr/sbin/cephadm"
+    CHK2=$(ssh heat-admin@$IP "sudo md5sum /usr/sbin/cephadm | awk {'print \$1'}")
+    if [[ "$CHK1" != "$CHK2" ]]; then
+        echo "ERROR: New cephadm not installed on $IP ($CHK1 == $CHK2)"
+        exit 1
+    else
+        echo "New cephadm installed on $IP ($CHK1 == $CHK2)"
+    fi
+fi
+# -------------------------------------------------------
+if [[ $RMCEPH -eq 1 ]]; then
+    ansible-playbook -i ~/config-download/$STACK/$STACK/tripleo-ansible-inventory.yaml  ../external/utilities/rm_ceph.yaml
 fi
 # -------------------------------------------------------
 if [[ $HEAT -eq 1 ]]; then
-    if [[ ! -e ~/hci_roles.yaml ]]; then
-        openstack overcloud roles generate Controller ComputeHCI -o ~/hci_roles.yaml
-    fi
-    # tripleo-client will use ansible to run heat and config-download
     if [[ ! -d ~/templates ]]; then
         ln -s /usr/share/openstack-tripleo-heat-templates ~/templates
     fi
@@ -71,24 +80,30 @@ if [[ $HEAT -eq 1 ]]; then
           --libvirt-type qemu \
           --stack $STACK \
           --templates ~/templates \
-         -r hci_roles.yaml \
-         -n ../network-data.yaml \
-         -e ~/templates/environments/deployed-server-environment.yaml \
-         -e ~/templates/environments/network-isolation.yaml \
-         -e ~/templates/environments/network-environment.yaml \
-         -e ~/templates/environments/disable-telemetry.yaml \
-         -e ~/templates/environments/low-memory-usage.yaml \
-         -e ~/templates/environments/docker-ha.yaml \
-         -e ~/templates/environments/podman.yaml \
-         -e ~/containers-prepare-parameter.yaml \
-         -e ~/re-generated-container-prepare.yaml \
-         -e ~/templates/environments/cephadm/cephadm.yaml \
-         -e ~/oc0-domain.yaml \
-         -e deployed-metal-$STACK.yaml \
-         -e overrides.yaml \
-         -e cephadm-overrides.yaml
+          -r hci_roles.yaml \
+          -n ../network-data.yaml \
+          -e ~/templates/environments/deployed-server-environment.yaml \
+          -e ~/templates/environments/network-isolation.yaml \
+          -e ~/templates/environments/network-environment.yaml \
+          -e ~/templates/environments/disable-telemetry.yaml \
+          -e ~/templates/environments/low-memory-usage.yaml \
+          -e ~/templates/environments/docker-ha.yaml \
+          -e ~/templates/environments/podman.yaml \
+          -e ~/containers-prepare-parameter.yaml \
+          -e ~/re-generated-container-prepare.yaml \
+          -e ~/templates/environments/cephadm/cephadm.yaml \
+          -e ~/oc0-domain.yaml \
+          -e deployed-metal-$STACK.yaml \
+          -e overrides.yaml \
+          -e cephadm-overrides.yaml
 
     # parking this here for now (re-insert between -r and -n)
     # -p /usr/share/openstack-tripleo-heat-templates/plan-samples/plan-environment-derived-params.yaml \
                 
+fi
+# -------------------------------------------------------
+if [[ $DOWN -eq 1 ]]; then
+    pushd ~/config-download/hci/
+    bash ansible-playbook-command.sh
+    popd
 fi
