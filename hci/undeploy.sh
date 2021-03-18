@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CLEAN=1
-STACK=hci
+STACK=overcloud
 
 openstack overcloud delete $STACK --yes
 

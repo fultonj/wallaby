@@ -10,7 +10,7 @@ DERIVE=0
 PLAN=0
 
 DIR=~/config-download
-STACK=hci
+STACK=overcloud
 RC=/home/stack/${STACK}rc
 CEPHADM=1
 

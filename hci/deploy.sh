@@ -1,12 +1,12 @@
 #!/bin/bash
 
 IRONIC=1
-RMCEPH=0
 WA=1
 HEAT=1
 DOWN=0
+RMCEPH=0
 
-STACK=hci
+STACK=overcloud
 DIR=~/config-download
 NODE_COUNT=6
 
@@ -59,10 +59,6 @@ if [[ $WA -eq 1 ]]; then
     fi
 fi
 # -------------------------------------------------------
-if [[ $RMCEPH -eq 1 ]]; then
-    ansible-playbook -i ~/config-download/$STACK/$STACK/tripleo-ansible-inventory.yaml  ../external/utilities/rm_ceph.yaml
-fi
-# -------------------------------------------------------
 if [[ $HEAT -eq 1 ]]; then
     if [[ ! -d ~/templates ]]; then
         ln -s /usr/share/openstack-tripleo-heat-templates ~/templates
@@ -81,6 +77,7 @@ if [[ $HEAT -eq 1 ]]; then
           --stack $STACK \
           --templates ~/templates \
           -r hci_roles.yaml \
+          -p /usr/share/openstack-tripleo-heat-templates/plan-samples/plan-environment-derived-params.yaml \
           -n ../network-data.yaml \
           -e ~/templates/environments/deployed-server-environment.yaml \
           -e ~/templates/environments/network-isolation.yaml \
@@ -106,4 +103,8 @@ if [[ $DOWN -eq 1 ]]; then
     pushd ~/config-download/hci/
     bash ansible-playbook-command.sh
     popd
+fi
+# -------------------------------------------------------
+if [[ $RMCEPH -eq 1 ]]; then
+    ansible-playbook -i ~/config-download/$STACK/$STACK/tripleo-ansible-inventory.yaml  ../external/utilities/rm_ceph.yaml
 fi
