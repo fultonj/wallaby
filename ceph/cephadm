@@ -3117,20 +3117,18 @@ def command_bootstrap():
             return False
     is_available('mgr', is_mgr_available)
 
+    def json_loads_retry(cli_func):
+        for sleep_secs in [1, 4, 4]:
+            try:
+                return json.loads(cli_func())
+            except:
+                logger.debug('Invalid JSON. Retrying in %s seconds...' %  sleep_secs)
+                time.sleep(sleep_secs)
+
     # wait for mgr to restart (after enabling a module)
     def wait_for_mgr_restart():
         # first get latest mgrmap epoch from the mon
-        retries = 5
-        retry = 0
-        while (retry < retries):
-          try:
-            out = cli(['mgr', 'dump'])
-            j = json.loads(out)
-            break
-          except json.decoder.JSONDecodeError:
-            time.sleep(1)
-            logger.info('Waiting 1 second for mgr to return valid JSON...')
-          retry += 1
+        j = json_loads_retry(lambda: cli(['mgr', 'dump']))
         epoch = j['epoch']
         # wait for mgr to have it
         logger.info('Waiting for the mgr to restart...')
