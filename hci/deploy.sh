@@ -1,7 +1,8 @@
 #!/bin/bash
 
-IRONIC=1
-WA=1
+IRONIC=0
+WA=0
+PUSH=1
 HEAT=1
 DOWN=0
 RMCEPH=0
@@ -57,6 +58,12 @@ if [[ $WA -eq 1 ]]; then
     else
         echo "New cephadm installed on $IP ($CHK1 == $CHK2)"
     fi
+fi
+# -------------------------------------------------------
+if [[ $PUSH -eq 1 ]]; then
+    TGT="/usr/share/ansible/tripleo-playbooks/cli-derive-parameters.yaml"
+    SRC="/home/stack/tripleo-ansible/tripleo_ansible/playbooks/cli-derive-parameters.yaml"
+    sudo mv -v $SRC $TGT
 fi
 # -------------------------------------------------------
 if [[ $HEAT -eq 1 ]]; then
