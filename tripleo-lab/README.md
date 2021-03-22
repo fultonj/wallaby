@@ -36,6 +36,12 @@ The tasks referenced by the tags `-t domains -t baremetal -t vbmc`
 (which are inclusive in the above example) will provision the virtual
 baremetal servers. See [metalsmith](../metalsmith/).
 
+Because tripleo-ansible-operator imports ironic nodes
+[without introspection](https://github.com/openstack/tripleo-operator-ansible/blob/master/roles/tripleo_overcloud_node_import/defaults/main.yml#L12)
+I have tripleo-lab
+[call it](https://github.com/cjeanner/tripleo-lab/blob/38f3ab758a75063d6fcabe8c24de1719fe2e29b8/roles/overcloud/tasks/baremetal.yaml#L61)
+with `tripleo_overcloud_node_import_introspect: true`.
+
 <!--
 ## Workarounds
 
@@ -55,5 +61,9 @@ grep -n '## BEGIN undercloud' .ssh/config
 grep -n '## END undercloud' .ssh/config
 sed -i -e '1,9d' .ssh/config
 ```
+
+# https://bugs.launchpad.net/tripleo/+bug/1920215
+sed -i s/tripleo_overcloud_node_import_introspect\\:\ false/tripleo_overcloud_node_import_introspect\\:\ true/g ~/.ansible/tripleo-operator-ansible/roles/tripleo_overcloud_node_import/defaults/main.yml
+
 -->
 
