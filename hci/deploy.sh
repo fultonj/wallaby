@@ -64,6 +64,11 @@ if [[ $PUSH -eq 1 ]]; then
     TGT="/usr/share/ansible/tripleo-playbooks/cli-derive-parameters.yaml"
     SRC="/home/stack/tripleo-ansible/tripleo_ansible/playbooks/cli-derive-parameters.yaml"
     sudo cp -v $SRC $TGT
+
+    TGT="/usr/share/ansible/plugins/modules/tripleo_derive_hci_parameters.py"
+    SRC="/home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/tripleo_derive_hci_parameters.py"
+    sudo cp -v $SRC $TGT
+
 fi
 # -------------------------------------------------------
 if [[ $HEAT -eq 1 ]]; then

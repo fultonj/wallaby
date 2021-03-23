@@ -12,7 +12,7 @@ PLAN=0
 DIR=~/config-download
 STACK=overcloud
 RC=/home/stack/${STACK}rc
-CEPHADM=1
+CEPHADM=0
 
 function run_on_mon {
     if [ $CEPHADM -eq 1 ]; then
@@ -165,4 +165,10 @@ if [ $DERIVE -eq 1 ]; then
     GREP="egrep 'reserved_host_memory_mb|cpu_allocation_ratio' /etc/nova/nova.conf"
     echo "Compute output of $GREP"
     $ANS ComputeHCI -m shell -a "podman exec -ti nova_compute $GREP" | grep -v \#
+
+    echo -e "\nThe above should reflect the values found in the following file: \n";
+    RESULT=/home/stack/overcloud-deploy-${STACK}/tripleo-heat-templates/user-environments/derived_parameters.yaml
+    ls -l $RESULT
+    echo -e "\nWhose content is:\n";
+    cat $RESULT
 fi
