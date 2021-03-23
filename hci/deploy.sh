@@ -63,7 +63,7 @@ fi
 if [[ $PUSH -eq 1 ]]; then
     TGT="/usr/share/ansible/tripleo-playbooks/cli-derive-parameters.yaml"
     SRC="/home/stack/tripleo-ansible/tripleo_ansible/playbooks/cli-derive-parameters.yaml"
-    sudo mv -v $SRC $TGT
+    sudo cp -v $SRC $TGT
 fi
 # -------------------------------------------------------
 if [[ $HEAT -eq 1 ]]; then
@@ -95,14 +95,20 @@ if [[ $HEAT -eq 1 ]]; then
           -e ~/templates/environments/podman.yaml \
           -e ~/containers-prepare-parameter.yaml \
           -e ~/re-generated-container-prepare.yaml \
-          -e ~/templates/environments/cephadm/cephadm.yaml \
           -e ~/oc0-domain.yaml \
           -e deployed-metal-$STACK.yaml \
           -e overrides.yaml \
-          -e cephadm-overrides.yaml
+          -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
+          -e ceph-ansible-overrides.yaml
 
     # parking this here for now (re-insert between -r and -n)
-    # -p /usr/share/openstack-tripleo-heat-templates/plan-samples/plan-environment-derived-params.yaml \
+    #   -p /usr/share/openstack-tripleo-heat-templates/plan-samples/plan-environment-derived-params.yaml \
+    # parking this here for now (cephadm)
+          # -e ~/templates/environments/cephadm/cephadm.yaml \
+          # -e ceph-ansible-overrides.yaml
+    # (ceph-ansible)
+          # -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
+          # -e ceph-ansible-overrides.yaml
                 
 fi
 # -------------------------------------------------------
