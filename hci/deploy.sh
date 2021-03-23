@@ -103,14 +103,14 @@ if [[ $HEAT -eq 1 ]]; then
           -e ~/oc0-domain.yaml \
           -e deployed-metal-$STACK.yaml \
           -e overrides.yaml \
-          -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
-          -e ceph-ansible-overrides.yaml
+          -e ~/templates/environments/cephadm/cephadm.yaml \
+          -e cephadm-overrides.yaml
 
     # parking this here for now (re-insert between -r and -n)
     #   -p /usr/share/openstack-tripleo-heat-templates/plan-samples/plan-environment-derived-params.yaml \
     # parking this here for now (cephadm)
           # -e ~/templates/environments/cephadm/cephadm.yaml \
-          # -e ceph-ansible-overrides.yaml
+          # -e cephadm-overrides.yaml
     # (ceph-ansible)
           # -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
           # -e ceph-ansible-overrides.yaml
