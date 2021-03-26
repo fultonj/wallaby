@@ -1,8 +1,8 @@
 #!/bin/bash
 
-IRONIC=0
+IRONIC=1
 WA=0
-PUSH=1
+PUSH=0
 HEAT=1
 DOWN=0
 RMCEPH=0
@@ -68,7 +68,6 @@ if [[ $PUSH -eq 1 ]]; then
     TGT="/usr/share/ansible/plugins/modules/tripleo_derive_hci_parameters.py"
     SRC="/home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/tripleo_derive_hci_parameters.py"
     sudo cp -v $SRC $TGT
-
 fi
 # -------------------------------------------------------
 if [[ $HEAT -eq 1 ]]; then
@@ -82,8 +81,8 @@ if [[ $HEAT -eq 1 ]]; then
             exit 1
         fi
     fi
+
     time openstack overcloud -v deploy \
-          --disable-validations \
           --deployed-server \
           --libvirt-type qemu \
           --stack $STACK \
@@ -114,7 +113,7 @@ if [[ $HEAT -eq 1 ]]; then
     # (ceph-ansible)
           # -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
           # -e ceph-ansible-overrides.yaml
-                
+    # --disable-validations \
 fi
 # -------------------------------------------------------
 if [[ $DOWN -eq 1 ]]; then
