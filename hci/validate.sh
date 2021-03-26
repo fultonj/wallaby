@@ -6,13 +6,13 @@ MDS=0
 GLANCE=0
 CINDER=0
 NOVA=0
-DERIVE=0
+DERIVE=1
 PLAN=0
 
 DIR=~/config-download
 STACK=overcloud
 RC=/home/stack/${STACK}rc
-CEPHADM=0
+CEPHADM=1
 
 function run_on_mon {
     if [ $CEPHADM -eq 1 ]; then
