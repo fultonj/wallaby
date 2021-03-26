@@ -18,11 +18,24 @@ else
     echo "Found $UUID for $1"
 fi
 
-STATE=$(openstack baremetal node show $UUID -f value -c provision_state)
-if [[ $STATE != "available" ]]; then
-    echo "Node $1 is in state: $STATE . Unable to mark it as manageable for cleaning."
-    exit 1
-fi
+SLEEP=5
+RETRY=3
+i=0
+while [ 1 ]; do
+    i=$(($i+1)); 
+    STATE=$(openstack baremetal node show $UUID -f value -c provision_state)
+    if [[ $STATE != "available" ]]; then
+        echo "Node $1 is in state: $STATE . Unable to mark it as manageable for cleaning."
+        if [[ $i -gt $RETRY ]]; then
+            echo "Retries exhausted. Giving up."
+            exit 1
+        fi;
+        echo "Sleeping $SLEEP seconds and then trying again (attempt $i of $RETRY)"
+        sleep $SLEEP
+    else
+        break
+    fi
+done
 
 openstack baremetal node manage $UUID
 openstack baremetal node clean $UUID --clean-steps '[{"interface": "deploy", "step": "erase_devices_metadata"}]'
