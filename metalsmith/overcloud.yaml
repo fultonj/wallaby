@@ -9,11 +9,14 @@
     - hostname: oc0-controller-2
       name: oc0-controller-2
 - name: ComputeHCI
-  count: 3
+  count: 2
   instances:
     - hostname: oc0-ceph-0
       name: oc0-ceph-0
     - hostname: oc0-ceph-1
       name: oc0-ceph-1
+- name: ComputeHCI2
+  count: 1
+  instances:
     - hostname: oc0-ceph-2
       name: oc0-ceph-2

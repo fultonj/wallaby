@@ -6,11 +6,15 @@ parameter_defaults:
     osd_recovery_op_priority: 3
     osd_recovery_max_active: 3
     osd_max_backfills: 1
-  CephHciOsdCount: 4
-  # CephHciOsdType: hdd
   # CephOsdSpec:
   #   data_devices:
   #     rotational: 1
   #   db_devices:
   #     rotational: 1
   #   osds_per_device: 1
+  ComputeHCIExtraConfig:
+    CephHciOsdCount: 4
+    CephHciOsdType: hdd
+  ComputeHCI2ExtraConfig:
+    CephHciOsdCount: 5
+    CephHciOsdType: ssd

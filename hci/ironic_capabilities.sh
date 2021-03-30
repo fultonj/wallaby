@@ -10,7 +10,7 @@ source ~/stackrc
 declare -A MAP
 MAP[oc0-ceph-0]="computeHCI"       # ComputeHCI
 MAP[oc0-ceph-1]="computeHCI"       # ComputeHCI
-MAP[oc0-ceph-2]="computeHCI"       # ComputeHCI
+MAP[oc0-ceph-2]="computeHCI2"      # ComputeHCI2
 
 for K in "${!MAP[@]}"; do
     echo "$K ---> ${MAP[$K]}";
