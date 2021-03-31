@@ -119,12 +119,19 @@
     - name: show vlan ifup results
       debug:
         msg: "{{ ifcmds.stdout }}"
+    - name: look for default route
+      shell: "ip r | grep default"
+      register: ipr
     # address side effect of adding other network
     - name: bring down old default route
-      shell: "route del default gw 192.168.24.1 ens3"
-      ignore_erros: true
+      command: "route del default gw {{ my_ip }} {{ my_dev }}"
+      vars:
+        - my_dev: "{{ ipr.stdout.split()[4] }}"
+        - my_ip: "{{ ipr.stdout.split()[2] }}"
+      when:
+        - ipr.stdout != ""
     - name: bring up new default route
-      shell: "route add default gw 192.168.100.1 {{ dev }}.100"
+      command: "route add default gw 192.168.100.1 {{ dev }}.100"
     - name: state next step
       debug:
         msg: "ssh stack@{{ ansible_host }} # ./standalone.sh"
