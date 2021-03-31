@@ -10,7 +10,6 @@
       - python3-tripleoclient
     mirror_files:
       - /etc/yum.repos.d/delorean.repo
-      - /home/stack/generated-container-prepare.yaml
   tasks:
     - name: ensure stack group exists
       group:
@@ -109,9 +108,8 @@
       debug:
         msg: "{{ ifcmds.stdout }}"
     - name: look for default route
-      shell: "ip r | grep default"
+      shell: "(ip r | grep default) || true"
       register: ipr
-    # address side effect of adding other network
     - name: bring down old default route
       command: "route del default gw {{ my_ip }} {{ my_dev }}"
       vars:
@@ -121,3 +119,9 @@
         - ipr.stdout != ""
     - name: bring up new default route
       command: "route add default gw 192.168.100.1 {{ dev }}.100"
+    - name: add standalone IP to /etc/hosts on undercloud
+      lineinfile:
+        path: "/etc/hosts"
+        regexp: 'standalone$'
+        line: "{{ hostvars[inventory_hostname].ansible_host }} standalone"
+      delegate_to: localhost
