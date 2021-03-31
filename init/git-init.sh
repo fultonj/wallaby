@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
 # Clones the repos that I am interested in.
 # -------------------------------------------------------
-if [[ $1 == 'poc' ]]; then
-    pushd ~
-    git clone git@github.com:fmount/tripleo-ceph.git
-    popd
-fi
-# -------------------------------------------------------
 if [[ $1 == 'alias' ]]; then
     if [[ -e /home/stack/stackrc ]]; then
         echo 'source /home/stack/stackrc' >> ~/.bashrc
@@ -14,8 +8,6 @@ if [[ $1 == 'alias' ]]; then
     echo 'alias os=openstack' >> ~/.bashrc
     echo 'alias ms=metalsmith' >> ~/.bashrc
     echo 'alias "ll=ls -lhtr"' >> ~/.bashrc
-    echo 'alias ans="cd /home/stack/tripleo-ceph"' >> ~/.bashrc
-    echo 'alias poc="cd /home/stack/victoria/poc"' >> ~/.bashrc
 fi
 # -------------------------------------------------------
 if [[ $1 == 'tht' ]]; then
