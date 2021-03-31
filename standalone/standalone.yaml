@@ -11,9 +11,6 @@
     mirror_files:
       - /etc/yum.repos.d/delorean.repo
       - /home/stack/generated-container-prepare.yaml
-    standlone_files:
-      - standalone_parameters.yaml
-      - standalone.sh
   tasks:
     - name: ensure stack group exists
       group:
@@ -61,14 +58,6 @@
         owner:  "{% if '.yaml' in item %}stack{% else %}root{% endif %}"
         group:  "{% if '.yaml' in item %}stack{% else %}root{% endif %}"
       loop: "{{ mirror_files }}"
-    - name: copy standalone files (where dest is in /home/stack)
-      copy:
-        src: "{{ item }}"
-        dest: "/home/stack/{{ item }}"
-        owner: stack
-        group: stack
-        mode: "{% if '.sh' in item %}0755{% else %}0644{% endif %}"
-      loop: "{{ standlone_files }}"
     - name: install python3-tripleo-repos package
       dnf:
         name: python3-tripleo-repos
@@ -132,6 +121,3 @@
         - ipr.stdout != ""
     - name: bring up new default route
       command: "route add default gw 192.168.100.1 {{ dev }}.100"
-    - name: state next step
-      debug:
-        msg: "ssh stack@{{ ansible_host }} # ./standalone.sh"

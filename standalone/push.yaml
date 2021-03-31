@@ -1,0 +1,23 @@
+---
+- hosts: allovercloud
+  gather_facts: false
+  become: true
+  vars:
+    standlone_files:
+      - standalone_parameters.yaml
+      - standalone.sh
+      - ../init/git-init.sh
+  tasks:
+    - name: copy standalone files (where dest is in /home/stack)
+      copy:
+        src: "{{ item }}"
+        dest: "/home/stack/{{ item | basename }}"
+        owner: stack
+        group: stack
+        mode: "{% if '.sh' in item %}0755{% else %}0644{% endif %}"
+      loop: "{{ standlone_files }}"
+    - name: state next step
+      debug:
+        msg: "   ssh -A stack@{{ my_ip }}    # ./standalone.sh"
+      vars:
+        - my_ip: "{{ hostvars[inventory_hostname].ansible_host }}"

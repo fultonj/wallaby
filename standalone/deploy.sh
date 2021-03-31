@@ -65,4 +65,5 @@ fi
 if [[ $STD -eq 1 ]]; then
     # prepare node for a standalone install
     ansible-playbook-3 -i $INV -v standalone.yaml
+    bash push.sh
 fi
