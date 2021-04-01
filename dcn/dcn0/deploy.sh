@@ -35,6 +35,19 @@ if [[ ! -e dcn_roles.yaml ]]; then
     fi
 fi
 # -------------------------------------------------------
+CONTAINER_FILE=containers-${STACK}-prepare-parameters.yaml
+if [[ ! -e $CONTAINER_FILE ]]; then
+    SRC=/home/stack/tripleo-common/container-images/container_image_prepare_defaults.yaml
+    if [[ -e $SRC ]]; then
+        cp $SRC $CONTAINER_FILE
+        sed -i s/#\ push_destination:\ true/push_destination:\ true/g $CONTAINER_FILE
+    else
+        openstack tripleo container image prepare default \
+                  --local-push-destination \
+                  --output-env-file $CONTAINER_FILE
+    fi
+fi
+# -------------------------------------------------------
 # `openstack overcloud -v` should be passed along as
 # `ansible-playbook -vv` for any usage of Ansible (the
 # OpenStack client defaults to no -v being 1 verbosity
@@ -58,8 +71,7 @@ if [[ $HEAT -eq 1 ]]; then
          -e ~/templates/environments/podman.yaml \
          -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
          -e ~/templates/environments/dcn-storage.yaml \
-         -e ~/containers-prepare-parameter.yaml \
-         -e ~/re-generated-container-prepare.yaml \
+         -e $CONTAINER_FILE \
          -e ~/oc0-domain.yaml \
          -e $METAL \
          -e ../control-plane-export.yaml \
@@ -76,6 +88,9 @@ if [[ $HEAT -eq 1 ]]; then
          # -e ~/templates/environments/network-environment.yaml \
     # no swap
          # -e ~/templates/environments/enable-swap.yaml \
+    # make the container list dynamically per stack
+    # -e ~/containers-prepare-parameter.yaml \
+    # -e ~/re-generated-container-prepare.yaml \
 fi
 # -------------------------------------------------------
 if [[ $DOWN -eq 1 ]]; then

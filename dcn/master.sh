@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-WA=1
+WA=0
 CONTROL=1
 EXPORT=1
 DCN0=1
