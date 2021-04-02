@@ -1,28 +1,41 @@
 #!/bin/bash
+# Pick the container-tools dnf module podman should come from
+OLD=2.0
+NEW=3.0
 
-# Pick the desired version of podman you want to run
-DESIRED=2
-#DESIRED=3
-
-# Because podman 3 fails like this: 
+# WARNING removing podman to downgrade it will remove nearly all
+# tripleo packages so the script re-installs python3-tripleoclient.
+# 
+# A new c8-stream undercloud is installed with podman from AppStream.
+# It tends to be very new and ahead of what TripleO CI tests with.
+# Use this script to uninstall it and install an older one from the
+# appropriate version of container-tools:
+# 
+#   https://access.redhat.com/support/policy/updates/containertools
+#
+# AppStream podman "too new" because I have run into the following:
+# 
+# podman 3.1 fails to start iscsid on undercloud downgrade to 3.0
+# 
+# podman 3 fails like this: 
 #   "Failed to create bus connection: No such file or directory"
-# When using molecule as descrbed in [1].
-# Workaround by downgrading to podman 2, but I can easily go back to 3.
-# This script helps me bounce between the two on my undercloud.
+# When using molecule as descrbed in [1], downgrade to podman 2.y
 # [1] http://blog.johnlikesopenstack.com/2020/06/running-tripleo-ansible-molecule.html
 
-CURRENT_FULL=$(podman --version | awk {'print $3'})
-if [[ $CURRENT_FULL =~ "3" ]]; then
-    CURRENT="3"
-fi
-if [[ $CURRENT_FULL =~ "2" ]]; then
-    CURRENT="2"
-fi
-echo "Current Version is $CURRENT ($CURRENT_FULL)"
-if [[ $CURRENT == $DESIRED ]]; then
-    echo "You already have the desired version ($DESIRED)"
-    exit 0
-fi
-echo "Changing podman version from $CURRENT to $DESIRED"
+podman --version
 
-echo "Please implement me I'm not working yet"
+sudo dnf repolist
+sudo dnf module list
+sudo dnf module disable -y container-tools:${OLD}
+sudo dnf module enable -y container-tools:${NEW}
+sudo dnf clean metadata
+sudo dnf clean all
+sudo dnf update -y
+
+podman --version
+sudo dnf remove podman -y
+sudo dnf install podman -y
+podman --version
+
+sudo -E tripleo-repos current-tripleo-dev ceph
+sudo dnf install -y python3-tripleoclient
