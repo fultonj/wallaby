@@ -12,8 +12,18 @@ ceph_conf_overrides:
         osd_pool_default_size: 3
 tripleo_cephadm_fsid: ca9bf37b-ed0f-4e5a-bb21-e5b5f9b75135
 tripleo_cephadm_cluster: ceph
-tripleo_cephadm_container_cli: podman
-tripleo_cephadm_container_image: ceph-ci/daemon
-tripleo_cephadm_container_ns: undercloud.ctlplane.mydomain.tld:8787
-tripleo_cephadm_container_tag: v5.0.7-stable-5.0-octopus-centos-8-x86_64
 tripleo_cephadm_dashboard_enabled: false
+tripleo_cephadm_container_cli: podman
+
+# tripleo_cephadm_container_image: ceph-ci/daemon
+# tripleo_cephadm_container_ns: undercloud.ctlplane.mydomain.tld:8787
+# tripleo_cephadm_container_tag: v5.0.7-stable-5.0-octopus-centos-8-x86_64
+
+# tripleo_cephadm_container_image: "ceph"
+# tripleo_cephadm_container_ns: "docker.io/ceph"
+# tripleo_cephadm_container_tag: "v15"
+
+# https://quay.ceph.io/repository/ceph-ci/daemon?tab=tags
+tripleo_cephadm_container_image: ceph-ci/daemon
+tripleo_cephadm_container_ns: quay.ceph.io
+tripleo_cephadm_container_tag: v5.0.9-stable-5.0-octopus-centos-8-x86_64
