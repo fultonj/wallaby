@@ -70,7 +70,7 @@ if [[ $PRE -eq 1 ]]; then
     if [[ $USR -eq 1 ]]; then
         # requires https://review.opendev.org/c/openstack/tripleo-ansible/+/768365
         ansible-playbook-3 -i $INV -v \
-          /home/stack/tripleo-ansible/tripleo_ansible/playbooks/cli-enable-ssh-admin.yaml \
+          /usr/share/ansible/tripleo-playbooks/ceph-admin-user-playbook.yml \
           -e @ceph-admin.yml
     fi
 fi
