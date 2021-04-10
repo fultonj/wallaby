@@ -26,4 +26,5 @@ tripleo_cephadm_container_cli: podman
 # https://quay.ceph.io/repository/ceph-ci/daemon?tab=tags
 tripleo_cephadm_container_image: ceph-ci/daemon
 tripleo_cephadm_container_ns: quay.ceph.io
-tripleo_cephadm_container_tag: v5.0.9-stable-5.0-octopus-centos-8-x86_64
+#tripleo_cephadm_container_tag: v5.0.9-stable-5.0-octopus-centos-8-x86_64
+tripleo_cephadm_container_tag: v6.0.0-stable-6.0-pacific-centos-8-x86_64

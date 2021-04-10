@@ -9,7 +9,6 @@
       - vim
       - cephadm
       - tmux
-    cephadm_url: https://github.com/ceph/ceph/raw/octopus/src/cephadm/cephadm
   tasks:
     - name: create base repo file
       copy:
@@ -37,7 +36,7 @@
         content: |
           [Ceph]
           name=Ceph $basearch
-          baseurl=https://download.ceph.com/rpm-octopus/el8/$basearch
+          baseurl=https://download.ceph.com/rpm-pacific/el8/$basearch
           gpgcheck=0
           enabled=1
 
