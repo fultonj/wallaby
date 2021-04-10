@@ -45,9 +45,10 @@ fi
 
 if [[ $PRE -eq 1 ]]; then
     if [[ $NET -eq 1 ]]; then
-        # connect ceph nodes to Internet with hack for now
+        # connect ceph nodes to Internet with hack
         ansible-playbook-3 -i $INV ceph_nethack.yaml
-        ansible -i $INV all -m shell -a "ping -c 1 redhat.com"
+        sleep 10
+        ansible -i $INV all -m shell -a "ping -c 1 google.com"
         if [[ $? -gt 0 ]]; then
             echo "ERROR: hosts unable to ping Internet"
             exit 1
