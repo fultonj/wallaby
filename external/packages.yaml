@@ -7,8 +7,8 @@
       - git
       - emacs-nox
       - vim
-      - cephadm
       - tmux
+      - https://download.ceph.com/rpm-pacific/el8/noarch/cephadm-16.2.0-0.el8.noarch.rpm
   tasks:
     - name: create base repo file
       copy:
@@ -44,3 +44,4 @@
       dnf:
         name: "{{ pkgs }}"
         state: latest
+        disable_gpg_check: true
