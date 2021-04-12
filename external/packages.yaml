@@ -9,6 +9,9 @@
       - vim
       - tmux
       - https://download.ceph.com/rpm-pacific/el8/noarch/cephadm-16.2.0-0.el8.noarch.rpm
+    master: true
+    cephadm_path: /usr/sbin/cephadm
+    cephadm_src: https://raw.githubusercontent.com/ceph/ceph/pacific/src/cephadm/cephadm
   tasks:
     - name: create base repo file
       copy:
@@ -45,3 +48,10 @@
         name: "{{ pkgs }}"
         state: latest
         disable_gpg_check: true
+
+    - name: overwrite cephadm directly from git
+      get_url:
+        url: "{{ cephadm_src }}"
+        dest: "{{ cephadm_path }}"
+      when:
+        - master
