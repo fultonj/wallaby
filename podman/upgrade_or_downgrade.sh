@@ -37,5 +37,5 @@ sudo dnf remove podman -y
 sudo dnf install podman -y
 podman --version
 
-sudo -E tripleo-repos current-tripleo-dev ceph
+sudo -E tripleo-repos current-tripleo-dev ceph --stream
 sudo dnf install -y python3-tripleoclient

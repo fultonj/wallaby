@@ -23,7 +23,7 @@ if [[ $REPO -eq 1 ]]; then
     curl -f $url/$rpm -o ~/rpms/$rpm
     if [[ -f ~/rpms/$rpm ]]; then
 	sudo yum install -y ~/rpms/$rpm
-	sudo -E tripleo-repos current-tripleo-dev ceph
+	sudo -E tripleo-repos current-tripleo-dev ceph --stream
 	sudo yum repolist
 	sudo yum update -y
     else
