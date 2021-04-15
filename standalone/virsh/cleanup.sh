@@ -41,6 +41,7 @@ sudo find / -name secret.xml -exec rm -f {} \; 2> /dev/null
 # remove the disk used by ceph
 sudo lvremove --force /dev/vg2/db-lv2
 sudo lvremove --force /dev/vg2/data-lv2
+#sudo lvremove --force /dev/vg2/wal-lv2
 sudo vgremove --force vg2
 sudo pvremove --force /dev/loop3
 sudo losetup -d /dev/loop3

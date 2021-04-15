@@ -45,8 +45,6 @@ parameter_defaults:
         data_vg: vg2
         db: db-lv2
         db_vg: vg2
-        wal: wal-lv2
-        wal_vg: vg2
   CephAnsibleExtraConfig:
     cluster_network: 192.168.24.0/24
     public_network: 192.168.24.0/24
