@@ -1,18 +1,6 @@
-# Standalone on Metalsmith
+# Standalone Scripts
 
-[tripleo-lab supports standalone](https://github.com/cjeanner/tripleo-lab/blob/master/environments/standalone.yaml) by
-deploying one VM which is the undercloud.
+Before following the [docs](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/deployment/standalone.html) I set up a VM to run standalone one of two ways.
 
-I prefer to keep my undercloud running for a few weeks before I
-rebuild it and use metalsmith to provision disposable VMs for me to
-reprovision daily. Thus, this directory contains a few scripts I use
-to provision one VM with metalsmith on which I then run the standalone
-tools.
-
-## How to do it
-
-- Use [deploy.sh](deploy.sh) to:
-  - deploy the virtual hardware
-  - prepare it to host the standlone with [standalone.yaml](standalone.yaml)
-- Then SSH into the deployed node where you will find the following to run:
-  - [standalone.sh](standalone.sh) with [standalone_parameters.yaml](standalone_parameters.yaml)
+- [metalsmith](metalsmith): If I have a working undercloud w/ metalsmith from tripleo-lab
+- [virsh](virsh): If I only have a new centos-stream8 VM from virsh commands
