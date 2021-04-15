@@ -1,6 +1,5 @@
 #!/bin/bash
 
-BASICS=1
 POD=1
 REPO=1
 CEPH=1
@@ -8,10 +7,8 @@ INSTALL=1
 CONTAINERS=1
 CEPH_PREP=1
 HOSTNAME=1
-
-if [[ $BASICS -eq 1 ]]; then
-    sudo dnf install -y tmux emacs-nox vim
-fi
+EXTRAS=1
+TMATE=1
 
 if [[ $POD -eq 1 ]]; then
     sudo dnf module enable -y container-tools:3.0
@@ -75,6 +72,7 @@ if [[ $CEPH_PREP -eq 1 ]]; then
     sudo lvcreate -n data-lv2 -l 597 vg2
     sudo lvcreate -n db-lv2 -l 597 vg2
     sudo lvcreate -n wal-lv2 -l 597 vg2
+    #sudo lvcreate -n data-lv2 -l 1194 vg2
 
     cat <<EOF > /tmp/ceph-osd-losetup.service
 [Unit]
@@ -100,4 +98,19 @@ if [[ $HOSTNAME -eq 1 ]]; then
     sudo hostnamectl set-hostname standalone.localdomain
     sudo hostnamectl set-hostname standalone.localdomain --transient
     sudo setenforce 1
+fi
+
+if [[ $EXTRAS -eq 1 ]]; then
+    sudo dnf install -y tmux emacs-nox vim
+fi
+
+if [[ $TMATE -eq 1 ]]; then
+    TMATE_RELEASE=2.4.0
+    curl -OL https://github.com/tmate-io/tmate/releases/download/$TMATE_RELEASE/tmate-$TMATE_RELEASE-static-linux-amd64.tar.xz
+    sudo mv tmate-$TMATE_RELEASE-static-linux-amd64.tar.xz /usr/src/
+    pushd /usr/src/
+    sudo tar xf tmate-$TMATE_RELEASE-static-linux-amd64.tar.xz
+    sudo mv /usr/src/tmate-$TMATE_RELEASE-static-linux-amd64/tmate /usr/local/bin/tmate
+    sudo chmod 755 /usr/local/bin/tmate
+    popd
 fi
