@@ -6,5 +6,7 @@
 
 On new VM called "undercloud" run:
 - [pre.sh](pre.sh)
+- [disks.sh](disks.sh)
 - [standalone.sh](standalone.sh)
+- [verify.sh](verify.sh)
 - [cleanup.sh](cleanup.sh)

@@ -1,0 +1,14 @@
+parameter_defaults:
+  CephAnsibleDisksConfig:
+    osd_scenario: lvm
+    osd_objectstore: bluestore
+    lvm_volumes:
+      - data: data-lv2
+        data_vg: vg2
+        db: db-lv2
+        db_vg: vg2
+  CephAnsibleExtraConfig:
+    cluster_network: 192.168.24.0/24
+    public_network: 192.168.24.0/24
+  CephPoolDefaultPgNum: 32
+  CephPoolDefaultSize: 1
