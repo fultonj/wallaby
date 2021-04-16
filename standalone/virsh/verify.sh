@@ -6,26 +6,34 @@ OVERVIEW=1
 GLANCE=1
 CINDER=1
 NOVA=1
+CEPH=0
 
 GITHUB=fultonj.keys
 MON=ceph-mon-standalone
 
-
 if [[ $OVERVIEW -eq 1 ]]; then
     openstack endpoint list
-    sudo podman exec $MON ceph -s
+    if [[ $CEPH -eq 1 ]]; then
+        sudo podman exec $MON ceph -s
+    fi
 fi
 
 if [[ $GLANCE -eq 1 ]]; then
     curl https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img -o cirros-0.4.0-x86_64-disk.img
     openstack image create cirros --container-format bare --disk-format qcow2 --public --file cirros-0.4.0-x86_64-disk.img
-    sudo podman exec $MON rbd ls -l images
+    if [[ $CEPH -eq 1 ]]; then
+        sudo podman exec $MON rbd ls -l images
+        # sudo cephadm shell -- rbd ls -l images
+    fi
+    openstack image list
 fi
 
 if [[ $CINDER -eq 1 ]]; then
     openstack volume create --size 1 test-volume
     openstack volume list
-    sudo podman exec $MON rbd ls -l volumes
+    if [[ $CEPH -eq 1 ]]; then
+        sudo podman exec $MON rbd ls -l volumes
+    fi
 fi
 
 if [[ $NOVA -eq 1 ]]; then
@@ -94,7 +102,9 @@ if [[ $NOVA -eq 1 ]]; then
         done
         echo ""
         openstack server list
-        sudo podman exec $MON rbd ls -l vms
+        if [[ $CEPH -eq 1 ]]; then
+            sudo podman exec $MON rbd ls -l vms
+        fi
     fi
     if [[ $SSH -eq 1 ]]; then
         IP=$(openstack floating ip list -c "Floating IP Address" -f value)

@@ -45,11 +45,14 @@ sudo openstack tripleo deploy \
   --control-virtual-ip $VIP \
   -r ~/templates/roles/Standalone.yaml \
   -e ~/templates/environments/standalone/standalone-tripleo.yaml \
-  -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
-  -e ceph_ansible_overrides.yaml \
+  -e ~/templates/environments/cephadm/cephadm.yaml \
+  -e cephadm_overrides.yaml \
   -e ~/containers-prepare-parameters.yaml \
   -e standalone_parameters.yaml \
   --output-dir $HOME \
   --standalone $@
 
 #  --keep-running \
+
+#  -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
+#  -e ceph_ansible_overrides.yaml \
