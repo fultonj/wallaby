@@ -7,7 +7,9 @@ GLANCE=1
 CINDER=1
 NOVA=1
 
+GITHUB=fultonj.keys
 MON=ceph-mon-standalone
+
 
 if [[ $OVERVIEW -eq 1 ]]; then
     openstack endpoint list
@@ -42,9 +44,10 @@ if [[ $NOVA -eq 1 ]]; then
     VM=1
     SSH=0
     if [[ $KEYS -eq 1 ]]; then
-        curl --remote-name --location --insecure https://github.com/fultonj.keys
-        tail -1 fultonj.keys > ~/.ssh/id_ed25519.pub
+        curl --remote-name --location --insecure https://github.com/$GITHUB
+        tail -1 $GITHUB > ~/.ssh/id_ed25519.pub
         openstack keypair create --public-key ~/.ssh/id_ed25519.pub default
+        rm $GITHUB
     fi
     if [[ $SEC -eq 1 ]]; then
         # create basic security group to allow ssh/ping/dns
@@ -83,13 +86,14 @@ if [[ $NOVA -eq 1 ]]; then
     fi
     if [[ $VM -eq 1 ]]; then
         openstack server create --flavor m1.tiny --image cirros --key-name default --network private --security-group basic myserver
-        id=$netid
         openstack server list
-        if [[ $(openstack server list -c Status -f value) == "BUILD" ]]; then
-            echo "Waiting one minute for building server to boot"
-            sleep 30
-            openstack server list
-        fi
+        echo "Waiting for building server to boot..."
+        while [[ $(openstack server list -c Status -f value) == "BUILD" ]]; do
+            echo -n "."
+            sleep 2
+        done
+        echo ""
+        openstack server list
         sudo podman exec $MON rbd ls -l vms
     fi
     if [[ $SSH -eq 1 ]]; then
