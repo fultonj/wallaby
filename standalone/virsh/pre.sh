@@ -33,7 +33,7 @@ fi
 
 if [[ $CEPH -eq 1 ]]; then
     sudo dnf install -y cephadm ceph-ansible util-linux lvm2
-    CEPHADMSRC=1
+    CEPHADMSRC=0
     if [[ $CEPHADMSRC -eq 1 ]]; then
         CEPHADM_PATH=/usr/sbin/cephadm
         CEPHADM_SRC=https://raw.githubusercontent.com/ceph/ceph/pacific/src/cephadm/cephadm
@@ -41,6 +41,8 @@ if [[ $CEPH -eq 1 ]]; then
         curl --remote-name --location --insecure $CEPHADM_SRC -o cephadm
         sudo mv cephadm $CEPHADM_PATH
         md5sum $CEPHADM_PATH
+        sudo chown root:root $CEPHADM_PATH
+        sudo chmod 755 $CEPHADM_PATH
     fi
 fi
 
