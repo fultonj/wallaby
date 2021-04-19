@@ -6,15 +6,24 @@ OVERVIEW=1
 GLANCE=1
 CINDER=1
 NOVA=1
-CEPH=0
+CEPH=1
+CEPHADM=1
 
 GITHUB=fultonj.keys
-MON=ceph-mon-standalone
+
+function ceph() {
+    if [[ $CEPHADM -eq 1 ]]; then
+        sudo cephadm shell -- $1
+    else
+        MON=ceph-mon-standalone
+        sudo podman exec $MON $1
+    fi
+}
 
 if [[ $OVERVIEW -eq 1 ]]; then
     openstack endpoint list
     if [[ $CEPH -eq 1 ]]; then
-        sudo podman exec $MON ceph -s
+        ceph "ceph -s"
     fi
 fi
 
@@ -22,8 +31,7 @@ if [[ $GLANCE -eq 1 ]]; then
     curl https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img -o cirros-0.4.0-x86_64-disk.img
     openstack image create cirros --container-format bare --disk-format qcow2 --public --file cirros-0.4.0-x86_64-disk.img
     if [[ $CEPH -eq 1 ]]; then
-        sudo podman exec $MON rbd ls -l images
-        # sudo cephadm shell -- rbd ls -l images
+        ceph "rbd ls -l images"
     fi
     openstack image list
 fi
@@ -32,7 +40,7 @@ if [[ $CINDER -eq 1 ]]; then
     openstack volume create --size 1 test-volume
     openstack volume list
     if [[ $CEPH -eq 1 ]]; then
-        sudo podman exec $MON rbd ls -l volumes
+        ceph "rbd ls -l volumes"
     fi
 fi
 
@@ -103,7 +111,7 @@ if [[ $NOVA -eq 1 ]]; then
         echo ""
         openstack server list
         if [[ $CEPH -eq 1 ]]; then
-            sudo podman exec $MON rbd ls -l vms
+            ceph "rbd ls -l vms"
         fi
     fi
     if [[ $SSH -eq 1 ]]; then
