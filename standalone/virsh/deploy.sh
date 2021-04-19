@@ -46,6 +46,7 @@ sudo openstack tripleo deploy \
   -r ~/templates/roles/Standalone.yaml \
   -e ~/templates/environments/standalone/standalone-tripleo.yaml \
   -e ~/templates/environments/cephadm/cephadm.yaml \
+  -e ~/templates/environments/cephadm/ceph-rgw.yaml \
   -e cephadm_overrides.yaml \
   -e ~/containers-prepare-parameters.yaml \
   -e standalone_parameters.yaml \

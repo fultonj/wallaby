@@ -6,6 +6,7 @@ OVERVIEW=1
 GLANCE=1
 CINDER=1
 NOVA=1
+RGW=1
 CEPH=1
 CEPHADM=1
 
@@ -119,4 +120,22 @@ if [[ $NOVA -eq 1 ]]; then
         openstack server add floating ip myserver $IP
         ssh cirros@$IP "lsblk"
     fi
+fi
+
+if [[ $RGW -eq 1 ]]; then
+    COUNT=5
+    echo -n "Creating $COUNT 'Swift' containers and observing "
+    echo "the RGW buckets.index OBJECTS field increment"
+    for I in $(seq 0 $COUNT); do 
+        openstack container create mydir$I
+        sleep 1
+        ceph "ceph df" | egrep "POOL|index"
+    done
+
+    echo "Deleting the $COUNT 'Swift' containers"
+    openstack container list
+    for I in $(seq 0 $COUNT); do 
+        openstack container delete mydir$I
+    done
+    openstack container list
 fi
