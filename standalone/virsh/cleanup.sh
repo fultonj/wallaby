@@ -3,7 +3,7 @@
 echo "Tearing down Ceph environment"
 
 # stop and disable ceph containers
-for N in mgr mon osd; do
+for N in mgr mon osd rgw; do
     if [[ -e /etc/systemd/system/ceph-${N}@.service ]]; then
         sudo systemctl stop ceph-${N}@*
         sudo systemctl disable ceph-${N}@
@@ -30,7 +30,7 @@ sudo rm -rf \
 for pkg in libvirt-client; do
     rpm -q $pkg > /dev/null
     if [[ $? -ne 0 ]]; then
-        sudo yum install -y libvirt-client
+        sudo dnf install -y libvirt-client
     fi
 done
 for S in $(sudo virsh -q secret-list | awk {'print $1'}); do
@@ -40,10 +40,9 @@ sudo find / -name secret.xml -exec rm -f {} \; 2> /dev/null
 
 # remove the disk used by ceph
 sudo lvremove --force /dev/vg2/db-lv2
-sudo lvremove --force /dev/vg2/data-lv2
-#sudo lvremove --force /dev/vg2/wal-lv2
-sudo vgremove --force vg2
-sudo pvremove --force /dev/loop3
+sudo lvremove --force --force /dev/vg2/data-lv2
+sudo vgremove --force --force vg2
+sudo pvremove --force --force /dev/loop3
 sudo losetup -d /dev/loop3
 sudo rm -f /var/lib/ceph-osd.img
 sudo partprobe
