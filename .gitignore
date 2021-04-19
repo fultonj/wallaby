@@ -32,3 +32,4 @@ ceph-external-ceph2.yaml
 ceph-external-ceph3.yaml
 control_plane_roles.yaml
 ceph-export-dcn0.yaml
+standalone_parameters.yaml
