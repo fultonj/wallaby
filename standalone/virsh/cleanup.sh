@@ -38,16 +38,6 @@ for S in $(sudo virsh -q secret-list | awk {'print $1'}); do
 done
 sudo find / -name secret.xml -exec rm -f {} \; 2> /dev/null
 
-# remove the disk used by ceph
-sudo lvremove --force /dev/vg2/db-lv2
-sudo lvremove --force --force /dev/vg2/data-lv2
-sudo vgremove --force --force vg2
-sudo pvremove --force --force /dev/loop3
-sudo losetup -d /dev/loop3
-sudo rm -f /var/lib/ceph-osd.img
-sudo partprobe
-
-
 
 echo "Tearing down TripleO environment"
 if type pcs &> /dev/null; then
@@ -69,3 +59,13 @@ sudo rm -rf \
     /var/lib/mysql/*
 sudo systemctl daemon-reload
 
+
+echo "Removing the disk used by Ceph"
+
+sudo lvremove --force /dev/vg2/db-lv2
+sudo lvremove --force --force /dev/vg2/data-lv2
+sudo vgremove --force --force vg2
+sudo pvremove --force --force /dev/loop3
+sudo losetup -d /dev/loop3
+sudo rm -f /var/lib/ceph-osd.img
+sudo partprobe
