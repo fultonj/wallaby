@@ -29,7 +29,14 @@ which is running centos-stream-8.
 ## Deploy undercloud configured with Metalsmith
 
 ```
- ansible-playbook -i inventory.yaml builder.yaml -e @environments/overrides.yml -e @environments/metalsmith.yaml -e @environments/topology-mix.yml
+ ansible-playbook -i inventory.yaml builder.yaml \
+    -e @environments/centos-8.yaml \
+    -e @environments/stream.yaml \
+    -e @environments/podman.yaml \
+    -e @environments/vm-centos8.yaml \
+    -e @environments/metalsmith.yaml \
+    -e @environments/overrides.yml \
+    -e @environments/topology-mix.yml
 ```
 
 The tasks referenced by the tags `-t domains -t baremetal -t vbmc`
