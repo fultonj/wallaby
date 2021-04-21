@@ -2,7 +2,7 @@
 
 I run the following on
 [my hypervisor](http://blog.johnlikesopenstack.com/2018/08/pc-for-tripleo-quickstart.html)
-which is running centos8.
+which is running centos-stream-8.
 
 ## Prepare tripleo-lab
 
@@ -29,18 +29,12 @@ which is running centos8.
 ## Deploy undercloud configured with Metalsmith
 
 ```
- ansible-playbook -i inventory.yaml builder.yaml -e @environments/overrides.yml -e @environments/metalsmith.yaml -e @environments/topology-all.yml
+ ansible-playbook -i inventory.yaml builder.yaml -e @environments/overrides.yml -e @environments/metalsmith.yaml -e @environments/topology-mix.yml
 ```
 
 The tasks referenced by the tags `-t domains -t baremetal -t vbmc`
 (which are inclusive in the above example) will provision the virtual
 baremetal servers. See [metalsmith](../metalsmith/).
-
-Because tripleo-ansible-operator imports ironic nodes
-[without introspection](https://github.com/openstack/tripleo-operator-ansible/blob/master/roles/tripleo_overcloud_node_import/defaults/main.yml#L12)
-I have tripleo-lab
-[call it](https://github.com/cjeanner/tripleo-lab/blob/38f3ab758a75063d6fcabe8c24de1719fe2e29b8/roles/overcloud/tasks/baremetal.yaml#L61)
-with `tripleo_overcloud_node_import_introspect: true`.
 
 <!--
 ## Workarounds
@@ -64,6 +58,12 @@ sed -i -e '1,9d' .ssh/config
 
 # https://bugs.launchpad.net/tripleo/+bug/1920215
 sed -i s/tripleo_overcloud_node_import_introspect\\:\ false/tripleo_overcloud_node_import_introspect\\:\ true/g ~/.ansible/tripleo-operator-ansible/roles/tripleo_overcloud_node_import/defaults/main.yml
+
+Because tripleo-ansible-operator imports ironic nodes
+[without introspection](https://github.com/openstack/tripleo-operator-ansible/blob/master/roles/tripleo_overcloud_node_import/defaults/main.yml#L12)
+I sometimes have tripleo-lab
+[call it](https://github.com/cjeanner/tripleo-lab/blob/38f3ab758a75063d6fcabe8c24de1719fe2e29b8/roles/overcloud/tasks/baremetal.yaml#L61)
+with `tripleo_overcloud_node_import_introspect: true`.
 
 -->
 
