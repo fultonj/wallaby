@@ -17,7 +17,8 @@ parameter_defaults:
             ceph_prometheus_namespace: quay.ceph.io/prometheus
             ceph_prometheus_tag: v2.7.2
             # ceph_tag: v4.0.13-stable-4.0-nautilus-centos-7-x86_64
-            ceph_tag: v5.0.7-stable-5.0-octopus-centos-8-x86_64
+            # ceph_tag: v5.0.7-stable-5.0-octopus-centos-8-x86_64
+            ceph_tag: v6.0.0-stable-6.0-pacific-centos-8-x86_64
             name_prefix: openstack-
             name_suffix: ''
             namespace: quay.io/tripleomaster
