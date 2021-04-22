@@ -1,15 +1,14 @@
 #!/bin/bash
 
-CON=0
+CON=1
 IRONIC=1
-WA=1
 HEAT=1
 DOWN=0
 CHECK=0
-LOG=0
+LOG=1
 
 STACK=oc0
-DIR=~/config-download
+DIR=/home/stack/overcloud-deploy/$STACK/config-download
 NODE_COUNT=7
 
 source ~/stackrc
@@ -56,13 +55,6 @@ if [[ $IRONIC -eq 1 ]]; then
 fi
 if [[ ! -e deployed-metal-$STACK.yaml && $NEW_SPEC -eq 0 ]]; then
     cp $METAL deployed-metal-$STACK.yaml
-fi
-# -------------------------------------------------------
-if [[ $WA -eq 1 ]]; then
-    # workaround https://tracker.ceph.com/issues/49870
-    IP=$(grep oc0-controller-0-ctlplane deployed-metal-$STACK.yaml -A 3 | grep 192 | awk {'print $3'})
-    scp ../ceph/cephadm heat-admin@$IP:/tmp/cephadm
-    ssh heat-admin@$IP "sudo mv /tmp/cephadm /usr/sbin/cephadm"
 fi
 # -------------------------------------------------------
 if [[ $LOG -eq 1 ]]; then
@@ -131,12 +123,12 @@ if [[ $HEAT -eq 1 ]]; then
 fi
 # -------------------------------------------------------
 if [[ $DOWN -eq 1 ]]; then
-    INV=tripleo-ansible-inventory.yaml
+    INV=$STACK/tripleo-ansible-inventory.yaml
     if [[ ! -d $DIR/$STACK ]]; then
         echo "$DIR/$STACK does not exist, Create it by setting HEAT=1"
         exit 1
     fi
-    pushd $DIR/$STACK
+    pushd $DIR
 
     if [[ $CHECK -eq 1 ]]; then
         if [[ ! -e ~/.ssh/id_rsa_tripleo ]]; then
@@ -148,21 +140,8 @@ if [[ $DOWN -eq 1 ]]; then
         fi
         echo "Test ansible ping"
         ansible -i $INV all -m ping
-        echo "pushd $DIR/$STACK"
-        echo 'ansible -i tripleo-ansible-inventory.yaml all -m shell -b -a "hostname"'
-
-        # # check that the inventory will work for ceph roles
-        # ansible -i $INV -m ping ceph_mon
-        # ansible -i $INV -m ping ceph_client
-        # ansible -i $INV -m ping ceph_osd
-        # grep ceph $INV
-        # if [[ $(grep osd $INV  | wc -l) == 0 ]]; then
-        #     # this happened with metalsmith (need to revisit)
-        #     echo "There are no OSDs in the inventory so the deployment will fail."
-        #     echo "Exiting early."
-        #     exit 1
-        # fi
-
+        echo "pushd $DIR"
+        echo 'ansible -i $STACK/tripleo-ansible-inventory.yaml all -m shell -b -a "hostname"'
     fi
     # -------------------------------------------------------
     # run it all
