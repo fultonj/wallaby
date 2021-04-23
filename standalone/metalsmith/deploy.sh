@@ -5,7 +5,6 @@ PRE=1
 NET=1 # only runs if PRE=1
 PKG=1 # only runs if PRE=1
 USR=1 # only runs if PRE=1
-PCS=0 # only runs if PRE=1
 STD=1
 
 STACK=standalone
@@ -51,14 +50,6 @@ if [[ $PRE -eq 1 ]]; then
             echo "ERROR: problem with installing packages"
             exit 1
         fi
-    fi
-    if [[ $PCS -eq 1 ]]; then
-        # pacemaker workaround
-        cp $INV ../external/inventory_openstack.yaml
-        pushd ../external
-        bash pcs.sh
-        rm -f inventory_openstack.yaml
-        popd
     fi
 fi
 
