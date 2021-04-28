@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CON=1
+CON=0
 IRONIC=1
 HEAT=1
 DOWN=0
