@@ -1,7 +1,6 @@
 #!/bin/bash
 
 IRONIC=1
-WA=0
 PUSH=0
 HEAT=1
 DOWN=0
@@ -22,7 +21,6 @@ fi
 # -------------------------------------------------------
 METAL="../metalsmith/deployed-metal-${STACK}.yaml"
 if [[ $IRONIC -eq 1 ]]; then
-    bash ironic_capabilities.sh
     if [[ ! -e $METAL ]]; then
         echo "$METAL is missing. Deploying nodes with metalsmith."
         pushd ../metalsmith
@@ -43,21 +41,6 @@ if [[ $IRONIC -eq 1 ]]; then
 fi
 if [[ ! -e deployed-metal-$STACK.yaml ]]; then
     cp $METAL deployed-metal-$STACK.yaml
-fi
-# -------------------------------------------------------
-if [[ $WA -eq 1 ]]; then
-    # workaround https://tracker.ceph.com/issues/49870
-    CHK1=$(md5sum ../ceph/cephadm | awk {'print $1'})
-    IP=$(grep oc0-controller-0-ctlplane deployed-metal-$STACK.yaml -A 3 | grep 192 | awk {'print $3'})
-    scp ../ceph/cephadm heat-admin@$IP:/tmp/cephadm
-    ssh heat-admin@$IP "sudo mv /tmp/cephadm /usr/sbin/cephadm"
-    CHK2=$(ssh heat-admin@$IP "sudo md5sum /usr/sbin/cephadm | awk {'print \$1'}")
-    if [[ "$CHK1" != "$CHK2" ]]; then
-        echo "ERROR: New cephadm not installed on $IP ($CHK1 == $CHK2)"
-        exit 1
-    else
-        echo "New cephadm installed on $IP ($CHK1 == $CHK2)"
-    fi
 fi
 # -------------------------------------------------------
 if [[ $PUSH -eq 1 ]]; then
@@ -123,5 +106,6 @@ if [[ $DOWN -eq 1 ]]; then
 fi
 # -------------------------------------------------------
 if [[ $RMCEPH -eq 1 ]]; then
-    ansible-playbook -i ~/config-download/$STACK/$STACK/tripleo-ansible-inventory.yaml  ../external/utilities/rm_ceph.yaml
+    INV=~/overcloud-deploy/$STACK/config-download/$STACK/tripleo-ansible-inventory.yaml
+    ansible-playbook -i $INV ../external/utilities/rm_ceph.yaml
 fi
