@@ -7,8 +7,8 @@ GLANCE=0
 CINDER=0
 NOVA=0
 
-DIR=~/config-download
 STACK=oc0
+INV=~/overcloud-deploy/$STACK/config-download/$STACK/tripleo-ansible-inventory.yaml
 RC=/home/stack/${STACK}rc
 CEPHADM=1
 
@@ -21,7 +21,7 @@ function run_on_mon {
     else
         CMD="podman exec ceph-mon-\$HOSTNAME $1"
     fi
-    ansible --private-key /home/stack/.ssh/id_rsa_tripleo -i $DIR/$STACK/$STACK/tripleo-ansible-inventory.yaml mons[0] -b -m shell -a "$CMD"
+    ansible --private-key /home/stack/.ssh/id_rsa_tripleo -i $INV mons[0] -b -m shell -a "$CMD"
 }
 
 source $RC
@@ -39,11 +39,10 @@ fi
 
 if [ $KEYS -eq 1 ]; then
     DST=/var/lib/tripleo-config/ceph
-    OSP_INV=~/config-download/$STACK/$STACK/tripleo-ansible-inventory.yaml
-    ansible -i $OSP_INV Controller,Compute -b -m shell -a "ls -l /etc/ceph"
-    ansible -i $OSP_INV Controller,Compute -b -m shell -a "ls -l $DST"
-    ansible -i $OSP_INV Controller,Compute -b -m shell -a "cat $DST/ceph.conf"
-    ansible -i $OSP_INV Controller,Compute -b -m shell -a "cat $DST/ceph.client.openstack.keyring"
+    ansible -i $INV Controller,Compute -b -m shell -a "ls -l /etc/ceph"
+    ansible -i $INV Controller,Compute -b -m shell -a "ls -l $DST"
+    ansible -i $INV Controller,Compute -b -m shell -a "cat $DST/ceph.conf"
+    ansible -i $INV Controller,Compute -b -m shell -a "cat $DST/ceph.client.openstack.keyring"
 fi
 
 if [ $MDS -eq 1 ]; then
