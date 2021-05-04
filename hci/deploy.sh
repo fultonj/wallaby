@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IRONIC=1
-PUSH=0
+PUSH=1
 HEAT=1
 DOWN=0
 RMCEPH=0
@@ -48,6 +48,10 @@ if [[ $PUSH -eq 1 ]]; then
     SRC="/home/stack/tripleo-ansible/tripleo_ansible/playbooks/cli-derive-parameters.yaml"
     sudo cp -v $SRC $TGT
 
+    TGT="/usr/share/ansible/roles/tripleo_derived_parameters/tasks/main.yml"
+    SRC="/home/stack/tripleo-ansible/tripleo_ansible/roles/tripleo_derived_parameters/tasks/main.yml"
+    sudo cp -v $SRC $TGT
+
     TGT="/usr/share/ansible/plugins/modules/tripleo_derive_hci_parameters.py"
     SRC="/home/stack/tripleo-ansible/tripleo_ansible/ansible_plugins/modules/tripleo_derive_hci_parameters.py"
     sudo cp -v $SRC $TGT
@@ -85,8 +89,8 @@ if [[ $HEAT -eq 1 ]]; then
           -e ~/oc0-domain.yaml \
           -e deployed-metal-$STACK.yaml \
           -e overrides.yaml \
-          -e ~/templates/environments/cephadm/cephadm.yaml \
-          -e cephadm-overrides.yaml
+          -e ~/templates/environments/ceph-ansible/ceph-ansible.yaml \
+          -e ceph-ansible-overrides.yaml
 
     # parking this here for now (re-insert between -r and -n)
     #   -p /usr/share/openstack-tripleo-heat-templates/plan-samples/plan-environment-derived-params.yaml \
