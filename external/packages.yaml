@@ -8,8 +8,8 @@
       - emacs-nox
       - vim
       - tmux
-      - https://download.ceph.com/rpm-pacific/el8/noarch/cephadm-16.2.0-0.el8.noarch.rpm
-    master: true
+      - https://download.ceph.com/rpm-pacific/el8/noarch/cephadm-16.2.2-0.el8.noarch.rpm
+    master: false
     cephadm_path: /usr/sbin/cephadm
     cephadm_src: https://raw.githubusercontent.com/ceph/ceph/pacific/src/cephadm/cephadm
   tasks:
