@@ -12,7 +12,7 @@ EXPORT=1
 if [[ $# -eq 1 ]]; then
     STACK=$1
 else
-    STACK=ceph
+    STACK=ceph6
 fi
 echo "stack=$STACK"
 

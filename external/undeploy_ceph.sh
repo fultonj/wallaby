@@ -2,7 +2,7 @@
 
 METAL=1
 CLEAN=1
-STACK=ceph
+STACK=ceph6
 INV=tripleo-ceph/inventory.yaml
 
 if [[ -e $INV ]]; then
