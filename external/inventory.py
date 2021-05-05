@@ -42,7 +42,9 @@ def get_undercloud_inv():
 def get_roles():
     # in a real implementation we'd cross check what's in
     # ironic_data_file against roles_file
-    return ['mons','mgrs','osds', 'allovercloud', 'overcloud']
+    return ['mons', 'mgrs', 'osds',
+            'ceph_mon', 'ceph_mgr', 'ceph_osd',
+            'allovercloud', 'overcloud']
 
 
 def get_vars(user):

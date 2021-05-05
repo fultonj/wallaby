@@ -69,10 +69,7 @@ if [[ $PRE -eq 1 ]]; then
         fi
     fi
     if [[ $USR -eq 1 ]]; then
-        # requires https://review.opendev.org/c/openstack/tripleo-ansible/+/768365
-        ansible-playbook-3 -i $INV -v \
-          /usr/share/ansible/tripleo-playbooks/ceph-admin-user-playbook.yml \
-          -e @ceph-admin.yml
+        bash user.sh
     fi
 fi
 

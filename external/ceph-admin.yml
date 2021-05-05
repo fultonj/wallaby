@@ -1,4 +1,0 @@
----
-tripleo_admin_user: ceph-admin
-ssh_servers: "{{ groups['mgrs'] }}"
-distribute_private_key: true
