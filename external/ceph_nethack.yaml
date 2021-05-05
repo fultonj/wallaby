@@ -22,7 +22,7 @@
         - hostvars[item].ansible_all_ipv4_addresses[0] is defined
         - old_third_octet in hostvars[item].ansible_all_ipv4_addresses[0]
       with_items:
-        - "{{ groups.get('mons', {}) }}"
+        - "{{ groups.get('allovercloud', {}) }}"
 
     - name: identify current gateway ip
       shell: "/sbin/ip route | awk '/default/ { print $3 }'"
@@ -37,6 +37,22 @@
         current_gateway: "{{ old_route_cmd.stdout_lines[0] }}"
         old_dev: "{{ old_dev_cmd.stdout_lines[0] }}"
         ip: "{{ ansible_host | regex_replace(old_third_octet, new_third_octet ) }} "
+
+    - name: check if interface file exists
+      stat:
+        path: "/etc/sysconfig/network-scripts/ifcfg-{{ dev }}"
+      register: dev_stat
+
+    - name: create interface file
+      copy:
+        dest: "/etc/sysconfig/network-scripts/ifcfg-{{ dev }}"
+        content: |
+          BOOTPROTO=none
+          DEVICE={{ dev }}
+          ONBOOT=yes
+          TYPE=Ethernet
+          USERCTL=no
+      when: not dev_stat.stat.exists
 
     - when:
         # don't set the gateway if we're already using it
