@@ -74,7 +74,7 @@ if [[ $PRE -eq 1 ]]; then
 fi
 
 if [[ $CEPH -eq 1 ]]; then
-    if [[ $STACK == "ceph" ]]; then
+    if [[ $STACK == "ceph6" ]]; then
         ansible-playbook-3 -i $INV -v cephadm.yaml \
                            -e @cephadm-extra-vars-heat.yml \
                            -e @cephadm-extra-vars-ansible.yml
