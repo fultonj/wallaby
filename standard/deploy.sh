@@ -96,10 +96,7 @@ if [[ $HEAT -eq 1 ]]; then
           --stack $STACK \
           --templates ~/templates \
           -r roles.yaml \
-          -n ../network-data.yaml \
           -e ~/templates/environments/deployed-server-environment.yaml \
-          -e ~/templates/environments/network-isolation.yaml \
-          -e ~/templates/environments/network-environment.yaml \
           -e ~/templates/environments/disable-telemetry.yaml \
           -e ~/templates/environments/low-memory-usage.yaml \
           -e ~/templates/environments/docker-ha.yaml \
@@ -111,6 +108,13 @@ if [[ $HEAT -eq 1 ]]; then
           -e deployed-metal-$STACK.yaml \
           -e overrides.yaml \
           -e cephadm-overrides.yaml
+
+
+    # no network isolation for now
+          # -n ../network-data.yaml \
+          # -e ~/templates/environments/network-isolation.yaml \
+          # -e ~/templates/environments/network-environment.yaml \
+          # -e ../network-env.yaml \
 
     # The standard deployment is now being developed with cephadm
     # https://review.opendev.org/q/topic:%22cephadm_integration%22
