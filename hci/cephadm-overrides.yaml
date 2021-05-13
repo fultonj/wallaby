@@ -12,9 +12,9 @@ parameter_defaults:
   #   db_devices:
   #     rotational: 1
   #   osds_per_device: 1
-  ComputeHCIExtraConfig:
+  ComputeHCIParameters:
     CephHciOsdCount: 4
     CephHciOsdType: hdd
-  ComputeHCI2ExtraConfig:
+  ComputeHCI2Parameters:
     CephHciOsdCount: 5
     CephHciOsdType: ssd
